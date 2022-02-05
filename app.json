@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "JUPEB STUDY APP",
+    "slug": "jupebstudyapp",
+    "version": "1.7.2",
+    "orientation": "portrait",
+    "icon": "./icons/applogo.png",
+    "owner": "learnxtra",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#FFFFFF"
+    },
+    "packagerOpts": {
+      "config": "./metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "txt"
+      ]
+    },
+    "assetBundlePatterns": [
+      "./icons/*.png",
+      "./PastQuestions/**/*.jpg"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.learnxtra.jupebstudyapp",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "package": "com.learnxtra.jupebstudyapp",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 17,
+      "adaptiveIcon": {
+        "foregroundImage": "./icons/applogo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": []
+    },
+    "web": {
+
+    },
+    "description": "Assurance of Success In Your Examination"
+  }
+}

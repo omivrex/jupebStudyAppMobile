@@ -1,0 +1,17 @@
+.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*PastQuestions/.jpg
+*.key
+*.pub
+*.mobileprovision
+*.orig.*
+web-build/
+stage7/.expo/README.md
+learnxtraKey\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\226
+
+# macOS
+.DS_Store
+node_modules

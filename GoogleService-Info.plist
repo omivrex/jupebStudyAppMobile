@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>316815533405-ab7ojc38tdqqibavb9hpefersn02o200.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.316815533405-ab7ojc38tdqqibavb9hpefersn02o200</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCyKyXDp5zKy4OBw1lRy6RWdXXNPpf4TXU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>316815533405</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.learnxtra.jupebstudyapp</string>
+	<key>PROJECT_ID</key>
+	<string>jupebstudyapp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>jupebstudyapp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:316815533405:ios:a422c64243ab53ecf8b4b4</string>
+	<key>DATABASE_URL</key>
+	<string>https://jupebstudyapp-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,12 @@
+{
+  "name": "expo-constants",
+  "displayName": "expo-constants",
+  "expo": {
+    "name": "expo-constants",
+    "slug": "expo-constants",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

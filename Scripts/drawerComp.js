@@ -1,5 +1,6 @@
-import React from 'react';
-import {Text, View, TouchableOpacity, Image, ScrollView} from 'react-native';
+import React, {useState, useEffect}from 'react';
+import {Text, View, TouchableOpacity, Image} from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import styles from '../styles/master.js';
 
@@ -40,11 +41,28 @@ export default function drawerComp({navigation}) {
     navigation.navigate('NewsScreen')
   }
   
+  const [greeting, setgreeting] = useState('');
   
-
+  useEffect(() => {
+    const hour = new Date().getHours()
+    if (hour<= 12) {
+      setgreeting('Good Morning!')
+    } else if (hour>=12 && hour<=16) {
+      setgreeting('Good Afternoon!')
+    } else {
+      setgreeting('Good Evening!')
+    }
+  }, []);
+  
   return (
     <View style={styles.menu}>
-      <Image style={{position: 'absolute', top: '4%', alignSelf: 'center'}} source={require('../icons/headerIcon.png')}/>
+      <Text style={{
+        top: hp('10%'),
+        alignSelf: 'center',
+        color: '#fff',
+        fontSize: hp('3%'),
+      }}>{greeting}</Text>
+      {/* <Image style={{position: 'absolute', top: '4%', alignSelf: 'center'}} source={require('../icons/headerIcon.png')}/> */}
         <TouchableOpacity style={styles.menuItemCont} onPress={Home}>
           <Text style={styles.menuText}>
             <Image resizeMode={'center'} style={styles.icon} source={require('../icons/home.png')}/>

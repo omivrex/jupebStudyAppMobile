@@ -85,13 +85,17 @@ export default function homeScreen({navigation}) {
         if (networkStat.isInternetReachable) {
           await db.collection('General Information').get().then((snapShot)=> {
               snapShot.forEach(doc => {
-                data.push(doc.data())
+                const info = doc.data()
+                info.id = doc.id
+                data.push(info)
               });
           }).then(()=> {
             if (data.length>0) {
+              console.log(data);
               setgenInfoPreview(
                 <FlatList 
                   data={data}
+                  keyExtractor={item => item.id}
                   contentContainerStyle = {{
                     backgroundColor: '#fff',
                     width: '100%',

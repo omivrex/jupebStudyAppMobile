@@ -13,13 +13,7 @@ const data = []
 function GenInfoComponent({data}) {
     if (!data.length) { //if there are no new info in this section //if there are no new info in this section
         return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.headerCont}>
-                    <Text style={styles.baseText}>GE</Text>
-                    <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                        <Image source={require('../icons/menuIcon.png')}/>
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.container}>
                 <View style={pageStyles.card}>
                     <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
                     <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
@@ -30,7 +24,7 @@ function GenInfoComponent({data}) {
                         Try Refreshing To See Updates!
                     </Text>
                 </View>
-            </SafeAreaView>
+            </View>
         )
     } else {
         return (

@@ -26,29 +26,27 @@ export default StyleSheet.create({
     },
     
     headerCont: {
-      alignItems: 'center',
+      alignItems: "center",
       backgroundColor: colors.appColor,
       width: wp('100%'),
       height: hp('17%'),
       position: 'absolute',
       top: hp('0%'),
       borderColor: colors.bodyBackground,
-      borderTopWidth: 2
+      borderTopWidth: 2,
+      flexDirection: 'column'
     },
 
     logoImage: {
-      alignSelf: 'center',
-      justifyContent: 'center',
-      display: 'flex',
-      flexDirection: 'row',
-      marginVertical: hp('-1%'),
-      top: logoImageTop,
+      height: hp('10%'),
+      marginVertical: hp('5%'),
       position: 'absolute'
     },
   
     menuIcon: {
-      top: menuIconTop,
-      left: '0%',
+      // top: menuIconTop,
+      marginVertical: hp('5%'),
+      alignSelf: 'flex-start',
       position: 'absolute',
     },
 

@@ -42,11 +42,6 @@ let getUpdatesCalled = false
 
 const news = [
     {
-        name: 'General Information',
-        data: []
-    },
-
-    {
         name: 'Relevant Materials',
         data: []
     }, 
@@ -145,7 +140,6 @@ export default function newsScreen({navigation}) {
             setaboutCard()
             setguideCard()
             setsyllabulsCard()
-            setupdatesCard()
             setmatCard()
             setRESOURCES_CARD()
             set_class_And_Exam_Card()
@@ -159,7 +153,6 @@ export default function newsScreen({navigation}) {
     }
     const [aboutCard, setaboutCard] = useState()
     const [guideCard, setguideCard] = useState()
-    const [updatesCard, setupdatesCard] = useState()
     const [matCard, setmatCard] = useState()
     const [RESOURCES_CARD, setRESOURCES_CARD] = useState()
     const [class_And_Exam_Card, set_class_And_Exam_Card] = useState()
@@ -350,80 +343,39 @@ export default function newsScreen({navigation}) {
         card_displayed = true
     }
 
-    function displayupdatesCard() {
-        if (!news[0].data.length) { //if there are no new info in this section //if there are no new info in this section
-            setupdatesCard(
-                <View style={pageStyles.card}>
-                    <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
-                    <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
-                    <Text style={pageStyles.nullText}>
-                        Nothing to see here yet.
-                    </Text>
-                    <Text style={pageStyles.nullText}>
-                        Try Refreshing To See Updates!
-                    </Text>
-                </View>
-            )
-        } else {
-                setupdatesCard(
+    const livePastQuestions = [
+        require('../icons/lvPq_1.jpg'),
+        require('../icons/lvPq_2.jpg'),
+        require('../icons/lvPq_3.jpg'),
+        require('../icons/lvPq_4.jpg'),
+        require('../icons/lvPq_5.jpg'),
+        require('../icons/lvPq_6.jpg'),
+        require('../icons/lvPq_7.jpg'),
+        require('../icons/lvPq_8.jpg'),
+        require('../icons/lvPq_9.jpg'),
+        require('../icons/lvPq_10.jpg'),
+        require('../icons/lvPq_11.jpg'),
+        require('../icons/lvPq_12.jpg'),
+    ]
+
+    function displayMatCard() {
+        getToken().then(() => {
+            if (token === 'true') {
+                setmatCard(
                     <View style={pageStyles.card}>
-                        <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
+                        <Text style={pageStyles.header}>LIVE PAST QUESTIONS</Text>
                         <View style={{flex: 1}}>
                             <FlatList
-                                data={news[0].data}
+                                data={livePastQuestions}
                                 contentContainerStyle = {{paddingBottom: 200}}
                                 renderItem={({item}) => (
-                                    <View style={pageStyles.newsCont}>
-                                        <Text style={pageStyles.topic}>{item.Topic}:</Text>
-                                        <Text style={pageStyles.body}>{item.Body}</Text>
-                                    </View>
+                                    <Image resizeMode={'contain'} style={{width: wp('100%'), marginTop: hp('0%')}} source={item}/>
                                 )}
                                 keyExtractor = {item => item.Topic}
                             />
                         </View>
                     </View>
                 )
-
-        }
-        card_displayed = true
-    }
-
-    function displayMatCard() {
-        getToken().then(() => {
-            if (token === 'true') {
-                if (!news[1].data.length) { //if there are no new info in this section
-                    setmatCard(
-                        <View style={pageStyles.card}>
-                            <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
-                            <Text style={pageStyles.nullText}>
-                                Nothing to see here yet.
-                            </Text>
-                            <Text style={pageStyles.nullText}>
-                                Try Refreshing To See Updates!
-                            </Text>
-                        </View>
-                    )
-                } else {
-                        setmatCard(
-                            <View style={pageStyles.card}>
-                                <Text style={pageStyles.header}>Relevant Materials</Text>
-                                <View style={{flex: 1}}>
-                                    <FlatList
-                                        data={news[1].data}
-                                        contentContainerStyle = {{paddingBottom: 200}}
-                                        renderItem={({item}) => (
-                                            <View style={pageStyles.newsCont}>
-                                                <Text style={pageStyles.topic}>{item.Topic}:</Text>
-                                                <Text style={pageStyles.body}>{item.Body}</Text>
-                                            </View>
-                                        )}
-                                        keyExtractor = {item => item.Topic}
-                                    />
-                                </View>
-                            </View>
-                        )
-        
-                }
                 card_displayed = true
             }
         })
@@ -541,10 +493,6 @@ export default function newsScreen({navigation}) {
                     <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/syllables.png')}/>
                     <Text style={pageStyles.contentText}>JUPEB SYLLABUS</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.content} onPress={displayupdatesCard}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/updates.png')}/>
-                    <Text style={pageStyles.contentText}>GENERAL INFORMATION</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.content} onPress={display_exam_and_classes_Card}>
                     <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/classes.png')}/>
                     <Text style={pageStyles.contentText}>CLASSES AND EXAM UPDATES</Text>
@@ -562,7 +510,6 @@ export default function newsScreen({navigation}) {
             {aboutCard}
             {guideCard}
             {syllabulsCard}
-            {updatesCard}
             {matCard}
             {class_And_Exam_Card}
             {RESOURCES_CARD}

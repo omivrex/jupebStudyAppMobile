@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as network from 'expo-network';
 import * as firebase from 'firebase';
@@ -8,7 +8,6 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
   SafeAreaView,
   Image,
   FlatList,
@@ -19,7 +18,6 @@ import {
 import styles from '../styles/master.js';
 import GenInfoComponent from '../components/genInfo.js';
 
-const data = []
 
 require('firebase/firestore')
 require('firebase/storage')
@@ -45,7 +43,7 @@ export default function homeScreen({navigation}) {
   const navToPqPage = () => {
     navigation.navigate('PqScreen')
   }
-
+  
   const navToNewsPage = () => {
     navigation.navigate('NewsScreen')
   }
@@ -53,7 +51,7 @@ export default function homeScreen({navigation}) {
   const navToCalcPage = () => {
     navigation.navigate('CalcScreen')
   }
-
+  
   
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -61,7 +59,7 @@ export default function homeScreen({navigation}) {
   const db = firebase.firestore()
   const [genInfoComp, setgenInfoComp] = useState()
   const [genInfoPreview, setgenInfoPreview] = useState()
-
+  
   BackHandler.addEventListener('hardwareBackPress', function () {
     if(isGenInfoCompDisplayed){
       setgenInfoComp()
@@ -70,14 +68,15 @@ export default function homeScreen({navigation}) {
     }
     false
   })
-
+  
   const previewInformationStyle = {
     color: colors.appColor,
     paddingLeft: wp('2.5%'),
     fontSize: hp('2.5%'),
     marginBottom: hp('2%')
   }
-
+  const data = useRef([]);
+  
   useEffect(() => {
     const getGenInfo = async () => {
       try {
@@ -87,14 +86,14 @@ export default function homeScreen({navigation}) {
               snapShot.forEach(doc => {
                 const info = doc.data()
                 info.id = doc.id
-                data.push(info)
+                data.current.push(info)
               });
           }).then(()=> {
-            if (data.length>0) {
-              console.log(data);
+            if (data.current.length>0) {
+              console.log(data.current);
               setgenInfoPreview(
                 <FlatList 
-                  data={data}
+                  data={data.current}
                   keyExtractor={item => item.id}
                   contentContainerStyle = {{
                     backgroundColor: '#fff',
@@ -136,14 +135,21 @@ export default function homeScreen({navigation}) {
 
       <View style={styles.body}>
         <ScrollView style={styles.scrollView}>
-            <TouchableHighlight onPress={()=> {
+            <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
               isGenInfoCompDisplayed = true
               setgenInfoComp(<GenInfoComponent data={data}/>)
-            }} style={[styles.block, {flexDirection: 'column', height: hp('25%'), width: wp('90%')}]}>
+            }} style={[
+              styles.block,
+              {
+                flexDirection: 'column',
+                height: hp('25%'),
+                width: wp('90%')
+              }
+            ]}>
               <>
                 <Text style={{
                   alignSelf: 'flex-start',
-                  color: '#eee',
+                  color: colors.textColor,
                   width: '100%',
                   textAlign: 'center',
                   fontSize: hp('2.6%'),
@@ -161,27 +167,33 @@ export default function homeScreen({navigation}) {
                   flex: 5,
                   borderWidth: 1,
                   borderStyle: 'solid',
-                  backgroungColor: 'red',
+                  backgroundColor: colors.backgroundColor,
                   borderColor: colors.appColor
                 }}>
                   {genInfoPreview}
                 </View>
               </>
             </TouchableHighlight>
-            <TouchableOpacity style={styles.block} onPress={navToPqPage}>
-              <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/pQIcon.png')}/>
-              <Text style={styles.blockText}>PAST QUESTIONS</Text>
-            </TouchableOpacity>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToPqPage}>
+              <>
+                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/pQIcon.png')}/>
+                <Text style={styles.blockText}>PAST QUESTIONS</Text>
+              </>
+            </TouchableHighlight>
 
-            <TouchableOpacity style={styles.block} onPress={navToNewsPage}>
-              <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/newsIcon.png')}/>
-              <Text style={[styles.blockText]}>NEWS {'&'} RESOURCES</Text>
-            </TouchableOpacity>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToNewsPage}>
+              <>
+                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/newsIcon.png')}/>
+                <Text style={[styles.blockText]}>NEWS {'&'} RESOURCES</Text>
+              </>
+            </TouchableHighlight>
 
-            <TouchableOpacity style={styles.block} onPress={navToCalcPage}>
-              <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/cgpaIcon.png')}/>
-              <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
-            </TouchableOpacity>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
+              <>
+                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/cgpaIcon.png')}/>
+                <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
+              </>
+            </TouchableHighlight>
         </ScrollView>
       </View>
       {genInfoComp}

@@ -13,17 +13,15 @@ const data = []
 function GenInfoComponent({data}) {
     if (!data.length) { //if there are no new info in this section //if there are no new info in this section
         return (
-            <View style={styles.container}>
-                <View style={pageStyles.card}>
-                    <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
-                    <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
-                    <Text style={pageStyles.nullText}>
-                        Nothing to see here yet.
-                    </Text>
-                    <Text style={pageStyles.nullText}>
-                        Try Refreshing To See Updates!
-                    </Text>
-                </View>
+            <View style={pageStyles.card}>
+                <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
+                <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
+                <Text style={pageStyles.nullText}>
+                    Nothing to see here yet.
+                </Text>
+                <Text style={pageStyles.nullText}>
+                    Try Refreshing To See Updates!
+                </Text>
             </View>
         )
     } else {

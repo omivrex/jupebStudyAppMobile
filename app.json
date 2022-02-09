@@ -28,6 +28,7 @@
     },
     "assetBundlePatterns": [
       "./icons/*.png",
+      "./icons/*.jpg",
       "./PastQuestions/**/*.jpg"
     ],
     "ios": {

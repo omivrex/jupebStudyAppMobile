@@ -456,53 +456,13 @@ export default function pqScreen({navigation}) {
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
                 </View>
-                    <MathJax
-                        html={
-                            `<body style="background-color: red; overflow: hidden; width: 100vw;">
-                                <p style="color: #eee; width: 100%; height: 100%; display: flex; overflow-wrap: break-word; word-wrap: break-word; overflow: hidden">
-                                    $\\:{the}\\:{diagram}\\:{above}\\:{we}\\:{can}\\:{see}\\:{that}\\
-                                    :{there}\\:{is}\\:{an}\\:{increase}\\:{by}\\:\\mathrm{2}^{{x}}
-                                     +\\mathrm{3}{x}^{\\mathrm{2}} .\\:\\:{equating}\\:{this}\\:{to}
-                                     \\:{the}\\:{initial}\\:{vale}\\:{v}^{{o}} \\:{we}\\:{jave}\\:{hnt} \\ $
-                                </p>
-                            </body>
-                            `
-                        }
-                        mathJaxOptions={{
-                            messageStyle: "none",
-                            extensions: ["tex2jax.js"],
-                            jax: ["input/TeX", "output/HTML-CSS"],
-                            tex2jax: {
-                                inlineMath: [
-                                    ["$", "$"],
-                                    ["\\(", "\\)"],
-                                ],
-                                displayMath: [
-                                    ["$$", "$$"],
-                                    ["\\[", "\\]"],
-                                ],
-                                processEscapes: true,
-                            },
-                            TeX: {
-                                extensions: [
-                                    "AMSmath.js",
-                                    "AMSsymbols.js",
-                                    "noErrors.js",
-                                    "noUndefined.js",
-                                ],
-                            },
-
-                        }}
-                        style={{height: '30%', width: '100%'}}
-                    
-                    />
                 <View style={[pageStyles.pqCont, {backgroungColor: 'red'}]}>
-                    {/* <ScrollView style={pageStyles.vetScrol}>
+                    <ScrollView style={pageStyles.vetScrol}>
                         <ScrollView horizontal={true} style={pageStyles.horiScrol}>
                             <Image style={pageStyles.questionImgStyle} source={sectionToDisplayImgs.questions[questNo].url}/>
                             <View style={pageStyles.padder}></View>
                         </ScrollView>
-                    </ScrollView> */}
+                    </ScrollView>
                     <View style={pageStyles.navigationCont}>
                         <TouchableOpacity style={pageStyles.previousButn} onPress={showPrev}>
                             <Image source={require('../icons/previous.png')}/>

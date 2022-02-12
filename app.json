@@ -2,7 +2,7 @@
   "expo": {
     "name": "JUPEB STUDY APP",
     "slug": "jupebstudyapp",
-    "version": "1.7.2",
+    "version": "1.8.0",
     "orientation": "portrait",
     "icon": "./icons/applogo.png",
     "owner": "learnxtra",
@@ -40,7 +40,7 @@
     "android": {
       "package": "com.learnxtra.jupebstudyapp",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 17,
+      "versionCode": 18,
       "adaptiveIcon": {
         "foregroundImage": "./icons/applogo.png",
         "backgroundColor": "#FFFFFF"

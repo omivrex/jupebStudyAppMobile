@@ -35,6 +35,19 @@ const firebaseConfig = {
 
 let isGenInfoCompDisplayed = false;
 
+const genInfoPrevContStyle = {
+  backgroundColor: '#fff',
+  width: '100%',
+  height: '100%',
+}
+
+const previewInformationStyle = {
+  color: colors.appColor,
+  paddingLeft: wp('2.5%'),
+  fontSize: hp('2.5%'),
+  marginBottom: hp('2%')
+}
+
 export default function homeScreen({navigation}) {
   function openMenu () {
     navigation.openDrawer();
@@ -52,13 +65,16 @@ export default function homeScreen({navigation}) {
     navigation.navigate('CalcScreen')
   }
   
-  
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
   const db = firebase.firestore()
   const [genInfoComp, setgenInfoComp] = useState()
-  const [genInfoPreview, setgenInfoPreview] = useState()
+  const [genInfoPreview, setgenInfoPreview] = useState(
+    <View style={[genInfoPrevContStyle]}>
+      <Text style={[previewInformationStyle, {width: '100%', textAlign: 'center'}]}>Loading...</Text>
+    </View>
+  )
   
   BackHandler.addEventListener('hardwareBackPress', function () {
     if(isGenInfoCompDisplayed){
@@ -69,12 +85,6 @@ export default function homeScreen({navigation}) {
     false
   })
   
-  const previewInformationStyle = {
-    color: colors.appColor,
-    paddingLeft: wp('2.5%'),
-    fontSize: hp('2.5%'),
-    marginBottom: hp('2%')
-  }
   const data = useRef([]);
   
   useEffect(() => {
@@ -95,11 +105,7 @@ export default function homeScreen({navigation}) {
                 <FlatList 
                   data={data.current}
                   keyExtractor={item => item.id}
-                  contentContainerStyle = {{
-                    backgroundColor: '#fff',
-                    width: '100%',
-                    height: '100%',
-                  }}
+                  contentContainerStyle = {genInfoPrevContStyle}
                   renderItem={({item}) => (
                     <>
                       <Text style={previewInformationStyle}>- {item.Topic}</Text>
@@ -108,11 +114,19 @@ export default function homeScreen({navigation}) {
                 />
               )
             } else {
-              setgenInfoPreview(<Text style={previewInformationStyle}>No recent information</Text>)
+              setgenInfoPreview(
+                <View style={[genInfoPrevContStyle]}>
+                  <Text style={[previewInformationStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
+                </View>
+              )
             }
           })
         } else {
-          setgenInfoPreview(<Text style={previewInformationStyle}>No recent information</Text>)
+          setgenInfoPreview(
+            <View style={[genInfoPrevContStyle]}>
+              <Text style={[previewInformationStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
+            </View>
+          )
         }
       } catch (error) { //errors usually show up because there's no network (can not get network state)
           alert('we are having trouble reaching our server. Are you offline?')
@@ -137,7 +151,7 @@ export default function homeScreen({navigation}) {
         <ScrollView style={styles.scrollView}>
             <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
               isGenInfoCompDisplayed = true
-              setgenInfoComp(<GenInfoComponent data={data}/>)
+              setgenInfoComp(<GenInfoComponent data={data.current}/>)
             }} style={[
               styles.block,
               {

@@ -82,7 +82,7 @@ export default StyleSheet.create({
     pqCard: {
         position: 'absolute',
         top: hp('15%'),
-        backgroundColor: colors.bodyBackground,
+        backgroundColor: colors.appColor,
         height: hp('100%'),
         width: wp('100%')
     },
@@ -119,7 +119,8 @@ export default StyleSheet.create({
         width: wp("100%"),
         justifyContent: 'center',
         left: wp('0%'),
-        top: '3.5%',
+        height: hp('100%'),
+        // top: '3.5%',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -178,15 +179,15 @@ export default StyleSheet.create({
     },
 
     ansButn: {
-        position: 'absolute',
-        top: '12%',
-        left: wp('35%'),
+        borderTopLeftRadius: 25,
+        left: '70%',
         padding: 6,
-        width: wp('30%'),
+        backgroundColor: colors.appColor,
+        width: '30%',
     },
 
     ansButnText: {
-        color: colors.textColor,
+        color: colors.bodyBackground,
         fontSize: hp('2.5%'),
         textAlign: 'center'
     },

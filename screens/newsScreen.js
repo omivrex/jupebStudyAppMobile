@@ -18,24 +18,11 @@ import {
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/newsFeedStyles.js';
+import {firestoreDB} from "../utils/firebase.config"
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import * as firebase from 'firebase';
+
 import * as network from 'expo-network';
 import { Asset } from 'expo-asset';
-
-require('firebase/firestore')
-require('firebase/storage')
-require('firebase/database')
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDzkEuiLvUrNZYdU6blvHgVoHBf2tniZO0",
-    authDomain: "jupebstudyapp.firebaseapp.com",
-    projectId: "jupebstudyapp",
-    storageBucket: "jupebstudyapp.appspot.com",
-    messagingSenderId: "316815533405",
-    appId: "1:316815533405:web:b0e02fdcf37e5c5cf8b4b4",
-    measurementId: "G-XFLZXCNJ44"
-};
 
 let newsObtained = false
 let getUpdatesCalled = false
@@ -58,13 +45,6 @@ export default function newsScreen({navigation}) {
 
     const is_token_obtained = useRef(false)
 
-    if (!firebase.apps.length) { //if firebase hasnt been initialized
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    }
-
-    const db = firebase.firestore()
-
     const getUpdates = async () => {
         try {
             const networkStat = await network.getNetworkStateAsync()
@@ -74,7 +54,7 @@ export default function newsScreen({navigation}) {
                 for (const info of news) {
                     info.data = [] //empty data array
                     try {
-                        await db.collection(info.name).get().then((snapShot)=> {
+                        await firestoreDB.collection(info.name).get().then((snapShot)=> {
                             snapShot.forEach(doc => {
                                 info.data.push(doc.data())
                             });

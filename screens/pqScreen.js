@@ -7,7 +7,7 @@ import {sendGetCollectionReq} from "../utils/pastquestions.utils"
 import {
     Text,
     View,
-    TouchableOpacity,
+    TouchableHighlight,
     SafeAreaView,
     Image,
     Alert,
@@ -19,12 +19,6 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { usePreventScreenCapture } from 'expo-screen-capture'
 import styles from '../styles/master.js';
 import pageStyles from '../styles/pqScreenStyles.js';
-// const {images} = require("../Scripts/imageUrl.js");
-
-// const sectionToDisplayImgs = {
-//     questions: [],
-//     answers: [],
-// }
 
 let renderCollection = true
 let IS_ANS_CARD_DISPLAYED = false
@@ -33,11 +27,10 @@ let token = false
 
 export default function pqScreen({navigation}) {
     usePreventScreenCapture()
-    const [pqCardState, setPqCardState] = useState()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
 
     const path = useRef('pastquestions')
-    const questionNumber = useRef(0)
+    const label = useRef('Course Name')
     const [collectionData, setcollectionData] = useState([])
 
     const IS_BLOCKED_FEATURE_CARD_DISPLAYED = useRef(false)
@@ -58,6 +51,8 @@ export default function pqScreen({navigation}) {
                 setcollectionData([...tempArray]):''
                 setqualityContButnDis({display: 'flex'})
             } else {
+                label.current = Object.keys(returnedArray[0])[0]
+                label.current = (label.current === 'courseName')?'Course Name':label.current
                 setcollectionData([... returnedArray])
             }
             renderCollection = !shouldReturnId
@@ -140,9 +135,9 @@ export default function pqScreen({navigation}) {
         <View style={pageStyles.pqCard}>
             <View style={pageStyles.pqHeader}>
                 <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').toUpperCase()}</Text>
-                <TouchableOpacity onPress = {closeAnsPage} style={pageStyles.closePqCard}>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeAnsPage} style={pageStyles.closePqCard}>
                     <Image resizeMode={'center'} source={require('../icons/back.png')}/>
-                </TouchableOpacity>
+                </TouchableHighlight>
             </View>
             <View style={pageStyles.pqCont}>
                 <MathJax
@@ -199,41 +194,46 @@ export default function pqScreen({navigation}) {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>PAST QUESTIONS</Text>
-                <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={styles.menuIcon} onPress={openMenu}>
                     <Image source={require('../icons/menuIcon.png')}/>
-                </TouchableOpacity>
+                </TouchableHighlight>
             </View>
             {renderCollection? (
                 <View style={pageStyles.listOptionsCont}>
-                    {collectionData.map((dataObj, index) => {
-                        const data = Object.values(dataObj)[0]
-                        const label = Object.keys(dataObj)[0]
-                        if (label!=='questionNumber') {
-                            return (
-                                <TouchableOpacity key={index} style={pageStyles.listOptions} onPress={()=> {
-                                    path.current += `/${data}/${data}`
-                                    preventBackHandler = true
-                                    getCollection(path.current, false)
-                                }}>
-                                    <Text style={pageStyles.listOptionsText}>{(`${label}: ${data}`).toUpperCase()}</Text>
-                                </TouchableOpacity>
-                            )
-                        } else {
-                            getCollection(path.current+`/${data}/${data}`, true, collectionData.length)
-                        }
-                    })}
+                    {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {label.current}</Text>:<></>}
+                    <FlatList
+                        data={collectionData}
+                        contentContainerStyle = {{paddingBottom: collectionData.length*100, width: '100%', height: '80%', top: '10%'}}
+                        renderItem={({item}, index)=> {
+                            const data = Object.values(item)[0]
+                            if (label.current !=='questionNumber') {
+                                return (
+                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
+                                        path.current += `/${data}/${data}`
+                                        preventBackHandler = true
+                                        getCollection(path.current, false)
+                                    }}>
+                                        <Text style={pageStyles.listOptionsText}>{(`${data}`).toUpperCase()}</Text>
+                                    </TouchableHighlight>
+                                )
+                            } else {
+                                getCollection(path.current+`/${data}/${data}`, true, collectionData.length)
+                            }
+                        }}
+                        keyExtractor = {(item, index)=> index.toString()}
+                    />
                 </View>
             ): (
                 <View style={{width: wp('100%'), top: hp('17%')}}>
                     <View style={pageStyles.pqHeader}>
                         <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').toUpperCase()}</Text>
-                        <TouchableOpacity onPress = {closePqCard} style={pageStyles.closePqCard}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closePqCard} style={pageStyles.closePqCard}>
                             <Image resizeMode={'center'} source={require('../icons/back.png')}/>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     </View>
                     <FlatList
                         data={collectionData}
-                        contentContainerStyle = {{width: '100%', height: '100%', alignContent: 'space-around'}}
+                        contentContainerStyle = {{width: '100%', height: '100%', alignContent: 'space-around', paddingBottom: collectionData.length*100}}
                         renderItem={({item}) => (
                             <View style={{
                                     borderColor: '#9c27b0',
@@ -282,16 +282,15 @@ export default function pqScreen({navigation}) {
                                     style={{width: '100%'}}
                                 
                                 />
-                                <TouchableOpacity style={pageStyles.ansButn} onPress={()=> showAns(item.data.answer)}>
+                                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns(item.data.answer)}>
                                     <Text style = {pageStyles.ansButnText}>ANSWER</Text>
-                                </TouchableOpacity>
+                                </TouchableHighlight>
                             </View>
                         )}
                         keyExtractor = {(item,index) => item?item.id:index.toString()}
                     />
                 </View>
             )}
-            {pqCardState}
             {ansCard}
             {BLOCKED_FEATURE_CARD}
             <StatusBar style="light" />

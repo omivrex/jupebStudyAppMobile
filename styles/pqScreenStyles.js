@@ -242,25 +242,32 @@ export default StyleSheet.create({
     },
 
     listOptionsCont: {
-        position: 'absolute',
-        width: wp('75%'),
-        height: hp('50%'),
-        top: hp('30%'),
-        left: wp('12.5%'),
-    
+        width: wp('100%'),
+        top: hp('17%'),
+        height: hp('100%'),
+        justifyContent: 'center',
+
+    },
+
+    labelHeading: {
+        width: '100%',
+        fontSize: hp('2.9%'),
+        textAlign: 'center',
+        backgroundColor: colors.appColor,
+        color: '#eee'
     },
     
     listOptions: {
-        borderColor: colors.appColor,
-        borderWidth: 2,
-        width: '100%',
-        height: '17%',
-        textAlign: 'center',
-        marginBottom: 25/4 +'%',
+        width: '70%',
+        left: '15%',
+        marginBottom: '10%'
     },
     
     listOptionsText: {
-        color: colors.grey,
+        backgroundColor: colors.appColor,
+        color: '#fff',
+        textAlign: 'center',
+        borderRadius: 25,
         fontSize: hp('2.3%'),
         padding: hp('2%'),
     },

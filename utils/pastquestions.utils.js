@@ -6,10 +6,11 @@ export const sendGetCollectionReq = (collectionName, returnId) => {
     return new Promise((resolve, reject) => {
         firestoreDB.collection(collectionName).get().then((snapShot)=> {
             snapShot.forEach(doc => {
-                returnId?collectionData.push({Data:doc.data(), id:doc.id}):collectionData.push(doc.data())
+                returnId?collectionData.push({data:doc.data().Data, id:doc.id}):collectionData.push(doc.data())
             });
             resolve(collectionData)
         }).catch (err => {
+            console.log(err)
             reject(err)
         })
     })

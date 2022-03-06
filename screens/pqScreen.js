@@ -27,8 +27,8 @@ import pageStyles from '../styles/pqScreenStyles.js';
 // }
 
 let renderCollection = true
-let pqCardDisplayed = false
 let IS_ANS_CARD_DISPLAYED = false
+let preventBackHandler = false
 let token = false
 
 export default function pqScreen({navigation}) {
@@ -52,9 +52,11 @@ export default function pqScreen({navigation}) {
     const getCollection = (collectionName, shouldReturnId, dataSize) => {
         sendGetCollectionReq(collectionName, shouldReturnId).then(returnedArray => {
             if (shouldReturnId){
+                preventBackHandler = true
                 tempArray.push(returnedArray[0])
                 tempArray.length===dataSize?
                 setcollectionData([...tempArray]):''
+                setqualityContButnDis({display: 'flex'})
             } else {
                 setcollectionData([... returnedArray])
             }
@@ -92,7 +94,7 @@ export default function pqScreen({navigation}) {
     function DISPLAY_BLOCKED_FEATURE_CARD() {
         console.log('called', token);
         console.log(`token is ${token}`);
-        if (!IS_BLOCKED_FEATURE_CARD_DISPLAYED.current && token === 'false') {
+        if (token === 'false') {
             setBLOCKED_FEATURE_CARD(
                 <View style={[styles.BLOCKED_FEATURE_CARD]}>
                     <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
@@ -102,17 +104,16 @@ export default function pqScreen({navigation}) {
                 </View>
             )
             closePqCard()
-            IS_BLOCKED_FEATURE_CARD_DISPLAYED.current = true
         }
     }
     
     BackHandler.addEventListener('hardwareBackPress', function () {
-        if (!pqCardDisplayed || !navigation.isFocused() || IS_BLOCKED_FEATURE_CARD_DISPLAYED.current) {
+        if (!preventBackHandler || !navigation.isFocused()) {
             return false
         } else {
             if (IS_ANS_CARD_DISPLAYED) {
                 closeAnsPage()
-            } else if (pqCardDisplayed) {
+            } else   {
                 closePqCard()
                 setBLOCKED_FEATURE_CARD()
                 IS_BLOCKED_FEATURE_CARD_DISPLAYED.current = false
@@ -121,70 +122,16 @@ export default function pqScreen({navigation}) {
         }
     });
 
-    let questNo = questionDisplayed
-    function makeGlobal(data) {
-       questNo = data.questNo
-        getToken()
-        console.log(pqPathObj.current.course);
-        if (pqPathObj.current.course == 'maths' || pqPathObj.current.course == 'physics') { //give user access to only 5 questions when physics or mamths is selected 
-            if (questNo >= 5) {
-                DISPLAY_BLOCKED_FEATURE_CARD()
-            }
-        } else if (pqPathObj.current.course != '') { //else display BLOCKED_FEATURE CARD
-            DISPLAY_BLOCKED_FEATURE_CARD()
-        }
-       if (data.renderCollection === true && sectionToDisplayImgs.questions.length != 0) {
-        pqCardRender()
-        renderCollection = false // this to prevent multiple renders
-        setqualityContButnDis({display: 'flex'})
-       }
-    }
-    
-    const [questionDisplayed, setquestionDisplayed] = useState(0)
-
-    const showPrev = () => {
-        if (collectionData[val-1]) {
-            val -=1
-        } else {
-            Alert.alert('', 'You Are At The Beginning Of This Section!')
-        }
-        setquestionDisplayed(val)
-        console.log(collectionData)
-        displayPqCard(collectionData[val].Data)
-
-    }
-    
-    let val = questionDisplayed
-    function showNext() {
-        if (collectionData[val+1]) {
-            val +=1
-        } else {
-            Alert.alert('', 'You Have Reached The End Of This Section!')
-        }
-        setquestionDisplayed(val)
-        console.log(collectionData)
-        displayPqCard(collectionData[val].Data)
-    }
-
-    const displayPqCard = data=> {
-        
-        setPqCardState(
-            
-        )
-        pqCardDisplayed = true
-
-    }
-    
 
     const closePqCard = () => {
         setqualityContButnDis({display: 'none'})
+        const newPath = path.current.split('/')
+        newPath.pop()
+        newPath.pop()
+        preventBackHandler = !(newPath.length<2)
+        path.current = newPath.join('/')
         renderCollection = true
-        setcollectionData([])
-        setPqCardState()
         getCollection(path.current)
-
-        questNo = 0
-        setquestionDisplayed(questNo)
     }
 
     const [ansCard, setansCard] = useState()
@@ -200,10 +147,10 @@ export default function pqScreen({navigation}) {
             <View style={pageStyles.pqCont}>
                 <MathJax
                     html={
-                        `
+                        `   
                             <body>
-                                <div style="font-size: 1.7em">
-                                    ${data}
+                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                    ${data.replace('max-width: 180px;', 'max-width: 90vw;')}
                                 </div> 
                             </body>
                         
@@ -265,6 +212,7 @@ export default function pqScreen({navigation}) {
                             return (
                                 <TouchableOpacity key={index} style={pageStyles.listOptions} onPress={()=> {
                                     path.current += `/${data}/${data}`
+                                    preventBackHandler = true
                                     getCollection(path.current, false)
                                 }}>
                                     <Text style={pageStyles.listOptionsText}>{(`${label}: ${data}`).toUpperCase()}</Text>
@@ -277,6 +225,12 @@ export default function pqScreen({navigation}) {
                 </View>
             ): (
                 <View style={{width: wp('100%'), top: hp('17%')}}>
+                    <View style={pageStyles.pqHeader}>
+                        <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').toUpperCase()}</Text>
+                        <TouchableOpacity onPress = {closePqCard} style={pageStyles.closePqCard}>
+                            <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        </TouchableOpacity>
+                    </View>
                     <FlatList
                         data={collectionData}
                         contentContainerStyle = {{width: '100%', height: '100%', alignContent: 'space-around'}}
@@ -294,7 +248,7 @@ export default function pqScreen({navigation}) {
                                         `
                                             <body style="width: 100%;">
                                                 <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
-                                                    ${item.data.question}
+                                                    ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                 </div> 
                                             </body>
                                         
@@ -333,7 +287,7 @@ export default function pqScreen({navigation}) {
                                 </TouchableOpacity>
                             </View>
                         )}
-                        keyExtractor = {item => item.id}
+                        keyExtractor = {(item,index) => item?item.id:index.toString()}
                     />
                 </View>
             )}

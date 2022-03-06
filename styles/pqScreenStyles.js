@@ -96,7 +96,7 @@ export default StyleSheet.create({
 
     pqHeaderText: {
         fontSize: hp('2%'),
-        width: wp('100%'),
+        width: wp('90%'),
         color: colors.textColor,
         textAlign: 'center',
         alignSelf: 'center',

@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MathJax from 'react-native-mathjax';
 import {sendGetCollectionReq} from "../utils/pastquestions.utils"
+import LoadingComponent from "../components/loading.component"
 
 import {
     Text,
@@ -10,7 +11,6 @@ import {
     TouchableHighlight,
     SafeAreaView,
     Image,
-    Alert,
     Linking,
     FlatList,
     BackHandler} from 'react-native';
@@ -41,23 +41,35 @@ export default function pqScreen({navigation}) {
         getCollection(path.current)
     }, [])
     
-    const tempArray = []
-    const getCollection = (collectionName, shouldReturnId, dataSize) => {
-        sendGetCollectionReq(collectionName, shouldReturnId).then(returnedArray => {
-            if (shouldReturnId){
-                preventBackHandler = true
-                tempArray.push(returnedArray[0])
-                tempArray.length===dataSize?
-                setcollectionData([...tempArray]):''
-                setqualityContButnDis({display: 'flex'})
+    const [loading, setloading] = useState()
+    const getCollection = (collectionName, getQuestionAndAnswers) => {
+        setloading(
+            <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
+                <LoadingComponent />
+            </View>
+        )
+        sendGetCollectionReq(collectionName).then(returnedArray => {
+            label.current = Object.keys(returnedArray[0])[0]
+            if (label.current === 'questionNumber') {
+                const tempArray = []
+                returnedArray.forEach((element, index) => {
+                    sendGetCollectionReq(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
+                        tempArray.push(questionData);
+                        console.log('tempArray', tempArray.length===returnedArray.length)
+                        if (tempArray.length===returnedArray.length) {
+                            preventBackHandler = true
+                            renderCollection = false
+                            setcollectionData([...tempArray])
+                            setloading()
+                        }
+                    })
+                })
             } else {
-                label.current = Object.keys(returnedArray[0])[0]
                 label.current = (label.current === 'courseName')?'Course Name':label.current
                 setcollectionData([... returnedArray])
+                renderCollection = true
+                setloading()
             }
-            renderCollection = !shouldReturnId
-            // console.log('collectionData', collectionData)
-            // Alert.alert('Data Loaded','')
         })
     }
     
@@ -216,8 +228,6 @@ export default function pqScreen({navigation}) {
                                         <Text style={pageStyles.listOptionsText}>{(`${data}`).toUpperCase()}</Text>
                                     </TouchableHighlight>
                                 )
-                            } else {
-                                getCollection(path.current+`/${data}/${data}`, true, collectionData.length)
                             }
                         }}
                         keyExtractor = {(item, index)=> index.toString()}
@@ -293,6 +303,7 @@ export default function pqScreen({navigation}) {
             )}
             {ansCard}
             {BLOCKED_FEATURE_CARD}
+            {loading}
             <StatusBar style="light" />
         </SafeAreaView>
     )

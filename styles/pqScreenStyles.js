@@ -92,6 +92,7 @@ export default StyleSheet.create({
         height: hp('7.3%'),
         backgroundColor: colors.appColor,
         position: 'relative',
+        marginBottom: 5,
     },
 
     pqHeaderText: {
@@ -112,17 +113,22 @@ export default StyleSheet.create({
         height: hp('82%'),
     },
 
-    pqCont: {
+    answerCard: {
         flex: 1,
         position: 'relative',
         alignItems: 'center',
-        width: wp("100%"),
         justifyContent: 'center',
+        width: wp("100%"),
         left: wp('0%'),
         height: hp('100%'),
-        // top: '3.5%',
-        alignItems: 'center',
-        justifyContent: 'center',
+        top: '3.5%',
+    },
+
+    correctAnswer: {
+        color: colors.appColor,
+        fontSize: hp('3%'),
+        backgroundColor: 'red',
+        width: '100%'
     },
 
     vetScrol: {

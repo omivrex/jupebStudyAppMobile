@@ -29,7 +29,7 @@
     "assetBundlePatterns": [
       "./icons/*.png",
       "./icons/*.jpg",
-      "./PastQuestions/**/*.jpg"
+      "./assets/*.json"
     ],
     "ios": {
       "supportsTablet": true,

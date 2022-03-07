@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as firebase from 'firebase';
 import * as network from 'expo-network';
 import styles from './styles/master.js';
+import {firestoreDB, database, auth} from "./utils/firebase.config"
+
 import colors from './styles/colors.js'
 import {
   Text,
@@ -20,6 +22,7 @@ import {
   Linking,
 } from 'react-native';
 
+const users = database.ref('users')
 const userData = {
   email: '',
   password: '',
@@ -28,17 +31,6 @@ const userData = {
   loggedIn: true,
 }
 
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDzkEuiLvUrNZYdU6blvHgVoHBf2tniZO0",
-  authDomain: "jupebstudyapp.firebaseapp.com",
-  projectId: "jupebstudyapp",
-  storageBucket: "jupebstudyapp.appspot.com",
-  messagingSenderId: "316815533405",
-  appId: "1:316815533405:web:b0e02fdcf37e5c5cf8b4b4",
-  databaseURL: 'https://jupebstudyapp-default-rtdb.firebaseio.com/',
-  measurementId: "G-XFLZXCNJ44"
-};
 
 require('firebase/firestore')
 require('firebase/database')
@@ -63,10 +55,6 @@ export default function App({navigation}) {
   const [updateFeatureCard, setupdateFeatureCard] = useState()
   const [message, setmessage] = useState()
   const [navScreen, setnavScreen] = useState()
-  const database =  firebase.database()
-  const auth  = firebase.auth()
-  const firestoreDB = firebase.firestore()
-  const users = database.ref('users')
   
   BackHandler.addEventListener('hardwareBackPress', function () {
     if (!isCard_displayed) { //if a card is not beeing displayed and the main screen isnt in focus
@@ -98,7 +86,7 @@ export default function App({navigation}) {
     } catch (err) {
       console.log(err);
     }
-    
+    // AsyncStorage.removeItem(('vpa'))
     try {
       let token = await AsyncStorage.getItem('vpa')
       if (token!=null) {
@@ -185,7 +173,7 @@ export default function App({navigation}) {
       try {
         const networkStat = await network.getNetworkStateAsync()
         if (networkStat.isInternetReachable) {
-          await auth.signInWithEmailAndPassword(userData.email, userData.password).then(
+          await auth.signInWithEmailAndPassword(userData.email.replace(/ /g,''), userData.password).then(
             () => {
               auth.onAuthStateChanged(user => {
                 if (user) {

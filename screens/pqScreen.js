@@ -19,6 +19,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { usePreventScreenCapture } from 'expo-screen-capture'
 import styles from '../styles/master.js';
 import pageStyles from '../styles/pqScreenStyles.js';
+import colors from '../styles/colors';
 
 let renderCollection = true
 let IS_ANS_CARD_DISPLAYED = false
@@ -135,6 +136,7 @@ export default function pqScreen({navigation}) {
         const newPath = path.current.split('/')
         newPath.pop()
         newPath.pop()
+        console.log('preventBackHandler', newPath.length<2)
         preventBackHandler = !(newPath.length<2)
         path.current = newPath.join('/')
         renderCollection = true
@@ -151,13 +153,23 @@ export default function pqScreen({navigation}) {
                     <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                 </TouchableHighlight>
             </View>
-            <View style={pageStyles.pqCont}>
+            <View style={pageStyles.answerCard}>
+                <Text style={{
+                    color: '#eee',
+                    fontSize: hp('3%'),
+                    backgroundColor: colors.appColor,
+                    width: '100%',
+                    height: '10%',
+                    paddingTop: '5%',
+                    borderBottomColor: colors.appColor,
+                    justifyContent: 'center'
+                }}>Correct Answer: {data.correctAnswer}</Text>
                 <MathJax
                     html={
                         `   
                             <body>
                                 <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
-                                    ${data.replace('max-width: 180px;', 'max-width: 90vw;')}
+                                    ${data.answer.replace('max-width: 180px;', 'max-width: 90vw;')}
                                 </div> 
                             </body>
                         
@@ -292,7 +304,7 @@ export default function pqScreen({navigation}) {
                                     style={{width: '100%'}}
                                 
                                 />
-                                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns(item.data.answer)}>
+                                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctAnswer})}>
                                     <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                 </TouchableHighlight>
                             </View>

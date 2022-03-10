@@ -3,7 +3,7 @@ npm-debug.*
 *.jks
 *.p8
 *.p12
-*PastQuestions/.jpg
+PastQuestions
 *.key
 *.pub
 *.mobileprovision
@@ -11,6 +11,6 @@ npm-debug.*
 web-build/
 stage7/.expo/README.md
 learnxtraKey\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\233[D\357\200\226
-
+learnxtraKey[D[D[D[D[D[D[D[D[D[D[D[D.pub
 .DS_Store
 node_modules

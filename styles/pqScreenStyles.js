@@ -80,11 +80,9 @@ export default StyleSheet.create({
     },
 
     pqCard: {
-        position: 'absolute',
-        top: hp('15%'),
-        backgroundColor: colors.appColor,
-        height: hp('100%'),
-        width: wp('100%')
+        top: hp('70%'),
+        height: hp('30%'),
+        width: wp('100%'),
     },
 
     pqHeader: {
@@ -113,22 +111,52 @@ export default StyleSheet.create({
         height: hp('82%'),
     },
 
-    answerCard: {
-        flex: 1,
-        position: 'relative',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: wp("100%"),
-        left: wp('0%'),
-        height: hp('100%'),
-        top: '3.5%',
+    answerCardWrapper: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: hp('24%'),
+        backgroundColor: 'rgba(255, 255, 255, 0.5)'
     },
 
-    correctAnswer: {
-        color: colors.appColor,
+    answerCard: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        width: '100%',
+        backgroundColor: colors.bodyBackground,
+    },
+    
+    answerCardObj: {
+        top: '60%',
+        borderTopLeftRadius: 55,
+        borderTopRightRadius: 55,
+    },
+
+    correctAnswerComponent: {
+        color: '#eee',
         fontSize: hp('3%'),
-        backgroundColor: 'red',
-        width: '100%'
+        backgroundColor: colors.appColor,
+        width: '50%',
+        flex: 0.1,
+        textAlign: 'center',
+        justifyContent: 'center',
+        paddingTop: '2%',
+    },
+
+    fullSoln: {
+        backgroundColor: colors.orange,
+        width: '50%',
+        borderRadius: 25,
+        flex: 0.1,
+        marginTop: '5%'
+    },
+    
+    fullSolnText: {
+        color: '#eee',
+        width: '100%',
+        textAlign: 'center',
+        fontSize: hp('2.5%'),
     },
 
     vetScrol: {

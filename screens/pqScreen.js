@@ -11,7 +11,7 @@ import {
     TouchableHighlight,
     SafeAreaView,
     Image,
-    Linking,
+    Alert,
     FlatList,
     BackHandler} from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -43,32 +43,37 @@ export default function pqScreen({navigation}) {
     }, [])
     
     const [loading, setloading] = useState()
-    const getCollection = (collectionName, getQuestionAndAnswers) => {
+    const getCollection = (collectionName) => {
         setloading(
             <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
                 <LoadingComponent />
             </View>
         )
         sendGetCollectionReq(collectionName).then(returnedArray => {
-            label.current = Object.keys(returnedArray[0])[0]
-            if (label.current === 'questionNumber') {
-                const tempArray = []
-                returnedArray.forEach((element, index) => {
-                    sendGetCollectionReq(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
-                        tempArray.push(questionData);
-                        console.log('tempArray', tempArray.length===returnedArray.length)
-                        if (tempArray.length===returnedArray.length) {
-                            preventBackHandler = true
-                            renderCollection = false
-                            setcollectionData([...tempArray])
-                            setloading()
-                        }
+            if (returnedArray.length>0) {
+                label.current = Object.keys(returnedArray[0])[0]
+                if (label.current === 'questionNumber') {
+                    const tempArray = []
+                    returnedArray.forEach((element, index) => {
+                        sendGetCollectionReq(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
+                            tempArray.push(questionData);
+                            console.log('tempArray', tempArray.length===returnedArray.length)
+                            if (tempArray.length===returnedArray.length) {
+                                preventBackHandler = true
+                                renderCollection = false
+                                setcollectionData([...tempArray])
+                                setloading()
+                            }
+                        })
                     })
-                })
+                } else {
+                    label.current = (label.current === 'courseName')?'Course Name':label.current
+                    setcollectionData([... returnedArray])
+                    renderCollection = true
+                    setloading()
+                }
             } else {
-                label.current = (label.current === 'courseName')?'Course Name':label.current
-                setcollectionData([... returnedArray])
-                renderCollection = true
+                Alert.alert('Section is Empty', '')
                 setloading()
             }
         })
@@ -144,32 +149,38 @@ export default function pqScreen({navigation}) {
     }
 
     const [ansCard, setansCard] = useState()
+    const [useObjStyles, setuseObjStyles] = useState(true)
     const showAns = data => {
       setansCard(
-        <View style={pageStyles.pqCard}>
-            <View style={pageStyles.pqHeader}>
-                <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').toUpperCase()}</Text>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeAnsPage} style={pageStyles.closePqCard}>
-                    <Image resizeMode={'center'} source={require('../icons/back.png')}/>
-                </TouchableHighlight>
-            </View>
+        <View style={pageStyles.answerCardWrapper}>
             <View style={pageStyles.answerCard}>
-                <Text style={{
-                    color: '#eee',
-                    fontSize: hp('3%'),
-                    backgroundColor: colors.appColor,
-                    width: '100%',
-                    height: '10%',
-                    paddingTop: '5%',
-                    borderBottomColor: colors.appColor,
-                    justifyContent: 'center'
-                }}>Correct Answer: {data.correctAnswer}</Text>
+                {data&&data.correctAnswer? 
+                    <>
+                        <Text style={pageStyles.correctAnswerComponent}>Correct Answer: {data?data.correctAnswer:''}</Text>
+                        {/* <TouchableHighlight style={pageStyles.fullSoln} onPress={() =>{
+                            console.log('called...')
+                            setuseObjStyles(false)
+                            console.log(useObjStyles)
+                        }} underlayColor='rgba(52, 52, 52, 0)'>
+                            <Text style={pageStyles.fullSolnText}>Show Full Solution</Text>    
+                        </TouchableHighlight> */}
+                    </>
+                    :
+                    <></>
+                }
+                
                 <MathJax
                     html={
                         `   
-                            <body>
-                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
-                                    ${data.answer.replace('max-width: 180px;', 'max-width: 90vw;')}
+                            <body style="width: 100%;">
+                                <div style="font-size: 1.3em;
+                                    font-family: Roboto, sans-serif, san Francisco;
+                                    overflow-y: auto;
+                                    width: 90%;
+                                    margin: auto;
+                                    min-height: 50rem;
+                                ">
+                                    ${data&&data.answer?data.answer.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                 </div> 
                             </body>
                         
@@ -200,7 +211,7 @@ export default function pqScreen({navigation}) {
                         },
 
                     }}
-                    style={{width: '100%', height:'100%'}}
+                    style={{width: '98%', flex:2, marginTop: '5%', left: '1%'}}
                 
                 />
             </View>
@@ -227,7 +238,7 @@ export default function pqScreen({navigation}) {
                     {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {label.current}</Text>:<></>}
                     <FlatList
                         data={collectionData}
-                        contentContainerStyle = {{paddingBottom: collectionData.length*100, width: '100%', height: '80%', top: '10%'}}
+                        contentContainerStyle = {{paddingBottom: collectionData.length*100, width: '100%', top: '10%'}}
                         renderItem={({item}, index)=> {
                             const data = Object.values(item)[0]
                             if (label.current !=='questionNumber') {
@@ -248,67 +259,69 @@ export default function pqScreen({navigation}) {
             ): (
                 <View style={{width: wp('100%'), top: hp('17%')}}>
                     <View style={pageStyles.pqHeader}>
-                        <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').toUpperCase()}</Text>
-                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closePqCard} style={pageStyles.closePqCard}>
-                            <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()}</Text>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {!IS_ANS_CARD_DISPLAYED?closePqCard:closeAnsPage} style={pageStyles.closePqCard}>
+                            <Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>
                         </TouchableHighlight>
                     </View>
                     <FlatList
                         data={collectionData}
-                        contentContainerStyle = {{width: '100%', height: '100%', alignContent: 'space-around', paddingBottom: collectionData.length*100}}
-                        renderItem={({item}) => (
-                            <View style={{
-                                    borderColor: '#9c27b0',
-                                    borderBottomWidth: 2,
-                                    width: '90%',
-                                    marginVertical: hp('3%'),
-                                    left: '5%',
-                                    justifyContent: 'center'
-                                }}>
-                                <MathJax
-                                    html={
-                                        `
-                                            <body style="width: 100%;">
-                                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
-                                                    ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
-                                                </div> 
-                                            </body>
-                                        
-                                        `
-                                    }
-                                    mathJaxOptions={{
-                                        messageStyle: "none",
-                                        extensions: ["tex2jax.js"],
-                                        jax: ["input/TeX", "output/HTML-CSS"],
-                                        tex2jax: {
-                                            inlineMath: [
-                                                ["$", "$"],
-                                                ["\\(", "\\)"],
-                                            ],
-                                            displayMath: [
-                                                ["$$", "$$"],
-                                                ["\\[", "\\]"],
-                                            ],
-                                            processEscapes: true,
-                                        },
-                                        TeX: {
-                                            extensions: [
-                                                "AMSmath.js",
-                                                "AMSsymbols.js",
-                                                "noErrors.js",
-                                                "noUndefined.js",
-                                            ],
-                                        },
+                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: collectionData.length*100}}
+                        renderItem={({item}) => {
+                            return (
+                                <View style={{
+                                        borderColor: '#9c27b0',
+                                        borderBottomWidth: 2,
+                                        width: '90%',
+                                        marginVertical: hp('3%'),
+                                        left: '5%',
+                                        justifyContent: 'center'
+                                    }}>
+                                    <MathJax
+                                        html={
+                                            `
+                                                <body style="width: 100%;">
+                                                    <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                        ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
+                                                    </div> 
+                                                </body>
+                                            
+                                            `
+                                        }
+                                        mathJaxOptions={{
+                                            messageStyle: "none",
+                                            extensions: ["tex2jax.js"],
+                                            jax: ["input/TeX", "output/HTML-CSS"],
+                                            tex2jax: {
+                                                inlineMath: [
+                                                    ["$", "$"],
+                                                    ["\\(", "\\)"],
+                                                ],
+                                                displayMath: [
+                                                    ["$$", "$$"],
+                                                    ["\\[", "\\]"],
+                                                ],
+                                                processEscapes: true,
+                                            },
+                                            TeX: {
+                                                extensions: [
+                                                    "AMSmath.js",
+                                                    "AMSsymbols.js",
+                                                    "noErrors.js",
+                                                    "noUndefined.js",
+                                                ],
+                                            },
 
-                                    }}
-                                    style={{width: '100%'}}
-                                
-                                />
-                                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctAnswer})}>
-                                    <Text style = {pageStyles.ansButnText}>ANSWER</Text>
-                                </TouchableHighlight>
-                            </View>
-                        )}
+                                        }}
+                                        style={{width: '100%'}}
+                                    
+                                    />
+                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})}>
+                                        <Text style = {pageStyles.ansButnText}>ANSWER</Text>
+                                    </TouchableHighlight>
+                                </View>
+                            )
+                        }}
                         keyExtractor = {(item,index) => item?item.id:index.toString()}
                     />
                 </View>

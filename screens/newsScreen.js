@@ -6,7 +6,7 @@ import {
     Text,
     View,
     FlatList, 
-    TouchableOpacity,
+    TouchableHighlight,
     SafeAreaView,
     ScrollView,
     Image,
@@ -408,37 +408,47 @@ export default function newsScreen({navigation}) {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>NEWS {'&'} RESOURCES</Text>
-                <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={styles.menuIcon} onPress={openMenu}>
                     <Image source={require('../icons/menuIcon.png')}/>
-                </TouchableOpacity>
+                </TouchableHighlight>
             </View>
-            <TouchableOpacity onPress = {() => {
+            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {() => {
                 newsObtained = false
                 getUpdates()
             }} style={pageStyles.refreshButn}>
                 <Text style={pageStyles.refreshButnText}>Refresh</Text>
-            </TouchableOpacity>
+            </TouchableHighlight>
             <ScrollView style={pageStyles.tableOfContents}>
-                <TouchableOpacity style={pageStyles.content} onPress={displayAboutCard}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/about.png')}/>
-                    <Text style={pageStyles.contentText}>ABOUT JUPEB</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.content} onPress={displayGuideCard}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/guide.png')}/>
-                    <Text style={pageStyles.contentText}>PROGRAMME GUIDE</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.content} onPress={displaySyllabuls}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/syllables.png')}/>
-                    <Text style={pageStyles.contentText}>JUPEB SYLLABUS</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.content} onPress={displayMatCard}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/materials.png')}/>
-                    <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.content} onPress={display_resources_card}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/resources.png')}/>
-                    <Text style={pageStyles.contentText}>RESOURCES</Text>
-                </TouchableOpacity>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displayAboutCard}>
+                    <View>
+                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/about.png')}/>
+                        <Text style={pageStyles.contentText}>ABOUT JUPEB</Text>
+                    </View>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displayGuideCard}>
+                    <View>
+                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/guide.png')}/>
+                        <Text style={pageStyles.contentText}>PROGRAMME GUIDE</Text>
+                    </View>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displaySyllabuls}>
+                    <View>
+                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/syllables.png')}/>
+                        <Text style={pageStyles.contentText}>JUPEB SYLLABUS</Text>
+                    </View>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displayMatCard}>
+                    <View>
+                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/materials.png')}/>
+                        <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
+                    </View>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={display_resources_card}>
+                    <View>
+                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/resources.png')}/>
+                        <Text style={pageStyles.contentText}>RESOURCES</Text>
+                    </View>
+                </TouchableHighlight>
                 <View style={{height: '20%', marginTop: '20%'}}></View>
             </ScrollView>
             {aboutCard}

@@ -172,16 +172,16 @@ export default function pqScreen({navigation}) {
                 <MathJax
                     html={
                         `   
-                            <body style="width: 100%;">
+                            <body style="width: 100%; overflow-y: auto;">
                                 <div style="font-size: 1.3em;
                                     font-family: Roboto, sans-serif, san Francisco;
-                                    overflow-y: auto;
                                     width: 90%;
                                     margin: auto;
                                     min-height: 50rem;
                                 ">
                                     ${data&&data.answer?data.answer.replace('max-width: 180px;', 'max-width: 90vw;'):''}
-                                </div> 
+                                </div>
+                                <div style="height: 50%"></div>
                             </body>
                         
                         `

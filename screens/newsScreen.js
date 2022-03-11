@@ -1,6 +1,5 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WebView } from 'react-native-webview';
 import PDFReader from 'rn-pdf-reader-js'
 import {
@@ -18,14 +17,15 @@ import {
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/newsFeedStyles.js';
-import {firestoreDB} from "../utils/firebase.config"
+
+import LoadingComponent from "../components/loading.component"
+import { getSectionData, getToken } from "../utils/news.utils";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import * as network from 'expo-network';
 import { Asset } from 'expo-asset';
 
 let newsObtained = false
-let getUpdatesCalled = false
 
 const news = [
     {
@@ -42,29 +42,28 @@ const news = [
 let card_displayed = false
 let token
 export default function newsScreen({navigation}) {
-
+    const [loading, setloading] = useState()
     const is_token_obtained = useRef(false)
+    useEffect(() => {
+      getUpdates()
+    }, [])
+    
 
     const getUpdates = async () => {
         try {
             const networkStat = await network.getNetworkStateAsync()
             if (networkStat.isInternetReachable && !newsObtained && !card_displayed) { //if internet is reachable and new isn't updated and no card is displayed
+                setloading(
+                    <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
+                        <LoadingComponent />
+                    </View>
+                )
                 
-                Alert.alert('','Updating News...', [])
-                for (const info of news) {
-                    info.data = [] //empty data array
-                    try {
-                        await firestoreDB.collection(info.name).get().then((snapShot)=> {
-                            snapShot.forEach(doc => {
-                                info.data.push(doc.data())
-                            });
-                        })
-                    } catch (err) { //this could happen because internet is reachable but user does not have data thus database will not be reachable
-                        alert('we are having trouble reaching our server. Are you offline?')
-                        console.error();
-                    }
+                for (const section of news) {
+                    section.data = [] //empty data array
+                    getSectionData(section.name, section.data)
                 }
-                Alert.alert('', 'News Updated...')
+                setloading()
                 newsObtained = true
             }
         } catch (error) { //errors usually show up because there's no network (can not get network state)
@@ -73,29 +72,7 @@ export default function newsScreen({navigation}) {
         }
     }
             
-    const callGetUpdates =() => {
-        if (!getUpdatesCalled) { //this to prevent it from calling getUpdates multiple times when states are changing
-            getUpdates()
-            getUpdatesCalled = true
-        }
-    }
-
-    const getToken = async () => {
-        if (!is_token_obtained.current) {
-            try {
-                token = await AsyncStorage.getItem('vpa')
-                if (token === 'true') {
-                    return token
-                } else{
-                    DISPLAY_BLOCKED_FEATURE_CARD()
-                    return false
-                }
-            } catch (err) {
-                console.log(err);
-            }
-            is_token_obtained.current = true
-        }
-    }
+    
     
     const is_BLOCKED_CARD_DISPLAYED = useRef(false)
     function DISPLAY_BLOCKED_FEATURE_CARD() {
@@ -122,7 +99,6 @@ export default function newsScreen({navigation}) {
             setsyllabulsCard()
             setmatCard()
             setRESOURCES_CARD()
-            set_class_And_Exam_Card()
             card_displayed = false
             return true;
         }
@@ -135,48 +111,61 @@ export default function newsScreen({navigation}) {
     const [guideCard, setguideCard] = useState()
     const [matCard, setmatCard] = useState()
     const [RESOURCES_CARD, setRESOURCES_CARD] = useState()
-    const [class_And_Exam_Card, set_class_And_Exam_Card] = useState()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
 
     function displayAboutCard() {
         setaboutCard(
             <View style={pageStyles.card}>
-                <Text style={pageStyles.header}>ABOUT JUPEB</Text>
-                <ScrollView style={{height: hp('90%'), marginBottom: 50}}>
-                    <ScrollView horizontal={true}>
-                        <Text style={pageStyles.StaticInfo}>
-                            The Joint Universities Preliminary Examinations Board                   {'\n'}
-                            (JUPEB) is a national examinations body approved by                     {'\n'}
-                            the Federal Government of Nigeria in December 2013.                     {'\n'}
-                            It was formally established in April 2014 by a                          {'\n'}
-                            consortium of ten (10) partnering universities                          {'\n'}
-                            led by the University of Lagos.                                         {'\n'}
-                            {'\n'}
-                            The board has the responsibility of                                     {'\n'}
-                            conducting common and standard examinations                             {'\n'}
-                            for the candidates, who have been exposed to a                          {'\n'}
-                            minimum of one-year approved courses in the different                   {'\n'}
-                            Universities's Foundation and/or Diploma Programmes                     {'\n'}
-                            and are seeking Direct Entry admissions into                            {'\n'}
-                            University courses                                                      {'\n'}
-                            at the 200 Level in Nigerian and partnering                             {'\n'}
-                            foreign universities.                                                   {'\n'}
-                            {'\n'}
-                            The first of such examinations was conducted in                         {'\n'}
-                            August 2014 and successful                                              {'\n'}
-                            candidates were admitted into 200 Level by                              {'\n'}
-                            JAMB based on                                                           {'\n'}
-                            recommendations from the universities.                                  {'\n'}
-                            With effect from 2015, JUPEB Examinations will                          {'\n'}
-                            hold in June annually.                                                  {'\n'}
-                            {'\n'}
-                            Source Jupeb Official Site.                                             {'\n'}
-                            <Text style={{color: 'blue'}} onPress={()=> {Linking.openURL('https://jupeb.edu.ng/about_us/about_jupeb')}}>
-                                https://jupeb.edu.ng/about_us/about_jupeb
-                            </Text>
-                        </Text>
-                    </ScrollView>
-                </ScrollView>
+                <WebView 
+                    originWhitelist={['*']}
+                    source={{
+                        html: `
+                            <body style="width: 100%;">
+                                <div style="
+                                    font-size: 1.6em;
+                                    font-family: Roboto, sans-serif, san Francisco;
+                                    width: 90%;
+                                    margin: auto;
+                                    min-height: 50rem;
+                                ">
+                                    <h1 style="text-align: center; overflow-y: auto;">ABOUT JUPEB</h1>
+                                    <p>
+                                        The Joint Universities Preliminary Examinations Board
+                                        (JUPEB) is a national examinations body approved by  
+                                        the Federal Government of Nigeria in December 2013.  
+                                        It was formally established in April 2014 by a       
+                                        consortium of ten (10) partnering universities       
+                                        led by the University of Lagos.   
+                                    </p>
+                                    <p>
+                                        The board has the responsibility of                  
+                                        conducting common and standard examinations          
+                                        for the candidates, who have been exposed to a       
+                                        minimum of one-year approved courses in the different
+                                        Universities's Foundation and/or Diploma Programmes  
+                                        and are seeking Direct Entry admissions into         
+                                        University courses                                   
+                                        at the 200 Level in Nigerian and partnering          
+                                        foreign universities.   
+                                    </p>
+                                    <p>
+                                        The first of such examinations was conducted in
+                                        August 2014 and successful                     
+                                        candidates were admitted into 200 Level by     
+                                        JAMB based on                                  
+                                        recommendations from the universities.         
+                                        With effect from 2015, JUPEB Examinations will 
+                                        hold in June annually.                         
+                                        
+                                        Source Jupeb Official Site.
+                                        <a href="https://jupeb.edu.ng/about_us/about_jupeb">https://jupeb.edu.ng/about_us/about_jupeb</a>
+                                    </p>
+                                </div>
+                                <div style="height: 50%"></div>
+                            </body>
+                        `
+                    }}
+                />
             </View>
         )
         card_displayed = true
@@ -185,111 +174,121 @@ export default function newsScreen({navigation}) {
     function displayGuideCard() {
         setguideCard(
             <View style={pageStyles.card}>
-                <ScrollView style={{height: hp('90%'), marginBottom: 50}}>
-                    <Text style={pageStyles.header}>ADMISSION REQUIRMENTS</Text>
-                    <ScrollView horizontal={true}>
-                        <Text style={pageStyles.StaticInfo}>
-                            To obtain JUPEB registration form,                                       {'\n'}
-                            candidates are expected to possess at least                              {'\n'}
-                            five credit passes in their O/level results.                             {'\n'}
-                            Applicants without credit pass in either English                         {'\n'}
-                            language and Mathematics can also apply.                                 {'\n'}
-                            However, they are expected to register for the                           {'\n'}
-                            either of the two.                                                       {'\n'}
-                            {'\n'}
-                            Applicants with AWAITING RESULTS can also apply                          {'\n'}
-                            but their O’level result must be available before                        {'\n'}
-                            University admission as it will be required by their                     {'\n'}
-                            preferred university.
-                        </Text>
-                    </ScrollView>
+                <WebView 
+                    originWhitelist={['*']}
+                    source={{
+                        html: `
+                            <body style="width: 100%; overflow-y: auto;">
+                                <div style="
+                                    font-size: 1.6em;
+                                    font-family: Roboto, sans-serif, san Francisco;
+                                    width: 90%;
+                                    margin: auto;
+                                    min-height: 50rem;
+                                    margin-bottom: 2rem;
+                                ">
+                                    <h1 style="text-align: center;">ADMISSION REQUIRMENTS</h1>
+                                    <p>
+                                        To obtain JUPEB registration form,                                       
+                                        candidates are expected to possess at least                              
+                                        five credit passes in their O/level results.                             
+                                        Applicants without credit pass in either English                         
+                                        language and Mathematics can also apply.                                 
+                                        However, they are expected to register for the                           
+                                        either of the two.                                                       
+                                        
+                                        Applicants with AWAITING RESULTS can also apply                          
+                                        but their O’level result must be available before                        
+                                        University admission as it will be required by their                     
+                                        preferred university.
+                                    </p>
 
-                    <Text style={pageStyles.header}>AFFILIATE UNIVERSITIES</Text>
-                    <ScrollView horizontal={true}>
-                        <Text style={[pageStyles.StaticInfo, {left: wp('5%')}]}>
-                            Abia State University, Abia State. 
-                            {'\n'}
-                            Alex Ekwueme University, Ndufu-Alike, Ikwo, Ebonyi State.                       
-                            {'\n'}
-                            Caritas Universtiy, Enugu State. 
-                            {'\n'}
-                            Chukwuemeka Odumegwu Ojukwu University, Uli, Anambra State.                           {'\n'}     
-                            Clifford University Owerrinta, Aba, Abia State. 
-                            {'\n'}
-                            Eastern Palm University, Ogboko, Imo State.                                 
-                            {'\n'}
-                            Ebonyi State University, Ebonyi State. 
-                            {'\n'}
-                            Enugu State University of Science and Technology, Enugu State.                          
-                            {'\n'}
-                            Evangel University, Akaeze, Ebonyi State. 
-                            {'\n'}
-                            Federal University of Technology, Owerri, Imo State.                                    
-                            {'\n'}
-                            Godfrey Okoye University, Enugu State. 
-                            {'\n'}
-                            Imo State University, Owerri, Imo State. 
-                            {'\n'}
-                            Nnamdi Azikiwe University, Awka, Anambra State. 
-                            {'\n'}
-                            Paul University, Awka, Anambra State. 
-                            {'\n'}
-                            Renaissance University, Ugbawka, Enugu State. 
-                            {'\n'}
-                            University of Nigeria, Nsukka, Enugu State.
-                            {'\n'}
-                            Babcock University, Ilishan, Ogun State.
-                            {'\n'}
-                            Federal University of Agriculture, Abeokuta, Ogun State.
-                            {'\n'}
-                            Federal University of Technology, Akure.
-                            {'\n'}
-                            Federal University, Oye-Ekiti, Ekiti State.
-                            {'\n'}
-                            Obafemi Awolowo University, Ile-Ife, Osun State.
-                            {'\n'}
-                            Redeemers University, Ede, Osun State.
-                            {'\n'}
-                            University of Lagos, Akoka, Lagos State.
-                            {'\n'}
-                            And a lot more.
-                        </Text>
-                    </ScrollView>
+                                    <h1 style="text-align: center;">AFFILIATE UNIVERSITIES</h1>
+                                    <p>
+                                        Abia State University, Abia State. 
+                                        <br/>
+                                        Alex Ekwueme University, Ndufu-Alike, Ikwo, Ebonyi State.                       
+                                        <br/>
+                                        Caritas Universtiy, Enugu State. 
+                                        <br/>
+                                        Chukwuemeka Odumegwu Ojukwu University, Uli, Anambra State. 
+                                        Clifford University Owerrinta, Aba, Abia State. 
+                                        <br/>
+                                        Eastern Palm University, Ogboko, Imo State.                                 
+                                        <br/>
+                                        Ebonyi State University, Ebonyi State. 
+                                        <br/>
+                                        Enugu State University of Science and Technology, Enugu State.                          
+                                        <br/>
+                                        Evangel University, Akaeze, Ebonyi State. 
+                                        <br/>
+                                        Federal University of Technology, Owerri, Imo State.                                    
+                                        <br/>
+                                        Godfrey Okoye University, Enugu State. 
+                                        <br/>
+                                        Imo State University, Owerri, Imo State. 
+                                        <br/>
+                                        Nnamdi Azikiwe University, Awka, Anambra State. 
+                                        <br/>
+                                        Paul University, Awka, Anambra State. 
+                                        <br/>
+                                        Renaissance University, Ugbawka, Enugu State. 
+                                        <br/>
+                                        University of Nigeria, Nsukka, Enugu State.
+                                        <br/>
+                                        Babcock University, Ilishan, Ogun State.
+                                        <br/>
+                                        Federal University of Agriculture, Abeokuta, Ogun State.
+                                        <br/>
+                                        Federal University of Technology, Akure.
+                                        <br/>
+                                        Federal University, Oye-Ekiti, Ekiti State.
+                                        <br/>
+                                        Obafemi Awolowo University, Ile-Ife, Osun State.
+                                        <br/>
+                                        Redeemers University, Ede, Osun State.
+                                        <br/>
+                                        University of Lagos, Akoka, Lagos State.
+                                        <br/>
+                                        And a lot more.
+                                    </p>
 
-                    <Text style={pageStyles.header}>JUPEB CUT OFF MARKS</Text>
-                    <ScrollView horizontal={true}>
-                        <Text style={pageStyles.StaticInfo}>
-                            1. JUPEB cut off marks points for any science,{'\n'}
-                            paramedical, administrative course is 6 points and above{'\n'}
-                            {'\n'}
-                            2. For Medicine, students must have at least 12 points and{'\n'}
-                            above to gain admission to study Medicine in Nigerian universities{'\n'}
-                            that offer the course with JUPEB ( examination will still be{'\n'}
-                            conducted for Medicine students after meeting the required point with JUPEB)               {'\n'}
-                            (OAU requires nothing less than 13 points){'\n'}
-                            {'\n'}
-                            3. The JUPEB cut off marks for Engineering courses,{'\n'}
-                            A/level Mathematics, Physics {'&'} Chemistry{'\n'}
-                            for Industrial Chemistry is 8 points and above{'\n'}
-                            {'\n'}
-                            4. JUPEB cut off marks for Social Sciences/Administrative{'\n'}
-                            Courses is a minimum 7 points and above{'\n'}
-                            {'\n'}
-                            5. Candidates must have at least 5 points for Religious{'\n'}
-                            Studies, Languages, and most of the Courses in Arts Faculty{'\n'}
-                            and Agriculture.{'\n'}
-                            {'\n'}
-                            6. The cut-off marks for Law in JUPEB is 13 points,{'\n'}
-                            candidates must have a minimum of 13 points to be able{'\n'}
-                            to gain admission with JUPEB into 200 level to study{'\n'}
-                            Law in those universities that offer the course and{'\n'}
-                            that accept JUPEB.{'\n'}
-                            {'\n'}
-                            Source: <Text style={{color: 'blue'}} onPress={()=> {Linking.openURL('https://myschoolgist.net')}}>https://myschoolgist.net</Text>
-                        </Text>
-                    </ScrollView>
-                    
-                </ScrollView>
+                                    <h1 style="text-align: center;">JUPEB CUT OFF MARKS</h1>
+                                    <p>
+                                        1. JUPEB cut off marks points for any science,
+                                        paramedical, administrative course is 6 points and above
+                                        <br/>
+                                        2. For Medicine, students must have at least 12 points and
+                                        above to gain admission to study Medicine in Nigerian universities
+                                        that offer the course with JUPEB ( examination will still be
+                                        conducted for Medicine students after meeting the required point with JUPEB)               
+                                        (OAU requires nothing less than 13 points)
+                                        <br/>
+                                        3. The JUPEB cut off marks for Engineering courses,
+                                        A/level Mathematics, Physics {'&'} Chemistry
+                                        for Industrial Chemistry is 8 points and above
+                                        <br/>
+                                        4. JUPEB cut off marks for Social Sciences/Administrative
+                                        Courses is a minimum 7 points and above.
+                                        <br/>
+                                        5. Candidates must have at least 5 points for Religious
+                                        Studies, Languages, and most of the Courses in Arts Faculty
+                                        and Agriculture.
+                                        <br/>
+                                        6. The cut-off marks for Law in JUPEB is 13 points,
+                                        candidates must have a minimum of 13 points to be able
+                                        to gain admission with JUPEB into 200 level to study
+                                        Law in those universities that offer the course and
+                                        that accept JUPEB.
+                                        <br/>
+                                        Source: <a href='https://myschoolgist.net'>https://myschoolgist.net</a>
+                                    </p>
+                                </div>
+                                <div style="height: 50%"></div>
+                            </body>
+                        `
+                    }}
+                />
             </View>
         )
         card_displayed = true
@@ -361,47 +360,6 @@ export default function newsScreen({navigation}) {
         })
     }
 
-    function display_exam_and_classes_Card() {
-        getToken().then(() => {
-            if (token === 'true') {
-                if (!news[2].data.length) { //if there are no new info in this section
-                    set_class_And_Exam_Card(
-                        <View style={pageStyles.card}>
-                            <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
-                            <Text style={pageStyles.nullText}>
-                                Nothing to see here yet.
-                            </Text>
-                            <Text style={pageStyles.nullText}>
-                                Try Refreshing To See Updates!
-                            </Text>
-                        </View>
-                    )
-                } else {
-                    set_class_And_Exam_Card(
-                        <View style={pageStyles.card}>
-                            <Text style={pageStyles.header}>CLASSES AND EXAM UPDATES</Text>
-                            <View style={{flex: 1}}>
-                                <FlatList
-                                    data={news[2].data}
-                                    contentContainerStyle = {{paddingBottom: 200}}
-                                    renderItem={({item}) => (
-                                        <View style={pageStyles.newsCont}>
-                                            <Text style={pageStyles.topic}>{item.Topic}</Text>
-                                            <Text style={pageStyles.body}>{item.Body}</Text>
-                                        </View>
-                                    )}
-                                    keyExtractor = {item => item.Topic}
-                                />
-                            </View>
-                        </View>
-                    )
-        
-                }
-                card_displayed = true
-            }
-        })
-    }
-
     async function display_resources_card() {
         getToken().then(() => {
           if (token === 'true') {
@@ -462,7 +420,7 @@ export default function newsScreen({navigation}) {
             </TouchableOpacity>
             <ScrollView style={pageStyles.tableOfContents}>
                 <TouchableOpacity style={pageStyles.content} onPress={displayAboutCard}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} style={pageStyles.contentIcons} source={require('../icons/about.png')}/>
+                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/about.png')}/>
                     <Text style={pageStyles.contentText}>ABOUT JUPEB</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.content} onPress={displayGuideCard}>
@@ -472,10 +430,6 @@ export default function newsScreen({navigation}) {
                 <TouchableOpacity style={pageStyles.content} onPress={displaySyllabuls}>
                     <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/syllables.png')}/>
                     <Text style={pageStyles.contentText}>JUPEB SYLLABUS</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.content} onPress={display_exam_and_classes_Card}>
-                    <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/classes.png')}/>
-                    <Text style={pageStyles.contentText}>CLASSES AND EXAM UPDATES</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.content} onPress={displayMatCard}>
                     <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/materials.png')}/>
@@ -491,9 +445,8 @@ export default function newsScreen({navigation}) {
             {guideCard}
             {syllabulsCard}
             {matCard}
-            {class_And_Exam_Card}
             {RESOURCES_CARD}
-            {callGetUpdates()}
+            {loading}
             {BLOCKED_FEATURE_CARD}
             <StatusBar style="light" />
         </SafeAreaView>

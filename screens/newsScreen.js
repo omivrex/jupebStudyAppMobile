@@ -343,7 +343,7 @@ export default function newsScreen({navigation}) {
     ]
 
     function displayMatCard() {
-        getToken().then(() => {
+        getToken(DISPLAY_BLOCKED_FEATURE_CARD).then(token => {
             if (token === 'true') {
                 setmatCard(
                     <View style={pageStyles.card}>
@@ -366,7 +366,7 @@ export default function newsScreen({navigation}) {
     }
 
     async function display_resources_card() {
-        getToken().then(() => {
+        getToken(DISPLAY_BLOCKED_FEATURE_CARD).then(token => {
           if (token === 'true') {
               setRESOURCES_CARD(
                   <View style={pageStyles.card}>
@@ -413,42 +413,42 @@ export default function newsScreen({navigation}) {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>NEWS {'&'} RESOURCES</Text>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={styles.menuIcon} onPress={openMenu}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={styles.menuIcon} onPress={openMenu}>
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableHighlight>
             </View>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {() => {
+            <TouchableHighlight underlayColor='rgba(156, 39, 176, 1)' onPress = {() => {
                 newsObtained = false
                 getUpdates()
             }} style={pageStyles.refreshButn}>
                 <Text style={pageStyles.refreshButnText}>Refresh</Text>
             </TouchableHighlight>
             <ScrollView style={pageStyles.tableOfContents}>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displayAboutCard}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayAboutCard}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/about.png')}/>
                         <Text style={pageStyles.contentText}>ABOUT JUPEB</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displayGuideCard}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayGuideCard}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/guide.png')}/>
                         <Text style={pageStyles.contentText}>PROGRAMME GUIDE</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displaySyllabuls}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displaySyllabuls}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/syllables.png')}/>
                         <Text style={pageStyles.contentText}>JUPEB SYLLABUS</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={displayMatCard}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayMatCard}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/materials.png')}/>
                         <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.content} onPress={display_resources_card}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={display_resources_card}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/resources.png')}/>
                         <Text style={pageStyles.contentText}>RESOURCES</Text>

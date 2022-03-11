@@ -14,19 +14,17 @@ export const getSectionData = (section, sectionArray) => {
     }
 }
 
-export const getToken = async () => {
-    if (!is_token_obtained.current) {
-        try {
-            token = await AsyncStorage.getItem('vpa')
-            if (token === 'true') {
-                return token
-            } else{
-                DISPLAY_BLOCKED_FEATURE_CARD()
-                return false
-            }
-        } catch (err) {
-            console.log(err);
+export const getToken = async (callback) => {
+    console.log('called...')
+    try {
+        token = await AsyncStorage.getItem('vpa')
+        if (token === 'true') {
+            return token
+        } else{
+            callback()
+            return false
         }
-        is_token_obtained.current = true
+    } catch (err) {
+        console.log(err);
     }
 }

@@ -39,10 +39,8 @@ const news = [
 ]
 
 let card_displayed = false
-let token
 export default function newsScreen({navigation}) {
     const [loading, setloading] = useState()
-    const is_token_obtained = useRef(false)
     useEffect(() => {
       getUpdates()
     }, [])

@@ -11,7 +11,6 @@ import {
     ScrollView,
     Image,
     BackHandler,
-    Linking,
     Alert,
 } from 'react-native';
 
@@ -52,7 +51,7 @@ export default function newsScreen({navigation}) {
     const getUpdates = async () => {
         try {
             const networkStat = await network.getNetworkStateAsync()
-            if (networkStat.isInternetReachable && !newsObtained && !card_displayed) { //if internet is reachable and new isn't updated and no card is displayed
+            if (networkStat.isInternetReachable && !newsObtained && !card_displayed) {
                 setloading(
                     <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
                         <LoadingComponent />
@@ -299,7 +298,11 @@ export default function newsScreen({navigation}) {
         try {
             const networkStat = await network.getNetworkStateAsync()
             if (networkStat.isInternetReachable) {
-                Alert.alert('','Loading Syllable...', [])
+                setloading(
+                    <View style={{width: wp('100%'), height: hp('100%'), top: hp('15%'), position: 'absolute'}}>
+                        <LoadingComponent />
+                    </View>
+                )
                 setsyllabulsCard(
                     <View style={pageStyles.card}>
                         <Text style={pageStyles.header}>JUPEB SYLLABUS</Text>
@@ -313,7 +316,9 @@ export default function newsScreen({navigation}) {
                         />
                     </View>,
                 )
-                Alert.alert('','Syllable Loaded...')
+                setTimeout(() => {
+                    setloading()
+                }, 1500);
             }
         } catch (error) {
             console.log(error);

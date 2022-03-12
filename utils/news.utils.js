@@ -15,7 +15,6 @@ export const getSectionData = (section, sectionArray) => {
 }
 
 export const getToken = async (callback) => {
-    console.log('called...')
     try {
         token = await AsyncStorage.getItem('vpa')
         if (token === 'true') {

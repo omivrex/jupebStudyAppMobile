@@ -1,6 +1,7 @@
 import React, {useState, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
+import { getToken } from "../utils/startPractice.util";
 import {
     Text,
     View,
@@ -14,7 +15,6 @@ import {
 } from 'react-native';
 import { usePreventScreenCapture } from 'expo-screen-capture'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Asset } from 'expo-asset';
 
 import pageStyles from '../styles/pqScreenStyles.js';
 const {images} = require("../Scripts/imageUrl.js");
@@ -82,33 +82,17 @@ export default function StartPrac({navigation}) {
     });
 
     const is_token_obtained = useRef(false)
-
     
-    const   getToken = async () => {
-        try {
-            let token = await AsyncStorage.getItem('vpa')
-            if (token !== 'true') {
-                DISPLAY_BLOCKED_FEATURE_CARD()
-                return false
-            } else {
-                setBLOCKED_FEATURE_CARD()
-            }
-        } catch (err) {
-            console.log(err);
-        }
-        is_token_obtained.current = true
-        console.log(is_token_obtained);
-    }
-    
-    function DISPLAY_BLOCKED_FEATURE_CARD() {
-            setBLOCKED_FEATURE_CARD(
+    function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
+            tokenPresent?setBLOCKED_FEATURE_CARD(
                 <View style={styles.BLOCKED_FEATURE_CARD}>
                     <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
                         This Feature Is Only Available To Paid Users.
                         Head To The Payment Section To Make Payment.
                     </Text>
                 </View>
-            )
+            ):
+            setBLOCKED_FEATURE_CARD()
     }
 
 
@@ -413,7 +397,7 @@ export default function StartPrac({navigation}) {
     let questNo = questionDisplayed
     let timeVariable = null //this is to prevent memory leak
     function makeGlobal(data) {
-        getToken()
+        getToken(DISPLAY_BLOCKED_FEATURE_CARD)
         questNo = data.questNo //make questNo global
         timeVariable = timerState //make timerState global
         if (data.renderStartPracCard === true && sectionToDisplayImgs.questions.length != 0 && sectionToDisplayImgs.questions[questNo]) { // renders PracCard only when sectionToDisplayImgs is not empty and renderStartPracCard is true 

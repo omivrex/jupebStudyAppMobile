@@ -1,11 +1,12 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
-import { getToken } from "../utils/startPractice.util";
+import { getToken, getQuestionData } from "../utils/pastquestions.utils";
 import {
     Text,
     View,
     TouchableOpacity,
+    TouchableHighlight,
     SafeAreaView,
     Image,
     Linking,
@@ -17,14 +18,9 @@ import { usePreventScreenCapture } from 'expo-screen-capture'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import pageStyles from '../styles/pqScreenStyles.js';
-const {images} = require("../Scripts/imageUrl.js");
+const pqData = require("../Scripts/pqData.json");
 import styles from '../styles/master.js';
 import { FlatList } from 'react-native-gesture-handler';
-
-const pqPathObj = {
-    course: '',
-    subject: 'All',
-}
 
 const sectionToDisplayImgs = {
     questions: [],
@@ -35,9 +31,6 @@ let renderStartPracCard = false
 let timerStarted  = false;
 let submitted = false
 let timerInterval = null // this is to prevent memory leak
-let noOfQuestions = 0
-let givenTime = 60*60 //1 hr in secs
-let currentTime = givenTime
 let testDate
 let timeTestStarted
 let start_Prac_Card_Displayed = false
@@ -84,7 +77,7 @@ export default function StartPrac({navigation}) {
     const is_token_obtained = useRef(false)
     
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
-            tokenPresent?setBLOCKED_FEATURE_CARD(
+            !tokenPresent?setBLOCKED_FEATURE_CARD(
                 <View style={styles.BLOCKED_FEATURE_CARD}>
                     <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
                         This Feature Is Only Available To Paid Users.
@@ -97,20 +90,13 @@ export default function StartPrac({navigation}) {
 
 
 
-    const [courseListState, setCourseListState] = useState()
-    const [subjectListState, setSubjectListState] = useState()
+    const [options, setOptions] = useState()
     const [TimeListState, setTimeListState] = useState()
     const [pracCard, setPracCard] = useState()
     const [questViewCard, setquestViewCard] = useState()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
-
     const [resultState, setresultState] = useState()
 
-    const [courseState, setCourseState] = useState('Course: ')
-    const [subjectState, setSubjectState] = useState('Subject: All')
-    const [enableTimer, setenableTimer] = useState('Timer: off')
-    const [showTimerSettings, setshowTimerSettings] = useState({display: 'none'})
-    const [timerState, settimerState] = useState('Select Time')
     const [option1Color, setoption1Color] = useState({backgroundColor: '#9c27b0'})
     const [option2Color, setoption2Color] = useState({backgroundColor: '#9c27b0'})
     const [option3Color, setoption3Color] = useState({backgroundColor: '#9c27b0'})
@@ -118,175 +104,138 @@ export default function StartPrac({navigation}) {
 
     const [questionDisplayed, setquestionDisplayed] = useState(0)
 
-    const subjectNames = useRef([
-        'Advanced Pure Mathematics',
-        'Calculus',
-        'Applied Mathematics',
-        'Statistics'
-    ])
+    const optionsRef = useRef([])
+    const label = useRef('')
+    const pathObj = useRef({
+        course: '',
+        subject: 'All',
+    })
+    useEffect(() => {
+        getToken(DISPLAY_BLOCKED_FEATURE_CARD)
+        getCourses()
+    }, [])
+
+    const getCourses = () => {
+        const optionsArray = []
+        selectedSubject.current = 'Subject'
+        pathObj.current.subject = ''
+        pqData.forEach(item => {
+            label.current = 'Course'
+            optionsArray.push(item['courseName'])
+        });
+        optionsRef.current = [... optionsArray]
+    }
+
+    const getSubjects = (courseName) => {
+        optionsRef.current = []
+        pqData.forEach(course => {
+            if (course.courseName === courseName) {
+                course.content.forEach(year => {
+                    year.content.forEach(subject => {
+                        optionsRef.current.push(subject.subject)
+                    });
+                });
+                label.current = 'Subject'
+                optionsRef.current = [... new Set(optionsRef.current)]
+            }
+        });
+        optionsRef.current.push('ALL')
+        console.log(pathObj.current)
+    }
     
-    const displayCourseList = () => {
-        setCourseListState(
-            <View style={pageStyles.list}>
-                <TouchableOpacity style={pageStyles.items} onPress={() => {
-                    pqPathObj.course = 'maths'
-                    setCourseState('Course: Maths')
-                    subjectNames.current = [
-                        'Advanced Pure Mathematics',
-                        'Calculus',
-                        'Applied Mathematics',
-                        'Statistics'
-                    ]
-                    pqPathObj.subject = 'All'
-                    setSubjectState('Subject: All')
-                    hideCourseList()
-                }}>
-                    <Text style={pageStyles.itemName}>Maths</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress={() => {
-                    pqPathObj.course = 'physics'
-                    subjectNames.current = [
-                        'MECHANICS AND PROPERTIES OF MATTER',
-                        'HEAT, WAVES AND OPTICS',
-                        'ELECTRICITY AND MAGNETISM',
-                        'MODERN PHYSICS'
-                    ]
-                    pqPathObj.subject = 'All'
-                    setSubjectState('Subject: All')
-                    setCourseState('Course: Physics')
-                    hideCourseList()
-                }}>
-                    <Text style={pageStyles.itemName}>Physics</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress={() => {
-                    pqPathObj.course = 'chemistry'
-                    subjectNames.current = [
-                        'General Chemistry',
-                        'Physical Chemistry',
-                        'Inorganic Chemistry',
-                        'Organic Chemistry'
-                    ]
-                    pqPathObj.subject = 'All'
-                    setSubjectState('Subject: All')
-                    setCourseState('Course: Chemistry')
-                    hideCourseList()
-                }}>
-                    <Text style={pageStyles.itemName}>Chemistry</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress={() => {
-                    pqPathObj.course = 'biology'
-                    subjectNames.current = [
-                        'General Biology',
-                        'Microbiology',
-                        'Basic Botany',
-                        'Fundamental Of Zoology'
-                    ]
-                    pqPathObj.subject = 'All'
-                    setSubjectState('Subject: All')
-                    setCourseState('Course: Biology')
-                    hideCourseList()
-                }}>
-                    <Text style={pageStyles.itemName}>Biology</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.cancelButn} onPress={hideCourseList}>
+    const selectedCourse = useRef('Course: ')
+    const selectedSubject = useRef('Subject: ')
+    const displayOptions = labelName => {
+        if(labelName==='Course') {
+            getCourses()
+        }
+        setOptions(
+            <View style={[pageStyles.listOptionsCont, {position: 'absolute', zIndex: 5, backgroundColor: '#fff'}]}>
+                <Text style={pageStyles.labelHeading}>Select {label.current.replace('courseName', 'Course Name')}</Text>
+                <FlatList
+                    data={optionsRef.current}
+                    contentContainerStyle = {{paddingBottom: optionsRef.current.length*100, width: '100%', top: '5%'}}
+                    renderItem={({item}, index)=> {
+                        return (
+                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
+                                if (labelName==='Course') {
+                                    pathObj.current.course = item
+                                    selectedCourse.current = `${label.current}: ${item.toUpperCase()}`
+                                    getSubjects(item)
+                                } else {
+                                    pathObj.current.subject = item
+                                    selectedSubject.current = `${label.current}: ${item.toUpperCase()}`
+                                }
+                                hideOptions()
+                            }}>
+                                <Text style={pageStyles.listOptionsText}>{item.toUpperCase()}</Text>
+                            </TouchableHighlight>
+                        )
+                    }}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />
+                <TouchableOpacity style={pageStyles.cancelButn} onPress={hideOptions}>
                     <Text style={pageStyles.listButnText}>Cancel</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
-    function hideCourseList() {
-        setCourseListState()
+    function hideOptions() {
+        setOptions()
     }
     
-    const displaySubjectList = () => {
-        setSubjectListState(
-            <View style={pageStyles.list}>
-                <TouchableOpacity style={pageStyles.items} onPress ={() => {
-                    pqPathObj.subject = '001'
-                    setSubjectState(`Subject: ${subjectNames.current[0]}`)
-                    givenTime = 15
-                    hideSubjectList()
-                }}>
-                    <Text style={pageStyles.itemName}>{subjectNames.current[0]}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress ={() => {
-                    pqPathObj.subject = '002'
-                    setSubjectState(`Subject: ${subjectNames.current[1]}`)
-                    givenTime = 15
-                    hideSubjectList()
-                }}>
-                    <Text style={pageStyles.itemName}>{subjectNames.current[1]}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress ={() => {
-                    pqPathObj.subject = '003'
-                    setSubjectState(`Subject: ${subjectNames.current[2]}`)
-                    givenTime = 15
-                    hideSubjectList()
-                }}>
-                    <Text style={pageStyles.itemName}>{subjectNames.current[2]}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress ={() => {
-                    pqPathObj.subject = '004'
-                    setSubjectState(`Subject: ${subjectNames.current[3]}`)
-                    givenTime = 15
-                    hideSubjectList()
-                }}>
-                    <Text style={pageStyles.itemName}>{subjectNames.current[3]}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.items} onPress ={() => {
-                    pqPathObj.subject = 'All'
-                    setSubjectState('Subject: All')
-                    givenTime = 60
-                    hideSubjectList()
-                }}>
-                    <Text style={pageStyles.itemName}>All</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.cancelButn} onPress={hideSubjectList}>
-                    <Text style={pageStyles.listButnText}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-        )
+    const enableTimerButnValue = useRef('Timer: off')
+    const [showTimerSettings, setshowTimerSettings] = useState({display: 'none'})
+
+    const enableTimerFunc = () => {
+        if (enableTimerButnValue.current === 'Timer: on') {
+            enableTimerButnValue.current = 'Timer: off'
+            setshowTimerSettings({display: 'none'});
+        } else {
+            enableTimerButnValue.current = 'Timer: on'
+            setshowTimerSettings({display: 'flex'});
+        }
     }
 
-    function hideSubjectList() {
-        setSubjectListState()
-    }
-
+    let givenTime = useRef(60*60) //1 hr in secs
+    let currentTime = givenTime.current
+    const [timerState, settimerState] = useState('Select Time')
+    
     const displayTimeList = () => {
         setTimeListState(
             <View style={pageStyles.list}>
                 <TouchableOpacity style={pageStyles.items} onPress={() => {
                     settimerState('Time: 15mins')
-                    givenTime = (15*60) //converts to secs
+                    givenTime.current = (15*60) //converts to secs
                     hideTimeList()
                 }}>
                     <Text style={pageStyles.itemName}>15mins</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.items} onPress={() => {
                     settimerState('Time: 30mins')
-                    givenTime = (30*60) //converts to secs
+                    givenTime.current = (30*60) //converts to secs
                     hideTimeList()
                 }}>
                     <Text style={pageStyles.itemName}>30mins</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.items} onPress={() => {
                     settimerState('Time: 1hr')
-                    givenTime = (60*60) //converts to secs
+                    givenTime.current = (60*60) //converts to secs
                     hideTimeList()
                 }}>
                     <Text style={pageStyles.itemName}>1hr</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.items} onPress={() => {
                     settimerState('Time: 1hr 30mins')
-                    givenTime = (90*60) //converts to secs
+                    givenTime.current = (90*60) //converts to secs
                     hideTimeList()
                 }}>
                     <Text style={pageStyles.itemName}>1hr 30mins</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.items} onPress={() => {
                     settimerState('Time: 2hrs')
-                    givenTime = (120*60) //converts to secs0
+                    givenTime.current = (120*60) //converts to secs0
                     hideTimeList()
                 }}>
                     <Text style={pageStyles.itemName}>2hrs</Text>
@@ -303,101 +252,83 @@ export default function StartPrac({navigation}) {
     }
 
     const displayPracCard = () => {
-        testDate    = Date().substr(0, 24) //returns day month year and time
-        //this is to ensure thet when a new section is selected the array will only load
-        // the pictures in that new section and start from the beginging (setquestionDisplayed(0))
-        //empty array 1st
-        while(sectionToDisplayImgs.questions.length > 0) {
-            sectionToDisplayImgs.questions.pop();
-        }
-        while(sectionToDisplayImgs.answers.length > 0) {
-            sectionToDisplayImgs.answers.pop();
-        }
-
-        let questionsInSection = {
-            questions: [],
-            answers: []
-        }
-
-        if (pqPathObj.course != '') { //if the course has been selected
-            if (pqPathObj.subject === 'All') { //check if user wants all subjects i.e 001 to 004
-                images.forEach(img => {
-                    if (img.key.includes(`../PastQuestions/${pqPathObj.course}/`) && img.key.includes('obj')) { //look for obj questions who are under the same course as the one in pqObject
-                        if (img.key.includes(`questions`)) {
-                            questionsInSection.questions.push(img)
-                        } else if (img.key.includes(`answers`)) { //look for their answers
-                            questionsInSection.answers.push(img)
-                        }
+        testDate = Date().substr(0, 24) //returns day month year and time
+        
+        let selectedQuestions = []
+        
+        console.log(pathObj.current)
+        if (pathObj.current.course !== '') { //if the course has been selected
+            pqData.forEach(course => {
+                if (course.courseName === pathObj.current.course) {
+                    course.content.forEach(year => {
+                        year.content.forEach(subject => {
+                                if (pathObj.current.subject === 'ALL') { //check if user wants all subjects
+                                    subject.content.forEach(section => {
+                                        section.section=== 'Objective'? selectedQuestions = selectedQuestions.concat(section.content):''
+                                    });
+                                } else { //else if user wants a particular subject
+                                    if (subject.subject === pathObj.current.subject) {
+                                        console.log(subject.subject)
+                                        subject.content.forEach(section => {
+                                            section.section=== 'Objective'? selectedQuestions = selectedQuestions.concat(section.content):''
+                                        });
+                                    }
+                                }
+                            });
+                        });
                     }
                 });
-            } else { //else if user wants a particular subject
-                images.forEach(img => {
-                    if (img.key.includes(`../PastQuestions/${pqPathObj.course}/`) && img.key.includes(pqPathObj.subject) && img.key.includes('obj')) { //look for obj questions who are under the same course and subject as the one in pqObject
-                        if (img.key.includes(`questions`)) {
-                            questionsInSection.questions.push(img)
-                        } else if (img.key.includes(`answers`)) { //look for their answers
-                            questionsInSection.answers.push(img)
-                        }
-                    }
-                });
-            }
+                // console.log(selectedQuestions)
 
-            fiterFunc(questionsInSection).then(makeGlobal({questNo: questNo, renderStartPracCard: renderStartPracCard}))
-            timeTestStarted = new Date().getTime()
+            fiterFunc(selectedQuestions).then(questionsToDisplay=> {
+                console.log('questionsToDisplay.length', questionsToDisplay.length)
+            })
+            // timeTestStarted = new Date().getTime()
             
         } else {
             Alert.alert('', 'You Have Not Selected A course!')
         }
     }
 
-    function genRandNum(questionsInSection) {
-        let questionsToSelect = []
+    function genRandNum(questionsInSection, noOfQuestionsToSelect) {
+        let indexesToSelect = []
         let randomNum
         
-        while(questionsToSelect.length > 0) { //empty the array
-            questionsToSelect.pop();
-        }
-
-        while (noOfQuestions > questionsToSelect.length ) { //while it hasnt selected the requeired no. of questions keep genrating
-            for (let i = 0; i < noOfQuestions; i++) {
-                if (noOfQuestions > questionsToSelect.length) {// this is so that it dosent select more questions than its supposed to
-                    randomNum = Math.ceil(Math.random()*questionsInSection.answers.length)
-                    if (questionsInSection.answers[randomNum] != undefined) {
-                        questionsToSelect = questionsToSelect.concat(randomNum)
-                    }
-                }
-                
+        while (noOfQuestionsToSelect > indexesToSelect.length ) { //while it hasnt selected the requeired no. of questions keep genrating
+            for (let i = 0; i < noOfQuestionsToSelect; i++) {
+                randomNum = Math.ceil(Math.random()*questionsInSection.length)
+                indexesToSelect.push(randomNum)
             }
-            //removes duplicates
-            questionsToSelect = [... new Set(questionsToSelect)]
+            indexesToSelect = [... new Set(indexesToSelect)]
         }
-        return questionsToSelect
+        // console.log(indexesToSelect, indexesToSelect.length, noOfQuestionsToSelect)
+        return indexesToSelect
     }
     
     //this selects random questions to display
+    const noOfQuestions = useRef(0)
+
     function fiterFunc (questionsInSection) {
-        if (pqPathObj.subject === 'All') { //this is to know how many questions to select from the unsorted array
-            noOfQuestions = 50
+        if (pathObj.current.subject === 'ALL') { //this is to know how many questions to select from the unsorted array
+            noOfQuestions.current = 50
         } else {
-            noOfQuestions = 15
+            noOfQuestions.current = 15
         }
 
+        const questionsToDisplay = []
+
         return new Promise((resolve) => {
-            genRandNum(questionsInSection).forEach(questionNo => {
-                sectionToDisplayImgs.questions = sectionToDisplayImgs.questions.concat(questionsInSection.questions[questionNo])
-                sectionToDisplayImgs.answers = sectionToDisplayImgs.answers.concat(questionsInSection.answers[questionNo])
+            genRandNum(questionsInSection, noOfQuestions.current).forEach(questionNo => {
+                questionsToDisplay.push(questionsInSection[questionNo])
             });
-            
             renderStartPracCard = true
-            resolve()
-            
+            resolve(questionsToDisplay)
         })
     }
 
     let questNo = questionDisplayed
     let timeVariable = null //this is to prevent memory leak
     function makeGlobal(data) {
-        getToken(DISPLAY_BLOCKED_FEATURE_CARD)
         questNo = data.questNo //make questNo global
         timeVariable = timerState //make timerState global
         if (data.renderStartPracCard === true && sectionToDisplayImgs.questions.length != 0 && sectionToDisplayImgs.questions[questNo]) { // renders PracCard only when sectionToDisplayImgs is not empty and renderStartPracCard is true 
@@ -499,23 +430,13 @@ export default function StartPrac({navigation}) {
             </View>
         )
         start_Prac_Card_Displayed = true
-        if (!timerStarted && enableTimer === 'Timer: on') {
+        if (!timerStarted && enableTimerButnValue.current === 'Timer: on') {
             startCountDown()
         }
     }
 
-    function enableTimerFunc() {
-        if (enableTimer === 'Timer: on') {
-            setenableTimer('Timer: off');
-            setshowTimerSettings({display: 'none'});
-        } else {
-            setenableTimer('Timer: on');
-            setshowTimerSettings({display: 'flex'});
-        }
-    }
-    
     function startCountDown() {
-        currentTime = givenTime // updating current time in other to start counting
+        currentTime = givenTime.current // updating current time in other to start counting
         timerStarted = true
         timerInterval = setInterval(() => {
             if (currentTime>0) {
@@ -609,15 +530,15 @@ export default function StartPrac({navigation}) {
         setPracCard()
         setquestionDisplayed(questNo)
         clearInterval(timerInterval)
-        if (givenTime === (15*60)) {
+        if (givenTime.current === (15*60)) {
             settimerState('Time: 15mins')
-        } else if (givenTime === (30*60)) {
+        } else if (givenTime.current === (30*60)) {
             settimerState('Time: 30mins')
-        } else if (givenTime === (60*60)) {
+        } else if (givenTime.current === (60*60)) {
             settimerState('Time: 1hr')
-        } else if (givenTime === (90*60)) {
+        } else if (givenTime.current === (90*60)) {
             settimerState('Time: 1hr 30mins')
-        } else if (givenTime === (120*60)) {
+        } else if (givenTime.current === (120*60)) {
             settimerState('Time: 2hr')
         }
         setoption1Color({backgroundColor: '#9c27b0'})
@@ -672,7 +593,7 @@ export default function StartPrac({navigation}) {
         saveTestData({
             testDate,
             score,
-            course: pqPathObj.course,
+            course: pathObj.current.course,
             noOfQuestions,
             noOfQuestionsAttempted,
             timeTaken: Math.ceil((new Date().getTime() - timeTestStarted)/1000), //converts to sec
@@ -813,33 +734,36 @@ export default function StartPrac({navigation}) {
                 </TouchableOpacity>
             </View>
             <View style={pageStyles.listOptionsCont}>
-                <TouchableOpacity style={pageStyles.listOptions} onPress = {displayCourseList}>
-                    <Text style={pageStyles.listOptionsText}>{courseState}</Text>
+                <TouchableOpacity style={pageStyles.listOptions} onPress = {()=> {
+                    displayOptions('Course')
+                }}>
+                    <Text style={pageStyles.listOptionsText}>{selectedCourse.current}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={pageStyles.listOptions} onPress = {displaySubjectList}>
-                    <Text style={pageStyles.listOptionsText}>{subjectState}</Text>
+                <TouchableOpacity style={pageStyles.listOptions} onPress = {()=> {
+                    pathObj.current.course !== ''?displayOptions('Subject'): displayOptions('Course')
+                }}>
+                    <Text style={pageStyles.listOptionsText}>{selectedSubject.current}</Text>
                 </TouchableOpacity>
                 <View style={pageStyles.timerCont}>
+                    <TouchableOpacity onPress={enableTimerFunc} style = {pageStyles.enableTimerButn}>
+                        <Text style = {pageStyles.enableTimerText}>{enableTimerButnValue.current}</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={displayTimeList} style={[pageStyles.timeBox, showTimerSettings]}>
                         <Text style={pageStyles.time}>{timerState}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={enableTimerFunc} style = {pageStyles.enableTimerButn}>
-                        <Text style = {pageStyles.enableTimerText}>{enableTimer}</Text>
+                    <TouchableOpacity style={pageStyles.startButn} onPress={displayPracCard}>
+                        <Text style={pageStyles.startText}>Start</Text>
                     </TouchableOpacity>
                 </View>
             </View>
             {BLOCKED_FEATURE_CARD}
-            {courseListState}
-            {subjectListState}
+            {options}
             {TimeListState}
             {pracCard}
             {resultState}
             {questViewCard}
             {ansPage}
-            {makeGlobal({questNo: questionDisplayed, renderStartPracCard: renderStartPracCard})}
-            <TouchableOpacity style={pageStyles.startButn} onPress={displayPracCard}>
-                <Text style={pageStyles.startText}>Start</Text>
-            </TouchableOpacity>
+            {/* {makeGlobal({questNo: questionDisplayed, renderStartPracCard: renderStartPracCard})} */}
             <StatusBar style="light" />
         </SafeAreaView>
     )

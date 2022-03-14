@@ -64,19 +64,17 @@ export default StyleSheet.create({
         backgroundColor: colors.appColor,
         width: wp('27%'),
         height: hp('6%'),
-        position: 'absolute',
-        top: hp('60%'),
+        // position: 'absolute',
+        marginVertical: '6%',
+        justifyContent: 'center',
         alignSelf: 'center'
     },
     
     listButnText: {
         width: '100%',
-        height: '100%',
-        flex: 1,
         color: colors.textColor,
         fontSize: hp('3%'),
         textAlign: "center",
-        padding: '5%'
     },
 
     pqCard: {
@@ -226,21 +224,28 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
 
+    timerCont: {
+        flexDirection: 'column',
+        width: '100%',
+        justifyContent: 'space-around',
+    },
+
     timeBox: {
         position: 'relative',
-        display: 'flex',
         borderColor: colors.appColor,
         borderWidth: 1,
-        width: '50%',
+        width: '35%',
+        marginTop: '5%',
+        // right: '20%',
         height: hp('6%'),
-        alignSelf: 'flex-end'
+        alignSelf: 'center'
     },
 
     timeDisplayed: {
         color: '#fff',
         position: 'absolute',
         fontSize: hp('2%'),
-        width: '45%',
+        // width: '45%',
         height: 57,
         alignSelf: 'flex-end',
         top: 0,
@@ -249,7 +254,6 @@ export default StyleSheet.create({
     },
 
     time: {
-        position: 'relative',
         fontSize: hp('2.3%'),
         paddingTop: '4%',
         color: colors.grey,
@@ -258,14 +262,12 @@ export default StyleSheet.create({
     },
 
     enableTimerButn: {
-        position: 'absolute',
-        height: 50,
-        top: 0,
-        width: '45%',
-        padding: '5%',
+        width: '35%',
+        marginTop: '5%',
+        alignSelf: 'center',
+        // left: '10%',
+        justifyContent: 'center',
         height: hp('6%'),
-        borderColor: colors.appColor,
-        borderWidth: 1,
         backgroundColor: colors.appColor,
     },
     
@@ -278,7 +280,7 @@ export default StyleSheet.create({
     listOptionsCont: {
         width: wp('100%'),
         top: hp('17%'),
-        height: hp('100%'),
+        height: hp('83%'),
         justifyContent: 'center',
 
     },
@@ -332,19 +334,17 @@ export default StyleSheet.create({
 
     startButn: {
         backgroundColor: colors.appColor,
-        width: wp('30%'),
+        width: '35%',
+        marginTop: '5%',
         height: hp('6%'),
-        position: 'absolute',
-        left: wp('57.5%'),
-        top: hp('75%'),
-        zIndex: -1,
+        alignSelf: 'center',
+        justifyContent: 'center',
     },
 
     startText: {
         color: colors.textColor,
         fontSize: hp('3%'),
         textAlign: "center",
-        padding: hp('1.2%')
     },
 
     questionStatusBar: {

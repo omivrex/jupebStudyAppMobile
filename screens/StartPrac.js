@@ -94,11 +94,6 @@ export default function StartPrac({navigation}) {
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
     const [resultState, setresultState] = useState()
 
-    const [option1Color, setoption1Color] = useState({backgroundColor: '#9c27b0'})
-    const [option2Color, setoption2Color] = useState({backgroundColor: '#9c27b0'})
-    const [option3Color, setoption3Color] = useState({backgroundColor: '#9c27b0'})
-    const [option4Color, setoption4Color] = useState({backgroundColor: '#9c27b0'})
-
     const [questionDisplayed, setquestionDisplayed] = useState(0)
 
     const optionsRef = useRef([])
@@ -494,10 +489,8 @@ export default function StartPrac({navigation}) {
     const closePracCard = () => {
         setqualityContButnDis({display: 'none'})
         start_Prac_Card_Displayed = false
-        questNo = 0 //this is so that questions start from begining everytime PracCard is rerendered
         timerStarted.current  = false
         setPracCard()
-        setquestionDisplayed(questNo)
         clearInterval(timerInterval)
         if (givenTime.current === (15*60)) {
             settimerState('Time: 15mins')
@@ -510,51 +503,126 @@ export default function StartPrac({navigation}) {
         } else if (givenTime.current === (120*60)) {
             settimerState('Time: 2hr')
         }
-        setoption1Color({backgroundColor: '#9c27b0'})
-        setoption2Color({backgroundColor: '#9c27b0'})
-        setoption3Color({backgroundColor: '#9c27b0'})
-        setoption4Color({backgroundColor: '#9c27b0'})
     }
     
     function submit() {
         let score = 0
         submitted = true
         let noOfQuestionsAttempted = 0
-        sectionToDisplayImgs.answers.forEach((ans) => {
-            if (ans) {
-                if (ans.correctAns === ans.userAns || ans.correctAns === 'N/A' && ans.userAns != '') { // if user got the answer or if there is no correct option but th user attempted the question
-                    score++
-                }
-                
-                if (ans.userAns != '') { //if user attempted question
-                    noOfQuestionsAttempted++
-                }
-            } 
+        questionsToDisplay.current.forEach(({content}) => {
+            if (content) {
+                const {Data} = content.Data
+                if (Data) {
+                    if (Data.correctOption === Data.userOption || Data.correctOption === '' && Data.userOption != '') { // if user got the answer or if there is no correct option but th user attempted the question
+                        score++
+                    }
+                    
+                    if (Data.userOption != '') { //if user attempted question
+                        noOfQuestionsAttempted++
+                    }
+                } 
+            }
         });
         is_result_card_displayed = true
         setresultState(
-            <View style={pageStyles.pqCard}>
+            <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
                 <View style={pageStyles.pqHeader}>
                     <View style={{display: 'flex'}}>
-                        <Text style={[pageStyles.timeDisplayed]}>You Scored: {score}/{sectionToDisplayImgs.answers.length}</Text>
+                        <Text style={[pageStyles.timeDisplayed]}>You Scored: {score}/{questionsToDisplay.current.length}</Text>
                     </View>
                     <TouchableOpacity onPress = {closeResultArea} style={pageStyles.closePqCard}>
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
                 </View>
-                <SafeAreaView style={{flex: 1}}>
+                <View style={pageStyles.pqCont}>
                     <FlatList
-                        data={sectionToDisplayImgs.answers}
-                        contentContainerStyle = {{paddingBottom: 200}}
-                        renderItem={({item}) => (
-                            <TouchableOpacity style={pageStyles.questionStatusBar} onPress={() => {viewQuest(sectionToDisplayImgs.answers.indexOf(item))}}>
-                                <Text style={pageStyles.answerNo}>{item && sectionToDisplayImgs.answers.indexOf(item)+1}</Text>
-                                <Text style={pageStyles.correctAnswer}>Correct Ans: {item && item.correctAns}</Text>
-                                <Text style={pageStyles.userAns}>Your Ans: {item && item.userAns}</Text>
-                            </TouchableOpacity> 
-                        )}
+                        data={questionsToDisplay.current}
+                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
+                        renderItem={({item}) => {
+                            if (item && item.content) {
+                                const {Data} = item.content.Data
+                                if (Data) {
+                                    return (
+                                        <View style={{
+                                                borderColor: '#9c27b0',
+                                                borderBottomWidth: 2,
+                                                width: '90%',
+                                                marginVertical: hp('3%'),
+                                                left: '5%',
+                                                justifyContent: 'center'
+                                            }}>
+                                            <MathJax
+                                                html={
+                                                    `
+                                                        <body style="width: 100%;">
+                                                            <style>
+                                                                * {
+                                                                    -webkit-user-select: none;
+                                                                    -moz-user-select: none;
+                                                                    -ms-user-select: none;
+                                                                    user-select: none;
+                                                                }
+                                                            </style>
+                                                            <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                                ${Data.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}
+                                                            </div> 
+                                                        </body>
+                                                    
+                                                    `
+                                                }
+                                                mathJaxOptions={{
+                                                    messageStyle: "none",
+                                                    extensions: ["tex2jax.js"],
+                                                    jax: ["input/TeX", "output/HTML-CSS"],
+                                                    tex2jax: {
+                                                        inlineMath: [
+                                                            ["$", "$"],
+                                                            ["\\(", "\\)"],
+                                                        ],
+                                                        displayMath: [
+                                                            ["$$", "$$"],
+                                                            ["\\[", "\\]"],
+                                                        ],
+                                                        processEscapes: true,
+                                                    },
+                                                    TeX: {
+                                                        extensions: [
+                                                            "AMSmath.js",
+                                                            "AMSsymbols.js",
+                                                            "noErrors.js",
+                                                            "noUndefined.js",
+                                                        ],
+                                                    },
+        
+                                                }}
+                                                style={{width: '100%'}}
+                                            
+                                            />
+                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})}>
+                                                <Text style = {pageStyles.ansButnText}>ANSWER</Text>
+                                            </TouchableHighlight>
+                                            <View style={pageStyles.questOptionsContainer}>
+                                                <View style={[pageStyles.questOptionsButn, Data.correctOption === 'A'?{backgroundColor: 'green'}:Data.userOption === 'A'?{backgroundColor: 'red'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>A</Text>
+                                                </View>
+                                                <View style={[pageStyles.questOptionsButn, Data.correctOption === 'B'?{backgroundColor: 'green'}:Data.userOption === 'B'?{backgroundColor: 'red'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>B</Text>
+                                                </View>
+                                                <View style={[pageStyles.questOptionsButn, Data.correctOption === 'C'?{backgroundColor: 'green'}:Data.userOption === 'C'?{backgroundColor: 'red'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>C</Text>
+                                                </View>
+                                                <View style={[pageStyles.questOptionsButn, Data.correctOption === 'D'?{backgroundColor: 'green'}:Data.userOption === 'D'?{backgroundColor: 'red'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>D</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )
+                                }
+                            }
+                        }}
+                        keyExtractor = {(item,index) => index.toString()}
                     />
-                </SafeAreaView>
+                </View>
             </View>
         )
 
@@ -582,61 +650,84 @@ export default function StartPrac({navigation}) {
         }
     }
 
-    const viewQuest = questIndex => {
-      let questName = sectionToDisplayImgs.questions[questIndex].key.split('/')
-      questName = `Year: ${questName[3]}, Subject: ${subjectNameToDisplay[questName[2]][questName[4]].slice(0, 10)}..., No: ${questIndex+1}`
-      is_view_quest_card_displayed = true
-      setqualityContButnDis({display: 'flex'})
-      setquestViewCard(
-        <View style={pageStyles.pqCard}>
-            <View style={pageStyles.pqHeader}>
-                <Text style={[pageStyles.pqHeaderText]}>{questName}</Text>
-                <TouchableOpacity onPress = {closeViewQuestCard} style={pageStyles.closePqCard}>
-                    <Image resizeMode={'center'} source={require('../icons/back.png')}/>
-                </TouchableOpacity>
-            </View>
-            <View style={pageStyles.pqCont}>
-                <ScrollView style={pageStyles.vetScrol}>
-                    <ScrollView horizontal={true} style={pageStyles.horiScrol}>
-                        <Image style={pageStyles.questionImgStyle} source={sectionToDisplayImgs.questions[questIndex].url}/>
-                        <View style={pageStyles.padder}></View>
-                    </ScrollView>
-                </ScrollView>
-                <View style={pageStyles.navigationCont}>
-                    <TouchableOpacity style={[pageStyles.ansButn]} onPress={() => {showAns(questIndex)}}>
-                        <Text style = {pageStyles.ansButnText}>SHOW ANS</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </View>
-      )
-    }
-
-    const closeViewQuestCard = () => {setqualityContButnDis({display: 'none'}); setquestViewCard(); is_view_quest_card_displayed = false}
-
     const [ansPage, setansPage] = useState()
-    const showAns = ansIndex => {
-        let answerName = sectionToDisplayImgs.answers[ansIndex].key.split('/')
-        answerName = `Year: ${answerName[3]}, Subject: ${subjectNameToDisplay[answerName[2]][answerName[4]].slice(0, 10).replace(' ',  '')}..., No: ${ansIndex+1}`
-        is_ans_card_displayed = true
+
+    const showAns = data => {
         setansPage(
-            <View style={pageStyles.pqCard}>
-                <View style={pageStyles.pqHeader}>
-                    <Text style={[pageStyles.pqHeaderText]}>{answerName}</Text>
-                    <TouchableOpacity onPress = {closeAnsPage} style={pageStyles.closePqCard}>
-                        <Image resizeMode={'center'} source={require('../icons/back.png')}/>
-                    </TouchableOpacity>
-                </View>
-                <View style={pageStyles.pqCont}>
-                    <ScrollView style={pageStyles.vetScrol}>
-                        <ScrollView horizontal={true} style={pageStyles.horiScrol}>
-                            <Image style={pageStyles.questionImgStyle} source={sectionToDisplayImgs.answers[ansIndex].url}/>
-                            <View style={pageStyles.padder}></View>
-                        </ScrollView>
-                    </ScrollView>
-                </View>
-            </View>
-          )
+          <View style={pageStyles.answerCardWrapper}>
+              <View style={pageStyles.answerCard}>
+                  {data&&data.correctAnswer? 
+                      <>
+                          <Text style={pageStyles.correctAnswerComponent}>Correct Answer: {data?data.correctAnswer:''}</Text>
+                          {/* <TouchableHighlight style={pageStyles.fullSoln} onPress={() =>{
+                              console.log('called...')
+                              setuseObjStyles(false)
+                              console.log(useObjStyles)
+                          }} underlayColor='rgba(52, 52, 52, 0)'>
+                              <Text style={pageStyles.fullSolnText}>Show Full Solution</Text>    
+                          </TouchableHighlight> */}
+                      </>
+                      :
+                      <></>
+                  }
+                  
+                  <MathJax
+                      html={
+                          `   
+                              <body style="width: 100%; overflow-y: auto;">
+                                  <style>
+                                      * {
+                                          -webkit-user-select: none;
+                                          -moz-user-select: none;
+                                          -ms-user-select: none;
+                                          user-select: none;
+                                      }
+                                  </style>
+                                  <div style="font-size: 1.3em;
+                                      font-family: Roboto, sans-serif, san Francisco;
+                                      width: 90%;
+                                      margin: auto;
+                                      min-height: 50rem;
+                                  ">
+                                      ${data&&data.answer?data.answer.replace('max-width: 180px;', 'max-width: 90vw;'):''}
+                                  </div>
+                                  <div style="height: 50%"></div>
+                              </body>
+                          
+                          `
+                      }
+                      mathJaxOptions={{
+                          messageStyle: "none",
+                          extensions: ["tex2jax.js"],
+                          jax: ["input/TeX", "output/HTML-CSS"],
+                          tex2jax: {
+                              inlineMath: [
+                                  ["$", "$"],
+                                  ["\\(", "\\)"],
+                              ],
+                              displayMath: [
+                                  ["$$", "$$"],
+                                  ["\\[", "\\]"],
+                              ],
+                              processEscapes: true,
+                          },
+                          TeX: {
+                              extensions: [
+                                  "AMSmath.js",
+                                  "AMSsymbols.js",
+                                  "noErrors.js",
+                                  "noUndefined.js",
+                              ],
+                          },
+  
+                      }}
+                      style={{width: '98%', flex:2, marginTop: '5%', left: '1%'}}
+                  
+                  />
+              </View>
+          </View>
+        )
+        is_ans_card_displayed = true
     }
     
     const closeAnsPage = () => {setansPage(); is_ans_card_displayed = false}

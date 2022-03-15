@@ -173,6 +173,14 @@ export default function pqScreen({navigation}) {
                     html={
                         `   
                             <body style="width: 100%; overflow-y: auto;">
+                                <style>
+                                    * {
+                                        -webkit-user-select: none;
+                                        -moz-user-select: none;
+                                        -ms-user-select: none;
+                                        user-select: none;
+                                    }
+                                </style>
                                 <div style="font-size: 1.3em;
                                     font-family: Roboto, sans-serif, san Francisco;
                                     width: 90%;
@@ -281,6 +289,14 @@ export default function pqScreen({navigation}) {
                                         html={
                                             `
                                                 <body style="width: 100%;">
+                                                    <style>
+                                                        * {
+                                                            -webkit-user-select: none;
+                                                            -moz-user-select: none;
+                                                            -ms-user-select: none;
+                                                            user-select: none;
+                                                        }
+                                                    </style>
                                                     <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
                                                         ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                     </div> 

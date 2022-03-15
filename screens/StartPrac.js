@@ -1,5 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import MathJax from 'react-native-mathjax';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { WebView } from 'react-native-webview';
 import { getToken, getQuestionData } from "../utils/pastquestions.utils";
 import {
@@ -22,13 +24,8 @@ const pqData = require("../Scripts/pqData.json");
 import styles from '../styles/master.js';
 import { FlatList } from 'react-native-gesture-handler';
 
-const sectionToDisplayImgs = {
-    questions: [],
-    answers: [],
-}
 
 let renderStartPracCard = false
-let timerStarted  = false;
 let submitted = false
 let timerInterval = null // this is to prevent memory leak
 let testDate
@@ -199,7 +196,6 @@ export default function StartPrac({navigation}) {
     }
 
     let givenTime = useRef(60*60) //1 hr in secs
-    let currentTime = givenTime.current
     const [timerState, settimerState] = useState('Select Time')
     
     const displayTimeList = () => {
@@ -251,6 +247,7 @@ export default function StartPrac({navigation}) {
         setTimeListState()
     }
 
+    let questionsToDisplay = useRef([])
     const displayPracCard = () => {
         testDate = Date().substr(0, 24) //returns day month year and time
         
@@ -280,8 +277,10 @@ export default function StartPrac({navigation}) {
                 });
                 // console.log(selectedQuestions)
 
-            fiterFunc(selectedQuestions).then(questionsToDisplay=> {
-                console.log('questionsToDisplay.length', questionsToDisplay.length)
+            fiterFunc(selectedQuestions).then(returnedArray=> {
+                questionsToDisplay.current = [... returnedArray]
+                startPrac()
+                // console.log('questionsToDisplay.length', questionsToDisplay.length)
             })
             // timeTestStarted = new Date().getTime()
             
@@ -319,7 +318,7 @@ export default function StartPrac({navigation}) {
 
         return new Promise((resolve) => {
             genRandNum(questionsInSection, noOfQuestions.current).forEach(questionNo => {
-                questionsToDisplay.push(questionsInSection[questionNo])
+                questionsToDisplay.push({... questionsInSection[questionNo]})
             });
             renderStartPracCard = true
             resolve(questionsToDisplay)
@@ -332,15 +331,18 @@ export default function StartPrac({navigation}) {
         questNo = data.questNo //make questNo global
         timeVariable = timerState //make timerState global
         if (data.renderStartPracCard === true && sectionToDisplayImgs.questions.length != 0 && sectionToDisplayImgs.questions[questNo]) { // renders PracCard only when sectionToDisplayImgs is not empty and renderStartPracCard is true 
-            startPrac()
             renderStartPracCard = false // this to prevent multiple renders
         }
     }
     
+    const timerStarted  = useRef(false);
     const startPrac = () => {
-        let path = sectionToDisplayImgs.questions[questNo].url.base64Url
+        let keyIndex = 0
+        const seconds = (currentTime.current%60)
+        const minutes = ((currentTime.current/60)|0)%60
+        const hour  = (currentTime.current/3600)|0
         setPracCard(
-            <View style={pageStyles.pqCard}>
+            <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
                 <View style={pageStyles.pqHeader}>
                     <TouchableOpacity onPress = {()=> {
                         Alert.alert(
@@ -361,172 +363,139 @@ export default function StartPrac({navigation}) {
                     }} style={pageStyles.closePqCard}>
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
-                    <Text style={[pageStyles.timeDisplayed, {left: 25}]}>No. {questNo+1}</Text>
-                    <View style={showTimerSettings}>
-                        <Text style={pageStyles.timeDisplayed}>{timeVariable}</Text>
+                    <View style={[{right: '5%', alignSelf: 'flex-end'}, showTimerSettings]}>
+                        <Text style={pageStyles.timeDisplayed}>{`Time: ${hour<10?'0'+hour:hour}: ${minutes<10?'0'+minutes:minutes}: ${seconds<10?'0'+seconds:seconds}`}</Text>
                     </View>
                 </View>
                 <View style={pageStyles.pqCont}>
-                    <ScrollView style={pageStyles.vetScrol}>
-                        <ScrollView horizontal={true} style={pageStyles.horiScrol}>
-                            <Image style={pageStyles.questionImgStyle} source={sectionToDisplayImgs.questions[questNo].url}/>
-                            <View style={pageStyles.padder}></View>
-                        </ScrollView>
-                    </ScrollView>
-                    <View style={pageStyles.questOptionsContainer}>
-                        <TouchableOpacity onPress={function () {
-                            sectionToDisplayImgs.answers[questNo].userAns = 'A'
-                            setoption1Color({backgroundColor: '#301934'})
-                            setoption2Color({backgroundColor: '#9c27b0'})
-                            setoption3Color({backgroundColor: '#9c27b0'})
-                            setoption4Color({backgroundColor: '#9c27b0'})
-                            renderStartPracCard = true
-                        }} style={[pageStyles.questOptionsButn, {left: '5%'}, option1Color]}>
-                            <Text style={pageStyles.questOptionsText}>A</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={function () {
-                            sectionToDisplayImgs.answers[questNo].userAns = 'B'
-                            setoption1Color({backgroundColor: '#9c27b0'})
-                            setoption2Color({backgroundColor: '#301934'})
-                            setoption3Color({backgroundColor: '#9c27b0'})
-                            setoption4Color({backgroundColor: '#9c27b0'})
-                            renderStartPracCard = true
-                        }} style={[pageStyles.questOptionsButn, {left: '25%'}, option2Color]}>
-                            <Text style={pageStyles.questOptionsText}>B</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={function () {
-                            sectionToDisplayImgs.answers[questNo].userAns = 'C'
-                            setoption1Color({backgroundColor: '#9c27b0'})
-                            setoption2Color({backgroundColor: '#9c27b0'})
-                            setoption3Color({backgroundColor: '#301934'})
-                            setoption4Color({backgroundColor: '#9c27b0'})
-                            renderStartPracCard = true
-                        }} style={[pageStyles.questOptionsButn, {left: '45%'}, option3Color]}>
-                            <Text style={pageStyles.questOptionsText}>C</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={function () {
-                            sectionToDisplayImgs.answers[questNo].userAns = 'D'
-                            setoption1Color({backgroundColor: '#9c27b0'})
-                            setoption2Color({backgroundColor: '#9c27b0'})
-                            setoption3Color({backgroundColor: '#9c27b0'})
-                            setoption4Color({backgroundColor: '#301934'})
-                            renderStartPracCard = true
-                        }} style={[pageStyles.questOptionsButn, {left: '63%'}, option4Color]}>
-                            <Text style={pageStyles.questOptionsText}>D</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={pageStyles.navigationCont}>
-                        <TouchableOpacity style={pageStyles.previousButn} onPress={showPrev}>
-                            <Image source={require('../icons/previous.png')}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={pageStyles.nextButn} onPress={showNext}>
-                            <Image source={require('../icons/next.png')}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={pageStyles.ansButn} onPress={submit}>
-                            <Text style = {pageStyles.ansButnText}>SUBMIT</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <FlatList
+                        data={questionsToDisplay.current}
+                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
+                        renderItem={({item}) => {
+                            if (item && item.content) {
+                                const {Data} = item.content.Data
+                                if (Data) {
+                                    return (
+                                        <View style={{
+                                                borderColor: '#9c27b0',
+                                                borderBottomWidth: 2,
+                                                width: '90%',
+                                                marginVertical: hp('3%'),
+                                                left: '5%',
+                                                justifyContent: 'center'
+                                            }}>
+                                            <MathJax
+                                                html={
+                                                    `
+                                                        <body style="width: 100%;">
+                                                            <style>
+                                                                * {
+                                                                    -webkit-user-select: none;
+                                                                    -moz-user-select: none;
+                                                                    -ms-user-select: none;
+                                                                    user-select: none;
+                                                                }
+                                                            </style>
+                                                            <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                                ${Data.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}
+                                                            </div> 
+                                                        </body>
+                                                    
+                                                    `
+                                                }
+                                                mathJaxOptions={{
+                                                    messageStyle: "none",
+                                                    extensions: ["tex2jax.js"],
+                                                    jax: ["input/TeX", "output/HTML-CSS"],
+                                                    tex2jax: {
+                                                        inlineMath: [
+                                                            ["$", "$"],
+                                                            ["\\(", "\\)"],
+                                                        ],
+                                                        displayMath: [
+                                                            ["$$", "$$"],
+                                                            ["\\[", "\\]"],
+                                                        ],
+                                                        processEscapes: true,
+                                                    },
+                                                    TeX: {
+                                                        extensions: [
+                                                            "AMSmath.js",
+                                                            "AMSsymbols.js",
+                                                            "noErrors.js",
+                                                            "noUndefined.js",
+                                                        ],
+                                                    },
+        
+                                                }}
+                                                style={{width: '100%'}}
+                                            
+                                            />
+                                            <View style={pageStyles.questOptionsContainer}>
+                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
+                                                    Data.userOption = 'A'
+                                                    startPrac()
+                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'A'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>A</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
+                                                    Data.userOption = 'B'
+                                                    startPrac()
+                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'B'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>B</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
+                                                    Data.userOption = 'C'
+                                                    startPrac()
+                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'C'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>C</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
+                                                    Data.userOption = 'D'
+                                                    startPrac()
+                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'D'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
+                                                    <Text style={pageStyles.questOptionsText}>D</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    )
+                                }
+                            }
+                        }}
+                        keyExtractor = {(item,index) => index.toString()}
+                    />
                 </View>
+                <TouchableHighlight style={pageStyles.submitButn} underlayColor='rgba(52, 52, 52, 0)' onPress={submit}>
+                    <Text style={pageStyles.submitButnText}>Submit</Text>
+                </TouchableHighlight>
             </View>
         )
         start_Prac_Card_Displayed = true
-        if (!timerStarted && enableTimerButnValue.current === 'Timer: on') {
+        if (!timerStarted.current && enableTimerButnValue.current === 'Timer: on') {
             startCountDown()
         }
     }
 
+    let currentTime = useRef(givenTime.current)
     function startCountDown() {
-        currentTime = givenTime.current // updating current time in other to start counting
-        timerStarted = true
+        currentTime.current = givenTime.current // updating current time in other to start counting
+        timerStarted.current = true
         timerInterval = setInterval(() => {
-            if (currentTime>0) {
-                currentTime--
-                renderStartPracCard = true //this is to re-render the PracCard to effect the change of settimerState
-                settimerState(`Time: ${parseInt(currentTime/3600)}:${parseInt(currentTime/60)%60}:${(currentTime%60)}`) //hr:min:sec
+            if (currentTime.current>0) {
+                currentTime.current--
+                startPrac()
+                console.log(timerState, currentTime.current)
             } else {
                 submit()
             }
         }, 1000)
     }
 
-    const showPrev = () => {
-        if (sectionToDisplayImgs.questions[val-1]) { //if there is a question before the one that has an index of val
-            val -=1
-            if (sectionToDisplayImgs.answers[val].userAns === 'A') {
-                setoption1Color({backgroundColor: '#301934'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            } else if (sectionToDisplayImgs.answers[val].userAns === 'B') {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#301934'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            } else if (sectionToDisplayImgs.answers[val].userAns === 'C') {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#301934'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            } else if (sectionToDisplayImgs.answers[val].userAns === 'D') {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#301934'})
-            } else {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            }
-        } else {
-            alert('You Are At The Beginning!')
-        }
-        renderStartPracCard = true
-        setquestionDisplayed(val)
-    }
-    
-    let val = questionDisplayed
-    function showNext() {
-        if (sectionToDisplayImgs.questions[val+1]) { //if there is a question after the one that has an index of val
-            val +=1
-            if (sectionToDisplayImgs.answers[val].userAns === 'A') {
-                setoption1Color({backgroundColor: '#301934'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            } else if (sectionToDisplayImgs.answers[val].userAns === 'B') {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#301934'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            } else if (sectionToDisplayImgs.answers[val].userAns === 'C') {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#301934'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            } else if (sectionToDisplayImgs.answers[val].userAns === 'D') {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#301934'})
-            } else {
-                setoption1Color({backgroundColor: '#9c27b0'})
-                setoption2Color({backgroundColor: '#9c27b0'})
-                setoption3Color({backgroundColor: '#9c27b0'})
-                setoption4Color({backgroundColor: '#9c27b0'})
-            }
-        } else {
-            alert('You Have Reached The End!')
-        }
-        renderStartPracCard = true
-        setquestionDisplayed(val)
-    }
-
     const closePracCard = () => {
         setqualityContButnDis({display: 'none'})
         start_Prac_Card_Displayed = false
         questNo = 0 //this is so that questions start from begining everytime PracCard is rerendered
-        timerStarted  = false
+        timerStarted.current  = false
         setPracCard()
         setquestionDisplayed(questNo)
         clearInterval(timerInterval)
@@ -545,7 +514,6 @@ export default function StartPrac({navigation}) {
         setoption2Color({backgroundColor: '#9c27b0'})
         setoption3Color({backgroundColor: '#9c27b0'})
         setoption4Color({backgroundColor: '#9c27b0'})
-        renderStartPracCard = false
     }
     
     function submit() {
@@ -613,37 +581,6 @@ export default function StartPrac({navigation}) {
             console.log(error);
         }
     }
-
-    const subjectNameToDisplay = {
-        maths: {
-            "001" : 'Advanced Pure Mathematics',
-            "002": 'Calculus',
-            "003": 'Applied Mathematics',
-            "004": 'Statistics'
-        }, 
-
-        physics: {
-            "001" :'MECHANICS AND PROPERTIES OF MATTER',
-            "002": 'HEAT, WAVES AND OPTICS',
-            "003": 'ELECTRICITY AND MAGNETISM',
-            "004": 'MODERN PHYSICS'
-        },
-
-        chemistry: {
-            "001" :'General Chemistry',
-            "002": 'Physical Chemistry',
-            "003": 'Inorganic Chemistry',
-            "004": 'Organic Chemistry'
-        },
-
-        biology: {
-            "001" :'General Biology',
-            "002": 'Microbiology',
-            "003": 'Basic Botany',
-            "004": 'Fundamental Of Zoology'
-        }
-    }
-    
 
     const viewQuest = questIndex => {
       let questName = sectionToDisplayImgs.questions[questIndex].key.split('/')
@@ -763,7 +700,6 @@ export default function StartPrac({navigation}) {
             {resultState}
             {questViewCard}
             {ansPage}
-            {/* {makeGlobal({questNo: questionDisplayed, renderStartPracCard: renderStartPracCard})} */}
             <StatusBar style="light" />
         </SafeAreaView>
     )

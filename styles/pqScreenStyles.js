@@ -361,13 +361,14 @@ export default StyleSheet.create({
     },
 
     questionStatusBar: {
-        position: 'relative',
-        top: '25%',
-        width: wp('90%'),
-        height: hp('8%'),
-        left: wp('5%'),
+        // top: '25%',
+        width: '100%',
+        height: '35%',
+        // left: wp'5%'),
         backgroundColor: colors.appColor,
         marginBottom: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         borderBottomWidth: 2,
         borderBottomColor: colors.textColor,
     },
@@ -384,28 +385,12 @@ export default StyleSheet.create({
         paddingTop: 20,
     },
 
-    correctAnswer: {
+    resultOptionText: {
         color: colors.textColor,
         fontSize: hp('2%'),
-        width: '40%',
-        height: 60,
-        left: '15%',
+        // width: '40%',
         textAlign: 'center',
-        top: -58,
-        position: 'relative',
-        paddingTop: 20
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    userAns: {
-        color: colors.textColor,
-        fontSize: hp('2%'),
-        width: '65%',
-        height: 60,
-        left: '40%',
-        textAlign: 'center',
-        top: -120,
-        position: 'relative',
-        paddingTop: 20
-    },
-    
 })

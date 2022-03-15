@@ -236,20 +236,14 @@ export default StyleSheet.create({
         borderWidth: 1,
         width: '35%',
         marginTop: '5%',
-        // right: '20%',
         height: hp('6%'),
         alignSelf: 'center'
     },
 
     timeDisplayed: {
         color: '#fff',
-        position: 'absolute',
         fontSize: hp('2%'),
-        // width: '45%',
-        height: 57,
-        alignSelf: 'flex-end',
-        top: 0,
-        paddingTop: 15,
+        justifyContent: 'center',
         textAlign: 'center',
     },
 
@@ -277,12 +271,32 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
 
+    submitButn: {
+        position: 'absolute',
+        backgroundColor: colors.appColor,
+        width: '100%',
+        height: '10%',
+        top: '90%',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        borderTopRightRadius: 25,
+        borderTopLeftRadius: 25,
+    },
+
+    submitButnText: {
+        color: '#fff',
+        justifyContent: 'center',
+        width: '100%',
+        alignContent: 'center',
+        fontSize: hp('3.3%'),
+        textAlign: 'center',
+    },
+
     listOptionsCont: {
         width: wp('100%'),
         top: hp('17%'),
         height: hp('83%'),
         justifyContent: 'center',
-
     },
 
     labelHeading: {
@@ -309,26 +323,25 @@ export default StyleSheet.create({
     },
     
     questOptionsContainer: {
-        position: 'absolute',
-        width: wp('130%'),
-        height: hp('14%'),
-        top: questOptionsContainerTop,
-        left: '0%',
+        width: '100%',
+        flexDirection: 'row',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        justifyContent: 'space-around',
         backgroundColor: colors.appColor,
     },
 
     questOptionsButn: {
-        position: 'absolute',
-        width: 50,
+        width: '17%',
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
     },
 
     questOptionsText: {
-        padding: -20,
         color: colors.textColor,
         fontSize: 25,
+        width: '100%',
         textAlign: 'center',
     },
 

@@ -138,10 +138,10 @@ export default function StartPrac({navigation}) {
     const selectedCourse = useRef('Course: ')
     const selectedSubject = useRef('Subject: ')
     const displayOptions = labelName => {
-        if(pathObj.current.course ==='') {
+        if(pathObj.current.course ==='' || labelName == 'Course') {
             getCourses()
         } else {
-            getSubjects()
+            getSubjects(pathObj.current.course)
         }
         setOptions(
             <View style={[pageStyles.listOptionsCont, {position: 'absolute', zIndex: 5, backgroundColor: '#fff'}]}>
@@ -600,7 +600,12 @@ export default function StartPrac({navigation}) {
                                                 style={{width: '100%'}}
                                             
                                             />
-                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})}>
+                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> Alert.alert(`Correct Option: ${Data.correctOption}`, '', [
+                                                {
+                                                    text: 'View Solution',
+                                                    onPress: ()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})
+                                                }
+                                            ])}>
                                                 <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                             </TouchableHighlight>
                                             <View style={[pageStyles.questOptionsContainer, {borderTopLeftRadius: 0, borderTopRightRadius: 0}]}>

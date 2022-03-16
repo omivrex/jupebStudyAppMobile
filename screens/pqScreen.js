@@ -149,7 +149,6 @@ export default function pqScreen({navigation}) {
     }
 
     const [ansCard, setansCard] = useState()
-    const [useObjStyles, setuseObjStyles] = useState(true)
     const showAns = data => {
       setansCard(
         <View style={pageStyles.answerCardWrapper}>
@@ -157,13 +156,6 @@ export default function pqScreen({navigation}) {
                 {data&&data.correctAnswer? 
                     <>
                         <Text style={pageStyles.correctAnswerComponent}>Correct Answer: {data?data.correctAnswer:''}</Text>
-                        {/* <TouchableHighlight style={pageStyles.fullSoln} onPress={() =>{
-                            console.log('called...')
-                            setuseObjStyles(false)
-                            console.log(useObjStyles)
-                        }} underlayColor='rgba(52, 52, 52, 0)'>
-                            <Text style={pageStyles.fullSolnText}>Show Full Solution</Text>    
-                        </TouchableHighlight> */}
                     </>
                     :
                     <></>
@@ -220,7 +212,6 @@ export default function pqScreen({navigation}) {
 
                     }}
                     style={{width: '98%', flex:2, marginTop: '5%', left: '1%'}}
-                
                 />
             </View>
         </View>
@@ -268,7 +259,7 @@ export default function pqScreen({navigation}) {
                 <View style={{width: wp('100%'), top: hp('17%')}}>
                     <View style={pageStyles.pqHeader}>
                         <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()}</Text>
-                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {!IS_ANS_CARD_DISPLAYED?closePqCard:closeAnsPage} style={pageStyles.closePqCard}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {()=> !IS_ANS_CARD_DISPLAYED?closePqCard():closeAnsPage()} style={pageStyles.closePqCard}>
                             <Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>
                         </TouchableHighlight>
                     </View>
@@ -332,7 +323,16 @@ export default function pqScreen({navigation}) {
                                         style={{width: '100%'}}
                                     
                                     />
-                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})}>
+                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> {
+                                        item.data.correctOption !== ''?
+                                            Alert.alert(`Correct Option: ${item.data.correctOption}`, '', [
+                                                {
+                                                    text: 'View Solution',
+                                                    onPress: ()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})
+                                                }
+                                            ])
+                                        : showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})
+                                    }}>
                                         <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                     </TouchableHighlight>
                                 </View>

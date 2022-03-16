@@ -369,10 +369,10 @@ export default function newsScreen({navigation}) {
               setRESOURCES_CARD(
                   <View style={pageStyles.card}>
                       <ScrollView style={{height: hp('100%'), marginBottom: 50}}>
-                          <Text style={[pageStyles.header]}>PERIODIC TABLE OF ELEMENTS</Text>
+                          {/* <Text style={[pageStyles.header]}>PERIODIC TABLE OF ELEMENTS</Text>
                           <ScrollView style={{position: 'relative', top: hp('10%'), marginBottom: hp('15%') }} horizontal={true}>
                               <Image style={{left: wp('5%')}} source={require('../icons/periodicTable.png')}/>
-                          </ScrollView>
+                          </ScrollView> */}
       
                           <Text style={[pageStyles.header, {marginTop: hp('6%')}]}>COMMON FUNCTIONAL GROUPS</Text>
                           <ScrollView style={{position: 'relative', top: hp('10%'), marginBottom: hp('15%') }} horizontal={true}>

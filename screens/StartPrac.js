@@ -138,8 +138,10 @@ export default function StartPrac({navigation}) {
     const selectedCourse = useRef('Course: ')
     const selectedSubject = useRef('Subject: ')
     const displayOptions = labelName => {
-        if(labelName==='Course') {
+        if(pathObj.current.course ==='') {
             getCourses()
+        } else {
+            getSubjects()
         }
         setOptions(
             <View style={[pageStyles.listOptionsCont, {position: 'absolute', zIndex: 5, backgroundColor: '#fff'}]}>
@@ -150,13 +152,13 @@ export default function StartPrac({navigation}) {
                     renderItem={({item}, index)=> {
                         return (
                             <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
-                                if (labelName==='Course') {
+                                if (labelName==='Subject') {
+                                    pathObj.current.subject = item
+                                    selectedSubject.current = `${label.current}: ${item.toUpperCase()}`
+                                } else {
                                     pathObj.current.course = item
                                     selectedCourse.current = `${label.current}: ${item.toUpperCase()}`
                                     getSubjects(item)
-                                } else {
-                                    pathObj.current.subject = item
-                                    selectedSubject.current = `${label.current}: ${item.toUpperCase()}`
                                 }
                                 hideOptions()
                             }}>
@@ -601,7 +603,7 @@ export default function StartPrac({navigation}) {
                                             <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})}>
                                                 <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                             </TouchableHighlight>
-                                            <View style={pageStyles.questOptionsContainer}>
+                                            <View style={[pageStyles.questOptionsContainer, {borderTopLeftRadius: 0, borderTopRightRadius: 0}]}>
                                                 <View style={[pageStyles.questOptionsButn, Data.correctOption === 'A'?{backgroundColor: 'green'}:Data.userOption === 'A'?{backgroundColor: 'red'}:{backgroundColor: '#9c27b0'}]}>
                                                     <Text style={pageStyles.questOptionsText}>A</Text>
                                                 </View>
@@ -637,8 +639,12 @@ export default function StartPrac({navigation}) {
     }
     
     function closeResultArea() {
-        closePracCard()
-        setresultState()
+        if (is_ans_card_displayed) {
+            closeAnsPage()
+        } else {
+            closePracCard()
+            setresultState()
+        }
         is_result_card_displayed = false
     }
 
@@ -768,6 +774,7 @@ export default function StartPrac({navigation}) {
                     <Text style={pageStyles.listOptionsText}>{selectedCourse.current}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.listOptions} onPress = {()=> {
+                    console.log(pathObj.current!== '')
                     pathObj.current.course !== ''?displayOptions('Subject'): displayOptions('Course')
                 }}>
                     <Text style={pageStyles.listOptionsText}>{selectedSubject.current}</Text>

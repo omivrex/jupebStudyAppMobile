@@ -322,16 +322,6 @@ export default function StartPrac({navigation}) {
         })
     }
 
-    let questNo = questionDisplayed
-    let timeVariable = null //this is to prevent memory leak
-    function makeGlobal(data) {
-        questNo = data.questNo //make questNo global
-        timeVariable = timerState //make timerState global
-        if (data.renderStartPracCard === true && sectionToDisplayImgs.questions.length != 0 && sectionToDisplayImgs.questions[questNo]) { // renders PracCard only when sectionToDisplayImgs is not empty and renderStartPracCard is true 
-            renderStartPracCard = false // this to prevent multiple renders
-        }
-    }
-    
     const timerStarted  = useRef(false);
     const startPrac = () => {
         let keyIndex = 0
@@ -481,7 +471,6 @@ export default function StartPrac({navigation}) {
             if (currentTime.current>0) {
                 currentTime.current--
                 startPrac()
-                console.log(timerState, currentTime.current)
             } else {
                 submit()
             }
@@ -669,14 +658,7 @@ export default function StartPrac({navigation}) {
               <View style={pageStyles.answerCard}>
                   {data&&data.correctAnswer? 
                       <>
-                          <Text style={pageStyles.correctAnswerComponent}>Correct Answer: {data?data.correctAnswer:''}</Text>
-                          {/* <TouchableHighlight style={pageStyles.fullSoln} onPress={() =>{
-                              console.log('called...')
-                              setuseObjStyles(false)
-                              console.log(useObjStyles)
-                          }} underlayColor='rgba(52, 52, 52, 0)'>
-                              <Text style={pageStyles.fullSolnText}>Show Full Solution</Text>    
-                          </TouchableHighlight> */}
+                        <Text style={pageStyles.correctAnswerComponent}>Correct Answer: {data?data.correctAnswer:''}</Text>
                       </>
                       :
                       <></>

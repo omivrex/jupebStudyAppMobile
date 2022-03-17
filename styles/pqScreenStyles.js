@@ -273,23 +273,26 @@ export default StyleSheet.create({
 
     submitButn: {
         position: 'absolute',
-        backgroundColor: colors.appColor,
         width: '100%',
-        height: '10%',
-        top: '90%',
-        alignSelf: 'center',
+        height: '7%',
+        top: '93%',
         justifyContent: 'center',
-        borderTopRightRadius: 25,
-        borderTopLeftRadius: 25,
+        borderBottomColor: colors.appColor,
+        borderBottomWidth: 8,
     },
-
+    
     submitButnText: {
         color: '#fff',
+        backgroundColor: colors.appColor,
         justifyContent: 'center',
-        width: '100%',
+        width: '40%',
+        height: '100%',
+        left: '30%',
         alignContent: 'center',
         fontSize: hp('3.3%'),
         textAlign: 'center',
+        borderTopRightRadius: 45,
+        borderTopLeftRadius: 45,
     },
 
     listOptionsCont: {

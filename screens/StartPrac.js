@@ -328,6 +328,8 @@ export default function StartPrac({navigation}) {
         const seconds = (currentTime.current%60)
         const minutes = ((currentTime.current/60)|0)%60
         const hour  = (currentTime.current/3600)|0
+        const dataArr = [... questionsToDisplay.current]
+        /** there seems to be a performance issue when options are clicked, this might be due to the re rendering of the entire questions whenever a new options is selected */
         setPracCard(
             <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
                 <View style={pageStyles.pqHeader}>
@@ -356,7 +358,7 @@ export default function StartPrac({navigation}) {
                 </View>
                 <View style={pageStyles.pqCont}>
                     <FlatList
-                        data={questionsToDisplay.current}
+                        data={dataArr}
                         contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
                         renderItem={({item}) => {
                             if (item && item.content) {
@@ -481,6 +483,7 @@ export default function StartPrac({navigation}) {
         setqualityContButnDis({display: 'none'})
         start_Prac_Card_Displayed = false
         timerStarted.current  = false
+        questionsToDisplay.current = []
         setPracCard()
         clearInterval(timerInterval)
         if (givenTime.current === (15*60)) {
@@ -589,12 +592,19 @@ export default function StartPrac({navigation}) {
                                                 style={{width: '100%'}}
                                             
                                             />
-                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> Alert.alert(`Correct Option: ${Data.correctOption}`, '', [
-                                                {
-                                                    text: 'View Solution',
-                                                    onPress: ()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})
-                                                }
-                                            ])}>
+                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> 
+                                                Alert.alert(`Correct Option: ${Data.correctOption}`, '', [
+                                                    {
+                                                        text: 'View Solution',
+                                                        onPress: ()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})
+                                                    },
+
+                                                    {
+                                                        text: 'Cancel',
+                                                        onPress: () => ''
+                                                    }
+                                                ], {cancelable: true})
+                                            }>
                                                 <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                             </TouchableHighlight>
                                             <View style={[pageStyles.questOptionsContainer, {borderTopLeftRadius: 0, borderTopRightRadius: 0}]}>

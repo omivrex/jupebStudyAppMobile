@@ -329,8 +329,13 @@ export default function pqScreen({navigation}) {
                                                 {
                                                     text: 'View Solution',
                                                     onPress: ()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})
+                                                },
+
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => ''
                                                 }
-                                            ])
+                                            ], {cancelable: true})
                                         : showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})
                                     }}>
                                         <Text style = {pageStyles.ansButnText}>ANSWER</Text>

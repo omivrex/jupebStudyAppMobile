@@ -63,7 +63,7 @@ export default function StartPrac({navigation}) {
 
                     {
                         text: 'NO',
-                        onPress: ()=> console.log('user said no')
+                        onPress: ()=> 'user said no'
                     }
                 ]
             )
@@ -132,7 +132,6 @@ export default function StartPrac({navigation}) {
             }
         });
         optionsRef.current.push('ALL')
-        console.log(pathObj.current)
     }
     
     const selectedCourse = useRef('Course: ')
@@ -250,7 +249,6 @@ export default function StartPrac({navigation}) {
         
         let selectedQuestions = []
         
-        console.log(pathObj.current)
         if (pathObj.current.course !== '') { //if the course has been selected
             pqData.forEach(course => {
                 if (course.courseName === pathObj.current.course) {
@@ -262,7 +260,6 @@ export default function StartPrac({navigation}) {
                                     });
                                 } else { //else if user wants a particular subject
                                     if (subject.subject === pathObj.current.subject) {
-                                        console.log(subject.subject)
                                         subject.content.forEach(section => {
                                             section.section=== 'Objective'? selectedQuestions = selectedQuestions.concat(section.content):''
                                         });
@@ -272,14 +269,11 @@ export default function StartPrac({navigation}) {
                         });
                     }
                 });
-                // console.log(selectedQuestions)
 
             fiterFunc(selectedQuestions).then(returnedArray=> {
                 questionsToDisplay.current = [... returnedArray]
                 startPrac()
-                // console.log('questionsToDisplay.length', questionsToDisplay.length)
             })
-            // timeTestStarted = new Date().getTime()
             
         } else {
             Alert.alert('', 'You Have Not Selected A course!')
@@ -297,7 +291,6 @@ export default function StartPrac({navigation}) {
             }
             indexesToSelect = [... new Set(indexesToSelect)]
         }
-        // console.log(indexesToSelect, indexesToSelect.length, noOfQuestionsToSelect)
         return indexesToSelect
     }
     
@@ -754,7 +747,7 @@ export default function StartPrac({navigation}) {
 
                                 {
                                     text: 'NO',
-                                    onPress: ()=> console.log('Do nothing'),
+                                    onPress: ()=> 'Do nothing',
                                     style: 'cancel'
                                 },
 
@@ -771,7 +764,6 @@ export default function StartPrac({navigation}) {
                     <Text style={pageStyles.listOptionsText}>{selectedCourse.current}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={pageStyles.listOptions} onPress = {()=> {
-                    console.log(pathObj.current!== '')
                     pathObj.current.course !== ''?displayOptions('Subject'): displayOptions('Course')
                 }}>
                     <Text style={pageStyles.listOptionsText}>{selectedSubject.current}</Text>

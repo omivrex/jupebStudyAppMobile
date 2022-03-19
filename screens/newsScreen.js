@@ -31,11 +31,6 @@ const news = [
         name: 'Relevant Materials',
         data: []
     }, 
-
-    {
-        name: 'Classes And Exam Support',
-        data: []
-    }, 
 ]
 
 let card_displayed = false
@@ -167,11 +162,6 @@ export default function newsScreen({navigation}) {
             </View>
         )
         card_displayed = true
-    }
-
-
-    const displayLectureNotesCard = () => {
-
     }
 
     function displayGuideCard() {
@@ -369,6 +359,18 @@ export default function newsScreen({navigation}) {
         })
     }
 
+    const displayLectureNotesCard = () => {
+        setlectureNotesCard(
+            <View style={pageStyles.card}>
+                <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
+                <Text style={pageStyles.nullText}>
+                    Not Available Yet
+                </Text>
+            </View>
+        )
+        card_displayed = true
+    }
+
     async function display_resources_card() {
         getToken(DISPLAY_BLOCKED_FEATURE_CARD).then(token => {
           if (token === 'true') {
@@ -452,7 +454,7 @@ export default function newsScreen({navigation}) {
                         <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayMatCard}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayLectureNotesCard}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/lectureNotes.png')}/>
                         <Text style={pageStyles.contentText}>LECTURE NOTES</Text>

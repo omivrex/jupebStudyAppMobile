@@ -511,6 +511,7 @@ export default function StartPrac({navigation}) {
             }
         });
         is_result_card_displayed = true
+        setqualityContButnDis({display: 'flex'})
         setresultState(
             <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
                 <View style={pageStyles.pqHeader}>
@@ -751,7 +752,7 @@ export default function StartPrac({navigation}) {
                                     style: 'cancel'
                                 },
 
-                            ]
+                            ], {cancelable: true}
                         )
                 }}>
                     <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/info.png')}/>

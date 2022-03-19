@@ -12,6 +12,7 @@ import {
     SafeAreaView,
     Image,
     Alert,
+    Linking,
     FlatList,
     BackHandler} from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -61,6 +62,7 @@ export default function pqScreen({navigation}) {
                             if (tempArray.length===returnedArray.length) {
                                 preventBackHandler = true
                                 renderCollection = false
+                                setqualityContButnDis({display: 'flex'})
                                 setcollectionData([...tempArray])
                                 setloading()
                             }
@@ -228,6 +230,26 @@ export default function pqScreen({navigation}) {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>PAST QUESTIONS</Text>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)'style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
+                    Alert.alert('Quality Control Service',
+                        `Do You Find A Problem With This Question? \\nContact our Admin on \\nWhatsAapp To lay complains`,
+                        [
+                            {
+                                text: 'YES',
+                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP`)
+                            }, 
+
+                            {
+                                text: 'NO',
+                                onPress: ()=> console.log('Do nothing'),
+                                style: 'cancel'
+                            },
+
+                        ], 
+                    {cancelable: true})
+                }}>
+                    <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/info.png')}/>
+                </TouchableHighlight>
                 <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={styles.menuIcon} onPress={openMenu}>
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableHighlight>

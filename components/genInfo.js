@@ -92,10 +92,6 @@ function GenInfoComponent({data}) {
                                 
                                 />
                             </View>
-                            // <View style={pageStyles.newsCont}>
-                                // <Text style={pageStyles.topic}>{item.Topic}:</Text>
-                            //     <Text style={pageStyles.body}>{item.Body}</Text>
-                            // </View>
                         )}
                         keyExtractor = {(item, index) => index.toString()}
                     />

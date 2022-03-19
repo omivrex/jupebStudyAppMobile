@@ -2,8 +2,9 @@ import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { WebView } from 'react-native-webview';
-import { getToken, getQuestionData } from "../utils/pastquestions.utils";
+import { getToken } from "../utils/pastquestions.utils";
+import LoadingComponent from "../components/loading.component"
+
 import {
     Text,
     View,
@@ -13,7 +14,6 @@ import {
     Image,
     Linking,
     Alert,
-    ScrollView,
     BackHandler
 } from 'react-native';
 import { usePreventScreenCapture } from 'expo-screen-capture'
@@ -93,8 +93,7 @@ export default function StartPrac({navigation}) {
     const [questViewCard, setquestViewCard] = useState()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
     const [resultState, setresultState] = useState()
-
-    const [questionDisplayed, setquestionDisplayed] = useState(0)
+    const [loading, setloading] = useState()
 
     const optionsRef = useRef([])
     const label = useRef('')
@@ -280,6 +279,18 @@ export default function StartPrac({navigation}) {
         }
     }
 
+    const displayLoadingComponent = (timeout) => {
+        setloading(
+            <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
+                <LoadingComponent />
+            </View>
+        )
+
+        setTimeout(()=> {
+            setloading()
+        }, timeout)
+    }
+
     function genRandNum(questionsInSection, noOfQuestionsToSelect) {
         let indexesToSelect = []
         let randomNum
@@ -316,7 +327,8 @@ export default function StartPrac({navigation}) {
     }
 
     const timerStarted  = useRef(false);
-    const startPrac = () => {
+    const startPrac = (shouldDisplayLoadingComponent, customTime) => {
+        shouldDisplayLoadingComponent === false?'':displayLoadingComponent(customTime?customTime:2000)
         let keyIndex = 0
         const seconds = (currentTime.current%60)
         const minutes = ((currentTime.current/60)|0)%60
@@ -416,25 +428,25 @@ export default function StartPrac({navigation}) {
                                             <View style={pageStyles.questOptionsContainer}>
                                                 <TouchableOpacity keyIndex={keyIndex} onPress={function () {
                                                     Data.userOption = 'A'
-                                                    startPrac()
+                                                    startPrac(true, 100)
                                                 }} style={[pageStyles.questOptionsButn, Data.userOption === 'A'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                                                     <Text style={pageStyles.questOptionsText}>A</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity keyIndex={keyIndex} onPress={function () {
                                                     Data.userOption = 'B'
-                                                    startPrac()
+                                                    startPrac(true, 100)
                                                 }} style={[pageStyles.questOptionsButn, Data.userOption === 'B'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                                                     <Text style={pageStyles.questOptionsText}>B</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity keyIndex={keyIndex} onPress={function () {
                                                     Data.userOption = 'C'
-                                                    startPrac()
+                                                    startPrac(true, 100)
                                                 }} style={[pageStyles.questOptionsButn, Data.userOption === 'C'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                                                     <Text style={pageStyles.questOptionsText}>C</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity keyIndex={keyIndex} onPress={function () {
                                                     Data.userOption = 'D'
-                                                    startPrac()
+                                                    startPrac(true, 100)
                                                 }} style={[pageStyles.questOptionsButn, Data.userOption === 'D'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                                                     <Text style={pageStyles.questOptionsText}>D</Text>
                                                 </TouchableOpacity>
@@ -465,7 +477,7 @@ export default function StartPrac({navigation}) {
         timerInterval = setInterval(() => {
             if (currentTime.current>0) {
                 currentTime.current--
-                startPrac()
+                startPrac(false)
             } else {
                 submit()
             }
@@ -493,6 +505,7 @@ export default function StartPrac({navigation}) {
     }
     
     function submit() {
+        displayLoadingComponent(2000)
         let score = 0
         submitted = true
         let noOfQuestionsAttempted = 0
@@ -788,6 +801,7 @@ export default function StartPrac({navigation}) {
             {resultState}
             {questViewCard}
             {ansPage}
+            {loading}
             <StatusBar style="light" />
         </SafeAreaView>
     )

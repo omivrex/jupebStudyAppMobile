@@ -107,6 +107,7 @@ export default function newsScreen({navigation}) {
     const [aboutCard, setaboutCard] = useState()
     const [guideCard, setguideCard] = useState()
     const [matCard, setmatCard] = useState()
+    const [lectureNotesCard, setlectureNotesCard] = useState()
     const [RESOURCES_CARD, setRESOURCES_CARD] = useState()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
 
@@ -166,6 +167,11 @@ export default function newsScreen({navigation}) {
             </View>
         )
         card_displayed = true
+    }
+
+
+    const displayLectureNotesCard = () => {
+
     }
 
     function displayGuideCard() {
@@ -320,7 +326,7 @@ export default function newsScreen({navigation}) {
             }
         } catch (error) {
             console.log(error);
-            Alert.alert('', 'Unable To Serve Resource \n Are You Offline?')
+            Alert.alert('', 'Unable To Serve Resource \n Are You Offline?', [{text: 'Ok', onPress: () => ''}], {cancelable: true})
         }
         card_displayed = true
     }
@@ -446,6 +452,12 @@ export default function newsScreen({navigation}) {
                         <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
                     </View>
                 </TouchableHighlight>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayMatCard}>
+                    <View>
+                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/lectureNotes.png')}/>
+                        <Text style={pageStyles.contentText}>LECTURE NOTES</Text>
+                    </View>
+                </TouchableHighlight>
                 <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={display_resources_card}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/resources.png')}/>
@@ -458,6 +470,7 @@ export default function newsScreen({navigation}) {
             {guideCard}
             {syllabulsCard}
             {matCard}
+            {lectureNotesCard}
             {RESOURCES_CARD}
             {loading}
             {BLOCKED_FEATURE_CARD}

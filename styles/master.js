@@ -105,21 +105,29 @@ export default StyleSheet.create({
     },
     
     body: {
-      height: '260%',
+      height: hp('83%'),
       width: '100%',
-      position: 'absolute',
-      top: '5%',
-      flex: 1,
-      zIndex: -3
+      // position: 'absolute',
+      top: hp('17%'),
+      // flex: 1,
+      // zIndex: -3
+    },
+
+    blockWrapper: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      width: '100%',
     },
     
     block: {
       backgroundColor: colors.appColor,
-      width: wp('77%'),
-      height: blockHeight,
-      marginTop: hp('12%'),
+      width: wp('40%'),
+      height: '40%',
+      marginTop: '10%',
       alignSelf: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      borderRadius: 25,
     },
 
     blockText: {
@@ -134,7 +142,7 @@ export default StyleSheet.create({
     },
 
     blockIcon: {
-      width: wp('30%'),
+      width: wp('10%'),
       position: "relative",
       alignSelf: 'center',
       flex: 1,
@@ -142,10 +150,11 @@ export default StyleSheet.create({
     },
 
     scrollView: {
-      height: '35%', //this must be less than parent height up to 5x lesser
+      // height: '35%', //this must be less than parent height up to 5x lesser
       width: '100%',
-      top: '1%',
-      position: "absolute",
+      flex: 0.5,
+      // top: '1%',
+      // position: "absolute",
     },
 
     splashCard: {

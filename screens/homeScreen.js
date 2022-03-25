@@ -149,45 +149,7 @@ export default function homeScreen({navigation}) {
 
       <View style={styles.body}>
         <ScrollView style={styles.scrollView}>
-            <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
-              isGenInfoCompDisplayed = true
-              setgenInfoComp(<GenInfoComponent data={data.current}/>)
-            }} style={[
-              styles.block,
-              {
-                flexDirection: 'column',
-                height: hp('25%'),
-                width: wp('90%')
-              }
-            ]}>
-              <>
-                <Text style={{
-                  alignSelf: 'flex-start',
-                  color: colors.textColor,
-                  width: '100%',
-                  textAlign: 'center',
-                  fontSize: hp('2.6%'),
-                  textAlignVertical: 'center',
-                  flex: 2,
-                  zIndex: 10,
-                }}>
-                  General Information
-                </Text>
-                
-                <View style={{
-                  flexDirection: 'column',
-                  alignSelf: 'flex-end',
-                  width: '100%',
-                  flex: 5,
-                  borderWidth: 1,
-                  borderStyle: 'solid',
-                  backgroundColor: colors.backgroundColor,
-                  borderColor: colors.appColor
-                }}>
-                  {genInfoPreview}
-                </View>
-              </>
-            </TouchableHighlight>
+          <View style={styles.blockWrapper}>
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToPqPage}>
               <>
                 <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/pQIcon.png')}/>
@@ -208,7 +170,53 @@ export default function homeScreen({navigation}) {
                 <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
               </>
             </TouchableHighlight>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
+              <>
+                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/cgpaIcon.png')}/>
+                <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
+              </>
+            </TouchableHighlight>
+          </View>
         </ScrollView>
+        <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
+          isGenInfoCompDisplayed = true
+          setgenInfoComp(<GenInfoComponent data={data.current}/>)
+        }} style={[
+          styles.block,
+          {
+            // height: hp('25%'),
+            width: wp('90%'),
+            flex: 0.5
+          }
+        ]}>
+          <>
+            <Text style={{
+              alignSelf: 'flex-start',
+              color: colors.textColor,
+              width: '100%',
+              textAlign: 'center',
+              fontSize: hp('2.6%'),
+              textAlignVertical: 'center',
+              flex: 2,
+              zIndex: 10,
+            }}>
+              General Information
+            </Text>
+            
+            <View style={{
+              flexDirection: 'column',
+              alignSelf: 'flex-end',
+              width: '100%',
+              flex: 5,
+              borderWidth: 1,
+              borderStyle: 'solid',
+              backgroundColor: colors.backgroundColor,
+              borderColor: colors.appColor
+            }}>
+              {genInfoPreview}
+            </View>
+          </>
+        </TouchableHighlight>
       </View>
       {genInfoComp}
       <StatusBar style="light" />

@@ -132,8 +132,9 @@ export default StyleSheet.create({
     blockText: {
       fontSize: hp('2%'),
       color: colors.textColor,
-      alignSelf: 'flex-end',
-      width: '100%',
+      // alignSelf: 'flex-end',
+      width: '90%',
+      left: '5%',
       height: '20%',
       marginTop: '10%',
       textAlign: 'center',
@@ -143,19 +144,12 @@ export default StyleSheet.create({
       height: '30%',
       width: '30%',
       marginTop: '25%',
-      // position: "relative",
       alignSelf: 'center',
-      // flex: 1,
-      // flexDirection: 'column',
     },
 
     scrollView: {
-      height: '60%', //this must be less than parent height up to 5x lesser
+      height: '60%',
       width: '100%',
-      // backgroundColor: 'red'
-      // flex: 0.5,
-      // top: '1%',
-      // position: "absolute",
     },
 
     splashCard: {

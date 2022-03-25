@@ -8,7 +8,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import {
   Text,
   View,
-  ScrollView,
+  Alert,
   SafeAreaView,
   Image,
   FlatList,
@@ -67,7 +67,7 @@ export default function homeScreen({navigation}) {
   const navToCalcPage = () => {
     navigation.navigate('CalcScreen')
   }
-  
+
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
@@ -208,21 +208,21 @@ export default function homeScreen({navigation}) {
 
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToNewsPage}>
               <>
-                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/newsIcon.png')}/>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/newsIcon.png')}/>
                 <Text style={[styles.blockText]}>NEWS {'&'} RESOURCES</Text>
               </>
             </TouchableHighlight>
 
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
               <>
-                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/cgpaIcon.png')}/>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/cgpaIcon.png')}/>
                 <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
               </>
             </TouchableHighlight>
-            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true})}>
               <>
-                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/cgpaIcon.png')}/>
-                <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/lectureNotes.png')}/>
+                <Text style={[styles.blockText]}>LECTURE NOTES</Text>
               </>
             </TouchableHighlight>
           </View>
@@ -234,14 +234,11 @@ export default function homeScreen({navigation}) {
           {
             height: '40%',
             width: '100%',
-            // top: '70%',
             alignSelf: 'flex-end',
           }
         ]}>
           <>
             <Text style={{
-              // borderBottomWidth: 1.3,
-              // borderBottomColor: colors.appColor,
               alignSelf: 'flex-start',
               color: colors.appColor,
               width: '100%',

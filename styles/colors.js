@@ -1,7 +1,7 @@
 function createColors() {
     return {
         bodyBackground: '#fff',
-        appColor: '#9c27b0',
+        appColor: '#9c28b1',
         textColor: '#eee',
         grey: '#777',
         orange: '#ff8800',

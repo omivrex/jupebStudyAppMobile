@@ -768,7 +768,7 @@ export default function StartPrac({navigation}) {
                             ], {cancelable: true}
                         )
                 }}>
-                    <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/info.png')}/>
+                    <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
                 </TouchableOpacity>
             </View>
             <View style={pageStyles.listOptionsCont}>

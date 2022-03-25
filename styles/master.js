@@ -118,41 +118,42 @@ export default StyleSheet.create({
       flexWrap: 'wrap',
       justifyContent: 'space-around',
       width: '100%',
+      height: '100%',
     },
     
     block: {
       backgroundColor: colors.appColor,
-      width: wp('40%'),
+      width: '40%',
       height: '40%',
-      marginTop: '10%',
-      alignSelf: 'center',
-      alignItems: 'center',
+      marginTop: '5%',
       borderRadius: 25,
     },
 
     blockText: {
-      fontSize: hp('2.5%'),
+      fontSize: hp('2%'),
       color: colors.textColor,
-      alignSelf: 'baseline',
+      alignSelf: 'flex-end',
       width: '100%',
-      height: '10%',
+      height: '20%',
+      marginTop: '10%',
       textAlign: 'center',
-      top: '80%',
-      position: 'absolute'
     },
 
     blockIcon: {
-      width: wp('10%'),
-      position: "relative",
+      height: '30%',
+      width: '30%',
+      marginTop: '25%',
+      // position: "relative",
       alignSelf: 'center',
-      flex: 1,
-      flexDirection: 'column',
+      // flex: 1,
+      // flexDirection: 'column',
     },
 
     scrollView: {
-      // height: '35%', //this must be less than parent height up to 5x lesser
+      height: '60%', //this must be less than parent height up to 5x lesser
       width: '100%',
-      flex: 0.5,
+      // backgroundColor: 'red'
+      // flex: 0.5,
       // top: '1%',
       // position: "absolute",
     },

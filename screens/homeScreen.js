@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as network from 'expo-network';
 import * as firebase from 'firebase';
 import colors from '../styles/colors.js'
+import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {
   Text,
@@ -45,7 +46,9 @@ const previewInformationStyle = {
   color: colors.appColor,
   paddingLeft: wp('2.5%'),
   fontSize: hp('2.5%'),
-  marginBottom: hp('2%')
+  marginBottom: hp('2%'),
+  paddingLeft: '5%',
+  fontWeight: '500'
 }
 
 export default function homeScreen({navigation}) {
@@ -108,7 +111,53 @@ export default function homeScreen({navigation}) {
                   contentContainerStyle = {genInfoPrevContStyle}
                   renderItem={({item}) => (
                     <>
-                      <Text style={previewInformationStyle}>- {item.Topic}</Text>
+                      <Text style={previewInformationStyle}>{item.Topic}</Text>
+                      <MathJax
+                        html={
+                            `
+                                <body style="width: 100%;">
+                                    <style>
+                                        * {
+                                          -webkit-user-select: none;
+                                          -moz-user-select: none;
+                                          -ms-user-select: none;
+                                          user-select: none;
+                                        }
+                                    </style>
+                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
+                                      ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
+                                    </div> 
+                                </body>
+                            
+                            `
+                        }
+                        mathJaxOptions={{
+                            messageStyle: "none",
+                            extensions: ["tex2jax.js"],
+                            jax: ["input/TeX", "output/HTML-CSS"],
+                            tex2jax: {
+                                inlineMath: [
+                                    ["$", "$"],
+                                    ["\\(", "\\)"],
+                                ],
+                                displayMath: [
+                                    ["$$", "$$"],
+                                    ["\\[", "\\]"],
+                                ],
+                                processEscapes: true,
+                            },
+                            TeX: {
+                                extensions: [
+                                    "AMSmath.js",
+                                    "AMSsymbols.js",
+                                    "noErrors.js",
+                                    "noUndefined.js",
+                                ],
+                            },
+
+                        }}
+                        style={{width: '97.5%', left: '2.5%'}}
+                      />
                     </>
                   )}
                 />
@@ -148,7 +197,7 @@ export default function homeScreen({navigation}) {
       </View>
 
       <View style={styles.body}>
-        <ScrollView style={styles.scrollView}>
+        <View style={styles.scrollView}>
           <View style={styles.blockWrapper}>
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToPqPage}>
               <>
@@ -177,27 +226,31 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
           </View>
-        </ScrollView>
+        </View>
         <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
           isGenInfoCompDisplayed = true
           setgenInfoComp(<GenInfoComponent data={data.current}/>)
         }} style={[
-          styles.block,
           {
-            // height: hp('25%'),
-            width: wp('90%'),
-            flex: 0.5
+            height: '40%',
+            width: '100%',
+            // top: '70%',
+            alignSelf: 'flex-end',
           }
         ]}>
           <>
             <Text style={{
+              // borderBottomWidth: 1.3,
+              // borderBottomColor: colors.appColor,
               alignSelf: 'flex-start',
-              color: colors.textColor,
+              color: colors.appColor,
               width: '100%',
-              textAlign: 'center',
+              textAlign: 'left',
+              paddingLeft: '5%',
               fontSize: hp('2.6%'),
+              fontWeight: '700',
               textAlignVertical: 'center',
-              flex: 2,
+              height: '20%',
               zIndex: 10,
             }}>
               General Information
@@ -207,11 +260,8 @@ export default function homeScreen({navigation}) {
               flexDirection: 'column',
               alignSelf: 'flex-end',
               width: '100%',
-              flex: 5,
-              borderWidth: 1,
-              borderStyle: 'solid',
+              height: '80%',
               backgroundColor: colors.backgroundColor,
-              borderColor: colors.appColor
             }}>
               {genInfoPreview}
             </View>

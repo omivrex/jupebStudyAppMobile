@@ -156,7 +156,7 @@ export default function homeScreen({navigation}) {
                             },
 
                         }}
-                        style={{width: '97.5%', left: '2.5%'}}
+                        style={{width: '90.5%', left: '2.5%'}}
                       />
                     </>
                   )}
@@ -227,7 +227,7 @@ export default function homeScreen({navigation}) {
             </TouchableHighlight>
           </View>
         </View>
-        <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
+        <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
           isGenInfoCompDisplayed = true
           setgenInfoComp(<GenInfoComponent data={data.current}/>)
         }} style={[

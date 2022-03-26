@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 import styles from '../styles/master.js';
-import GenInfoComponent from '../components/genInfo.js';
+import GenInfoComponent from '../components/genInfo.component.js';
 
 
 require('firebase/firestore')

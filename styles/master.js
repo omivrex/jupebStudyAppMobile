@@ -105,47 +105,51 @@ export default StyleSheet.create({
     },
     
     body: {
-      height: '260%',
+      height: hp('83%'),
       width: '100%',
-      position: 'absolute',
-      top: '5%',
-      flex: 1,
-      zIndex: -3
+      // position: 'absolute',
+      top: hp('17%'),
+      // flex: 1,
+      // zIndex: -3
+    },
+
+    blockWrapper: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      width: '100%',
+      height: '100%',
     },
     
     block: {
       backgroundColor: colors.appColor,
-      width: wp('77%'),
-      height: blockHeight,
-      marginTop: hp('12%'),
-      alignSelf: 'center',
-      alignItems: 'center'
+      width: '40%',
+      height: '40%',
+      marginTop: '5%',
+      borderRadius: 25,
     },
 
     blockText: {
-      fontSize: hp('2.5%'),
+      fontSize: hp('2%'),
       color: colors.textColor,
-      alignSelf: 'baseline',
-      width: '100%',
-      height: '10%',
+      // alignSelf: 'flex-end',
+      width: '90%',
+      left: '5%',
+      height: '20%',
+      marginTop: '10%',
       textAlign: 'center',
-      top: '80%',
-      position: 'absolute'
     },
 
     blockIcon: {
-      width: wp('30%'),
-      position: "relative",
+      height: '30%',
+      width: '30%',
+      marginTop: '25%',
       alignSelf: 'center',
-      flex: 1,
-      flexDirection: 'column',
     },
 
     scrollView: {
-      height: '35%', //this must be less than parent height up to 5x lesser
+      height: '60%',
       width: '100%',
-      top: '1%',
-      position: "absolute",
     },
 
     splashCard: {

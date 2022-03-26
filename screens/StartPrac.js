@@ -4,6 +4,7 @@ import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { getToken } from "../utils/pastquestions.utils";
 import LoadingComponent from "../components/loading.component"
+import StartPracticeQuestion from '../components/StartPracticeQuestion.component';
 
 import {
     Text,
@@ -370,88 +371,7 @@ export default function StartPrac({navigation}) {
                                 const {Data} = item.content.Data
                                 if (Data) {
                                     return (
-                                        <View style={{
-                                                borderColor: '#9c27b0',
-                                                borderBottomWidth: 2,
-                                                width: '90%',
-                                                marginVertical: hp('3%'),
-                                                left: '5%',
-                                                justifyContent: 'center'
-                                            }}>
-                                            <MathJax
-                                                html={
-                                                    `
-                                                        <body style="width: 100%;">
-                                                            <style>
-                                                                * {
-                                                                    -webkit-user-select: none;
-                                                                    -moz-user-select: none;
-                                                                    -ms-user-select: none;
-                                                                    user-select: none;
-                                                                }
-                                                            </style>
-                                                            <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
-                                                                ${Data.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}
-                                                            </div> 
-                                                        </body>
-                                                    
-                                                    `
-                                                }
-                                                mathJaxOptions={{
-                                                    messageStyle: "none",
-                                                    extensions: ["tex2jax.js"],
-                                                    jax: ["input/TeX", "output/HTML-CSS"],
-                                                    tex2jax: {
-                                                        inlineMath: [
-                                                            ["$", "$"],
-                                                            ["\\(", "\\)"],
-                                                        ],
-                                                        displayMath: [
-                                                            ["$$", "$$"],
-                                                            ["\\[", "\\]"],
-                                                        ],
-                                                        processEscapes: true,
-                                                    },
-                                                    TeX: {
-                                                        extensions: [
-                                                            "AMSmath.js",
-                                                            "AMSsymbols.js",
-                                                            "noErrors.js",
-                                                            "noUndefined.js",
-                                                        ],
-                                                    },
-        
-                                                }}
-                                                style={{width: '100%'}}
-                                            
-                                            />
-                                            <View style={pageStyles.questOptionsContainer}>
-                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
-                                                    Data.userOption = 'A'
-                                                    startPrac(true, 100)
-                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'A'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
-                                                    <Text style={pageStyles.questOptionsText}>A</Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
-                                                    Data.userOption = 'B'
-                                                    startPrac(true, 100)
-                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'B'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
-                                                    <Text style={pageStyles.questOptionsText}>B</Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
-                                                    Data.userOption = 'C'
-                                                    startPrac(true, 100)
-                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'C'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
-                                                    <Text style={pageStyles.questOptionsText}>C</Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity keyIndex={keyIndex} onPress={function () {
-                                                    Data.userOption = 'D'
-                                                    startPrac(true, 100)
-                                                }} style={[pageStyles.questOptionsButn, Data.userOption === 'D'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
-                                                    <Text style={pageStyles.questOptionsText}>D</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
+                                        <StartPracticeQuestion questionData={Data} displayLoadingComponent={displayLoadingComponent}/>
                                     )
                                 }
                             }

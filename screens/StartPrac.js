@@ -322,6 +322,9 @@ export default function StartPrac({navigation}) {
             genRandNum(questionsInSection, noOfQuestions.current).forEach(questionNo => {
                 questionsToDisplay.push({... questionsInSection[questionNo]})
             });
+            while (questionsToDisplay.length>noOfQuestions.current) {
+                questionsToDisplay.pop()
+            }
             renderStartPracCard = true
             resolve(questionsToDisplay)
         })

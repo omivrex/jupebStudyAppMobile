@@ -297,7 +297,7 @@ export default function StartPrac({navigation}) {
         let indexesToSelect = []
         let randomNum
         
-        while (noOfQuestionsToSelect > indexesToSelect.length ) { //while it hasnt selected the requeired no. of questions keep genrating
+        while (noOfQuestionsToSelect > indexesToSelect.length && questionsInSection.length>noOfQuestionsToSelect) {
             for (let i = 0; i < noOfQuestionsToSelect; i++) {
                 randomNum = Math.ceil(Math.random()*questionsInSection.length)
                 indexesToSelect.push(randomNum)
@@ -307,11 +307,10 @@ export default function StartPrac({navigation}) {
         return indexesToSelect
     }
     
-    //this selects random questions to display
     const noOfQuestions = useRef(0)
 
     function fiterFunc (questionsInSection) {
-        if (pathObj.current.subject === 'ALL') { //this is to know how many questions to select from the unsorted array
+        if (pathObj.current.subject === 'ALL') {
             noOfQuestions.current = 50
         } else {
             noOfQuestions.current = 15
@@ -409,7 +408,6 @@ export default function StartPrac({navigation}) {
     }
 
     const closePracCard = () => {
-        setqualityContButnDis({display: 'none'})
         start_Prac_Card_Displayed = false
         timerStarted.current  = false
         questionsToDisplay.current = []
@@ -448,7 +446,6 @@ export default function StartPrac({navigation}) {
             }
         });
         is_result_card_displayed = true
-        setqualityContButnDis({display: 'flex'})
         setresultState(
             <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
                 <View style={pageStyles.pqHeader}>
@@ -594,13 +591,18 @@ export default function StartPrac({navigation}) {
     const [ansPage, setansPage] = useState()
 
     const showAns = data => {
+        setqualityContButnDis({display: 'flex'})
         setansPage(
           <AnswerComponent data={data} />
         )
         is_ans_card_displayed = true
     }
     
-    const closeAnsPage = () => {setansPage(); is_ans_card_displayed = false}
+    const closeAnsPage = () => {
+        setqualityContButnDis({display: 'none'})
+        setansPage();
+        is_ans_card_displayed = false
+    }
 
     const [qualityContButnDis, setqualityContButnDis] = useState({display: 'none'})
     return (

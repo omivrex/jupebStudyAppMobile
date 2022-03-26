@@ -62,7 +62,6 @@ export default function pqScreen({navigation}) {
                             if (tempArray.length===returnedArray.length) {
                                 preventBackHandler = true
                                 renderCollection = false
-                                setqualityContButnDis({display: 'flex'})
                                 setcollectionData([...tempArray])
                                 setloading()
                             }
@@ -152,12 +151,14 @@ export default function pqScreen({navigation}) {
 
     const [ansCard, setansCard] = useState()
     const showAns = data => {
+      setqualityContButnDis({display: 'flex'})
       setansCard(
         <AnswerComponent data={data} />
       )
       IS_ANS_CARD_DISPLAYED = true
     }
     const closeAnsPage = () => {
+        setqualityContButnDis({display: 'none'})
         setansCard()
         IS_ANS_CARD_DISPLAYED = false
     }

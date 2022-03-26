@@ -64,19 +64,17 @@ export default StyleSheet.create({
         backgroundColor: colors.appColor,
         width: wp('27%'),
         height: hp('6%'),
-        position: 'absolute',
-        top: hp('60%'),
+        // position: 'absolute',
+        marginVertical: '6%',
+        justifyContent: 'center',
         alignSelf: 'center'
     },
     
     listButnText: {
         width: '100%',
-        height: '100%',
-        flex: 1,
         color: colors.textColor,
         fontSize: hp('3%'),
         textAlign: "center",
-        padding: '5%'
     },
 
     pqCard: {
@@ -226,30 +224,30 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
 
+    timerCont: {
+        flexDirection: 'column',
+        width: '100%',
+        justifyContent: 'space-around',
+    },
+
     timeBox: {
         position: 'relative',
-        display: 'flex',
         borderColor: colors.appColor,
         borderWidth: 1,
-        width: '50%',
+        width: '35%',
+        marginTop: '5%',
         height: hp('6%'),
-        alignSelf: 'flex-end'
+        alignSelf: 'center'
     },
 
     timeDisplayed: {
         color: '#fff',
-        position: 'absolute',
         fontSize: hp('2%'),
-        width: '45%',
-        height: 57,
-        alignSelf: 'flex-end',
-        top: 0,
-        paddingTop: 15,
+        justifyContent: 'center',
         textAlign: 'center',
     },
 
     time: {
-        position: 'relative',
         fontSize: hp('2.3%'),
         paddingTop: '4%',
         color: colors.grey,
@@ -258,14 +256,12 @@ export default StyleSheet.create({
     },
 
     enableTimerButn: {
-        position: 'absolute',
-        height: 50,
-        top: 0,
-        width: '45%',
-        padding: '5%',
+        width: '35%',
+        marginTop: '5%',
+        alignSelf: 'center',
+        // left: '10%',
+        justifyContent: 'center',
         height: hp('6%'),
-        borderColor: colors.appColor,
-        borderWidth: 1,
         backgroundColor: colors.appColor,
     },
     
@@ -275,12 +271,35 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
 
+    submitButn: {
+        position: 'absolute',
+        width: '100%',
+        height: '7%',
+        top: '93%',
+        justifyContent: 'center',
+        borderBottomColor: colors.appColor,
+        borderBottomWidth: 8,
+    },
+    
+    submitButnText: {
+        color: '#fff',
+        backgroundColor: colors.appColor,
+        justifyContent: 'center',
+        width: '40%',
+        height: '100%',
+        left: '30%',
+        alignContent: 'center',
+        fontSize: hp('3.3%'),
+        textAlign: 'center',
+        borderTopRightRadius: 45,
+        borderTopLeftRadius: 45,
+    },
+
     listOptionsCont: {
         width: wp('100%'),
         top: hp('17%'),
-        height: hp('100%'),
+        height: hp('83%'),
         justifyContent: 'center',
-
     },
 
     labelHeading: {
@@ -307,54 +326,52 @@ export default StyleSheet.create({
     },
     
     questOptionsContainer: {
-        position: 'absolute',
-        width: wp('130%'),
-        height: hp('14%'),
-        top: questOptionsContainerTop,
-        left: '0%',
+        width: '100%',
+        flexDirection: 'row',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        justifyContent: 'space-around',
         backgroundColor: colors.appColor,
     },
 
     questOptionsButn: {
-        position: 'absolute',
-        width: 50,
+        width: '17%',
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
     },
 
     questOptionsText: {
-        padding: -20,
         color: colors.textColor,
         fontSize: 25,
+        width: '100%',
         textAlign: 'center',
     },
 
     startButn: {
         backgroundColor: colors.appColor,
-        width: wp('30%'),
+        width: '35%',
+        marginTop: '5%',
         height: hp('6%'),
-        position: 'absolute',
-        left: wp('57.5%'),
-        top: hp('75%'),
-        zIndex: -1,
+        alignSelf: 'center',
+        justifyContent: 'center',
     },
 
     startText: {
         color: colors.textColor,
         fontSize: hp('3%'),
         textAlign: "center",
-        padding: hp('1.2%')
     },
 
     questionStatusBar: {
-        position: 'relative',
-        top: '25%',
-        width: wp('90%'),
-        height: hp('8%'),
-        left: wp('5%'),
+        // top: '25%',
+        width: '100%',
+        height: '35%',
+        // left: wp'5%'),
         backgroundColor: colors.appColor,
         marginBottom: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         borderBottomWidth: 2,
         borderBottomColor: colors.textColor,
     },
@@ -371,28 +388,12 @@ export default StyleSheet.create({
         paddingTop: 20,
     },
 
-    correctAnswer: {
+    resultOptionText: {
         color: colors.textColor,
         fontSize: hp('2%'),
-        width: '40%',
-        height: 60,
-        left: '15%',
+        // width: '40%',
         textAlign: 'center',
-        top: -58,
-        position: 'relative',
-        paddingTop: 20
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-
-    userAns: {
-        color: colors.textColor,
-        fontSize: hp('2%'),
-        width: '65%',
-        height: 60,
-        left: '40%',
-        textAlign: 'center',
-        top: -120,
-        position: 'relative',
-        paddingTop: 20
-    },
-    
 })

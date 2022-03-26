@@ -12,6 +12,7 @@ import {
     SafeAreaView,
     Image,
     Alert,
+    Linking,
     FlatList,
     BackHandler} from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -19,7 +20,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { usePreventScreenCapture } from 'expo-screen-capture'
 import styles from '../styles/master.js';
 import pageStyles from '../styles/pqScreenStyles.js';
-import colors from '../styles/colors';
+import AnswerComponent from '../components/Answer.component';
 
 let renderCollection = true
 let IS_ANS_CARD_DISPLAYED = false
@@ -61,6 +62,7 @@ export default function pqScreen({navigation}) {
                             if (tempArray.length===returnedArray.length) {
                                 preventBackHandler = true
                                 renderCollection = false
+                                setqualityContButnDis({display: 'flex'})
                                 setcollectionData([...tempArray])
                                 setloading()
                             }
@@ -149,73 +151,9 @@ export default function pqScreen({navigation}) {
     }
 
     const [ansCard, setansCard] = useState()
-    const [useObjStyles, setuseObjStyles] = useState(true)
     const showAns = data => {
       setansCard(
-        <View style={pageStyles.answerCardWrapper}>
-            <View style={pageStyles.answerCard}>
-                {data&&data.correctAnswer? 
-                    <>
-                        <Text style={pageStyles.correctAnswerComponent}>Correct Answer: {data?data.correctAnswer:''}</Text>
-                        {/* <TouchableHighlight style={pageStyles.fullSoln} onPress={() =>{
-                            console.log('called...')
-                            setuseObjStyles(false)
-                            console.log(useObjStyles)
-                        }} underlayColor='rgba(52, 52, 52, 0)'>
-                            <Text style={pageStyles.fullSolnText}>Show Full Solution</Text>    
-                        </TouchableHighlight> */}
-                    </>
-                    :
-                    <></>
-                }
-                
-                <MathJax
-                    html={
-                        `   
-                            <body style="width: 100%; overflow-y: auto;">
-                                <div style="font-size: 1.3em;
-                                    font-family: Roboto, sans-serif, san Francisco;
-                                    width: 90%;
-                                    margin: auto;
-                                    min-height: 50rem;
-                                ">
-                                    ${data&&data.answer?data.answer.replace('max-width: 180px;', 'max-width: 90vw;'):''}
-                                </div>
-                                <div style="height: 50%"></div>
-                            </body>
-                        
-                        `
-                    }
-                    mathJaxOptions={{
-                        messageStyle: "none",
-                        extensions: ["tex2jax.js"],
-                        jax: ["input/TeX", "output/HTML-CSS"],
-                        tex2jax: {
-                            inlineMath: [
-                                ["$", "$"],
-                                ["\\(", "\\)"],
-                            ],
-                            displayMath: [
-                                ["$$", "$$"],
-                                ["\\[", "\\]"],
-                            ],
-                            processEscapes: true,
-                        },
-                        TeX: {
-                            extensions: [
-                                "AMSmath.js",
-                                "AMSsymbols.js",
-                                "noErrors.js",
-                                "noUndefined.js",
-                            ],
-                        },
-
-                    }}
-                    style={{width: '98%', flex:2, marginTop: '5%', left: '1%'}}
-                
-                />
-            </View>
-        </View>
+        <AnswerComponent data={data} />
       )
       IS_ANS_CARD_DISPLAYED = true
     }
@@ -229,6 +167,26 @@ export default function pqScreen({navigation}) {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>PAST QUESTIONS</Text>
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)'style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
+                    Alert.alert('Quality Control Service',
+                        `Do You Find A Problem With This Question? \\nContact our Admin on \\nWhatsAapp To lay complains`,
+                        [
+                            {
+                                text: 'YES',
+                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP`)
+                            }, 
+
+                            {
+                                text: 'NO',
+                                onPress: ()=> console.log('Do nothing'),
+                                style: 'cancel'
+                            },
+
+                        ], 
+                    {cancelable: true})
+                }}>
+                    <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
+                </TouchableHighlight>
                 <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={styles.menuIcon} onPress={openMenu}>
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableHighlight>
@@ -260,7 +218,7 @@ export default function pqScreen({navigation}) {
                 <View style={{width: wp('100%'), top: hp('17%')}}>
                     <View style={pageStyles.pqHeader}>
                         <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()}</Text>
-                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {!IS_ANS_CARD_DISPLAYED?closePqCard:closeAnsPage} style={pageStyles.closePqCard}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {()=> !IS_ANS_CARD_DISPLAYED?closePqCard():closeAnsPage()} style={pageStyles.closePqCard}>
                             <Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>
                         </TouchableHighlight>
                     </View>
@@ -281,6 +239,14 @@ export default function pqScreen({navigation}) {
                                         html={
                                             `
                                                 <body style="width: 100%;">
+                                                    <style>
+                                                        * {
+                                                            -webkit-user-select: none;
+                                                            -moz-user-select: none;
+                                                            -ms-user-select: none;
+                                                            user-select: none;
+                                                        }
+                                                    </style>
                                                     <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
                                                         ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                     </div> 
@@ -316,7 +282,21 @@ export default function pqScreen({navigation}) {
                                         style={{width: '100%'}}
                                     
                                     />
-                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})}>
+                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> {
+                                        item.data.correctOption !== ''?
+                                            Alert.alert(`Correct Option: ${item.data.correctOption}`, '', [
+                                                {
+                                                    text: 'View Solution',
+                                                    onPress: ()=> showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})
+                                                },
+
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => ''
+                                                }
+                                            ], {cancelable: true})
+                                        : showAns({answer: item.data.answer, correctAnswer: item.data.correctOption})
+                                    }}>
                                         <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                     </TouchableHighlight>
                                 </View>

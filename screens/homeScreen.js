@@ -3,11 +3,12 @@ import { StatusBar } from 'expo-status-bar';
 import * as network from 'expo-network';
 import * as firebase from 'firebase';
 import colors from '../styles/colors.js'
+import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {
   Text,
   View,
-  ScrollView,
+  Alert,
   SafeAreaView,
   Image,
   FlatList,
@@ -16,7 +17,7 @@ import {
 } from 'react-native';
 
 import styles from '../styles/master.js';
-import GenInfoComponent from '../components/genInfo.js';
+import GenInfoComponent from '../components/genInfo.component.js';
 
 
 require('firebase/firestore')
@@ -45,7 +46,9 @@ const previewInformationStyle = {
   color: colors.appColor,
   paddingLeft: wp('2.5%'),
   fontSize: hp('2.5%'),
-  marginBottom: hp('2%')
+  marginBottom: hp('2%'),
+  paddingLeft: '5%',
+  fontWeight: '500'
 }
 
 export default function homeScreen({navigation}) {
@@ -64,7 +67,7 @@ export default function homeScreen({navigation}) {
   const navToCalcPage = () => {
     navigation.navigate('CalcScreen')
   }
-  
+
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
@@ -108,7 +111,53 @@ export default function homeScreen({navigation}) {
                   contentContainerStyle = {genInfoPrevContStyle}
                   renderItem={({item}) => (
                     <>
-                      <Text style={previewInformationStyle}>- {item.Topic}</Text>
+                      <Text style={previewInformationStyle}>{item.Topic}</Text>
+                      <MathJax
+                        html={
+                            `
+                                <body style="width: 100%;">
+                                    <style>
+                                        * {
+                                          -webkit-user-select: none;
+                                          -moz-user-select: none;
+                                          -ms-user-select: none;
+                                          user-select: none;
+                                        }
+                                    </style>
+                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
+                                      ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
+                                    </div> 
+                                </body>
+                            
+                            `
+                        }
+                        mathJaxOptions={{
+                            messageStyle: "none",
+                            extensions: ["tex2jax.js"],
+                            jax: ["input/TeX", "output/HTML-CSS"],
+                            tex2jax: {
+                                inlineMath: [
+                                    ["$", "$"],
+                                    ["\\(", "\\)"],
+                                ],
+                                displayMath: [
+                                    ["$$", "$$"],
+                                    ["\\[", "\\]"],
+                                ],
+                                processEscapes: true,
+                            },
+                            TeX: {
+                                extensions: [
+                                    "AMSmath.js",
+                                    "AMSsymbols.js",
+                                    "noErrors.js",
+                                    "noUndefined.js",
+                                ],
+                            },
+
+                        }}
+                        style={{width: '90.5%', left: '2.5%'}}
+                      />
                     </>
                   )}
                 />
@@ -148,46 +197,8 @@ export default function homeScreen({navigation}) {
       </View>
 
       <View style={styles.body}>
-        <ScrollView style={styles.scrollView}>
-            <TouchableHighlight underlayColor={colors.underlayColor} onPress={()=> {
-              isGenInfoCompDisplayed = true
-              setgenInfoComp(<GenInfoComponent data={data.current}/>)
-            }} style={[
-              styles.block,
-              {
-                flexDirection: 'column',
-                height: hp('25%'),
-                width: wp('90%')
-              }
-            ]}>
-              <>
-                <Text style={{
-                  alignSelf: 'flex-start',
-                  color: colors.textColor,
-                  width: '100%',
-                  textAlign: 'center',
-                  fontSize: hp('2.6%'),
-                  textAlignVertical: 'center',
-                  flex: 2,
-                  zIndex: 10,
-                }}>
-                  General Information
-                </Text>
-                
-                <View style={{
-                  flexDirection: 'column',
-                  alignSelf: 'flex-end',
-                  width: '100%',
-                  flex: 5,
-                  borderWidth: 1,
-                  borderStyle: 'solid',
-                  backgroundColor: colors.backgroundColor,
-                  borderColor: colors.appColor
-                }}>
-                  {genInfoPreview}
-                </View>
-              </>
-            </TouchableHighlight>
+        <View style={styles.scrollView}>
+          <View style={styles.blockWrapper}>
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToPqPage}>
               <>
                 <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/pQIcon.png')}/>
@@ -197,18 +208,62 @@ export default function homeScreen({navigation}) {
 
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToNewsPage}>
               <>
-                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/newsIcon.png')}/>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/newsIcon.png')}/>
                 <Text style={[styles.blockText]}>NEWS {'&'} RESOURCES</Text>
               </>
             </TouchableHighlight>
 
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
               <>
-                <Image resizeMode={'center'} style={[styles.blockIcon]} source={require('../icons/cgpaIcon.png')}/>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/cgpaIcon.png')}/>
                 <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
               </>
             </TouchableHighlight>
-        </ScrollView>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true})}>
+              <>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/lectureNotes.png')}/>
+                <Text style={[styles.blockText]}>LECTURE NOTES</Text>
+              </>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
+          isGenInfoCompDisplayed = true
+          setgenInfoComp(<GenInfoComponent data={data.current}/>)
+        }} style={[
+          {
+            height: '40%',
+            width: '100%',
+            alignSelf: 'flex-end',
+          }
+        ]}>
+          <>
+            <Text style={{
+              alignSelf: 'flex-start',
+              color: colors.appColor,
+              width: '100%',
+              textAlign: 'left',
+              paddingLeft: '5%',
+              fontSize: hp('2.6%'),
+              fontWeight: '700',
+              textAlignVertical: 'center',
+              height: '20%',
+              zIndex: 10,
+            }}>
+              General Information
+            </Text>
+            
+            <View style={{
+              flexDirection: 'column',
+              alignSelf: 'flex-end',
+              width: '100%',
+              height: '80%',
+              backgroundColor: colors.backgroundColor,
+            }}>
+              {genInfoPreview}
+            </View>
+          </>
+        </TouchableHighlight>
       </View>
       {genInfoComp}
       <StatusBar style="light" />

@@ -1,6 +1,5 @@
 import pageStyles from '../styles/pqScreenStyles.js';
 import MathJax from 'react-native-mathjax';
-import LoadingComponent from "./loading.component"
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import React, {useState} from 'react';
 import {

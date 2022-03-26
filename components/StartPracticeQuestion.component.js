@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 
 export default function StartPracticeQuestion({questionData, displayLoadingComponent}) {
-    const [optionsState, setoptionsState] = useState(false)
-    const [loading, setloading] = useState()
+    const [optionsState, setoptionsState] = useState('')
 
     return (
         <View style={{
@@ -72,28 +71,28 @@ export default function StartPracticeQuestion({questionData, displayLoadingCompo
                 <TouchableOpacity onPress={function () {
                     questionData.userOption = 'A'
                     displayLoadingComponent(500)
-                    setoptionsState(true)
+                    setoptionsState('A')
                 }} style={[pageStyles.questOptionsButn, questionData.userOption === 'A'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                     <Text style={pageStyles.questOptionsText}>A</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={function () {
                     questionData.userOption = 'B'
                     displayLoadingComponent(500)
-                    setoptionsState(true)
+                    setoptionsState('B')
                 }} style={[pageStyles.questOptionsButn, questionData.userOption === 'B'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                     <Text style={pageStyles.questOptionsText}>B</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={function () {
                     questionData.userOption = 'C'
                     displayLoadingComponent(500)
-                    setoptionsState(true)
+                    setoptionsState('C')
                 }} style={[pageStyles.questOptionsButn, questionData.userOption === 'C'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                     <Text style={pageStyles.questOptionsText}>C</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={function () {
                     questionData.userOption = 'D'
                     displayLoadingComponent(500)
-                    setoptionsState(true)
+                    setoptionsState('D')
                     {optionsState}
                 }} style={[pageStyles.questOptionsButn, questionData.userOption === 'D'?{backgroundColor: '#301934'}:{backgroundColor: '#9c27b0'}]}>
                     <Text style={pageStyles.questOptionsText}>D</Text>

@@ -130,12 +130,9 @@ export default StyleSheet.create({
     },
 
     blockText: {
-      fontSize: hp('2%'),
+      fontSize: hp('1.6%'),
       color: colors.textColor,
-      // alignSelf: 'flex-end',
-      width: '90%',
-      left: '5%',
-      height: '20%',
+      width: '100%',
       marginTop: '10%',
       textAlign: 'center',
     },

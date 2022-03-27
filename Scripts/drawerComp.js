@@ -13,8 +13,8 @@ export default function drawerComp({navigation}) {
     navigation.navigate('Register')
   }
 
-  const StartPrac = () => {
-    navigation.navigate('StartPrac')
+  const navToCalCGPA = () => {
+    navigation.navigate('CalcScreen')
   }
 
   const RateProg = () => {
@@ -90,10 +90,10 @@ export default function drawerComp({navigation}) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuItemCont} onPress={StartPrac}>
+      <TouchableOpacity style={styles.menuItemCont} onPress={navToCalCGPA}>
         <Text style={styles.menuText}>
-          <Image resizeMode={'center'} style={[styles.icon]} source={require('../icons/startPrac.png')}/>
-          <Text>Start Practice</Text>
+          <Image resizeMode={'center'} style={[styles.icon]} source={require('../icons/cgpaIcon.png')}/>
+          <Text>Point Calculator</Text>
         </Text>
       </TouchableOpacity>
 

@@ -64,8 +64,8 @@ export default function homeScreen({navigation}) {
     navigation.navigate('NewsScreen')
   }
    
-  const navToCalcPage = () => {
-    navigation.navigate('CalcScreen')
+  const navToStartPrac = () => {
+    navigation.navigate('StartPrac')
   }
 
   if (!firebase.apps.length) {
@@ -213,10 +213,10 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
 
-            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToStartPrac}>
               <>
-                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/cgpaIcon.png')}/>
-                <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/startPrac.png')}/>
+                <Text style={[styles.blockText]}>START PRACTICE</Text>
               </>
             </TouchableHighlight>
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true})}>

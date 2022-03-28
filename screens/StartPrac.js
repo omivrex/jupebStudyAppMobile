@@ -613,22 +613,22 @@ export default function StartPrac({navigation}) {
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableOpacity>
                 <TouchableOpacity style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
-                        Alert.alert('Quality Control Service',
-                        `Do You Find A Problem With This Question? \nContact our Admin on \nWhatsAapp To lay complains`,
+                    Alert.alert('Quality Control Service',
+                        `Did you find an error in this question/solution, \nkindly contact an Admin on WhatsApp.`,
                         [
-                                {
-                                    text: 'YES',
-                                    onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP`)
-                                }, 
+                            {
+                                text: 'YES',
+                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
+                            }, 
 
-                                {
-                                    text: 'NO',
-                                    onPress: ()=> 'Do nothing',
-                                    style: 'cancel'
-                                },
+                            {
+                                text: 'NO',
+                                onPress: ()=> console.log('Do nothing'),
+                                style: 'cancel'
+                            },
 
-                            ], {cancelable: true}
-                        )
+                        ], {cancelable: true}
+                    )
                 }}>
                     <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
                 </TouchableOpacity>

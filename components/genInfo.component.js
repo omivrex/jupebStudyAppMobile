@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from '../styles/master.js';
 import pageStyles from '../styles/newsFeedStyles.js';
 import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -47,6 +46,9 @@ function GenInfoComponent({data}) {
                                 <MathJax
                                     html={
                                         `
+                                            <head>
+                                                <meta name="viewport" maximum-scale=0.4">
+                                            </head>
                                             <body style="width: 100%;">
                                                 <style>
                                                     * {

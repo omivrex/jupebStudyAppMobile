@@ -114,20 +114,23 @@ export default function homeScreen({navigation}) {
                       <Text style={previewInformationStyle}>{item.Topic}</Text>
                       <MathJax
                         html={
-                            `
-                                <body style="width: 100%;">
-                                    <style>
-                                        * {
-                                          -webkit-user-select: none;
-                                          -moz-user-select: none;
-                                          -ms-user-select: none;
-                                          user-select: none;
-                                        }
-                                    </style>
-                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
-                                      ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
-                                    </div> 
-                                </body>
+                            ` 
+                              <head>
+                                <meta name="viewport" maximum-scale= 0.4, user-scalable=0">
+                              </head>
+                              <body style="width: 100%;">
+                                  <style>
+                                      * {
+                                        -webkit-user-select: none;
+                                        -moz-user-select: none;
+                                        -ms-user-select: none;
+                                        user-select: none;
+                                      }
+                                  </style>
+                                  <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                    ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
+                                  </div> 
+                              </body>
                             
                             `
                         }

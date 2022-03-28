@@ -37,8 +37,8 @@ export default function drawerComp({navigation}) {
     navigation.navigate('PqScreen')
   }
 
-  const newsNav = () => {
-    navigation.navigate('NewsScreen')
+  const navToStartPrac = () => {
+    navigation.navigate('StartPrac')
   }
   
   const [greeting, setgreeting] = useState('');
@@ -76,24 +76,17 @@ export default function drawerComp({navigation}) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuItemCont} onPress={newsNav}>
-        <Text style={styles.menuText}>
-          <Image resizeMode={'center'} style={styles.icon} source={require('../icons/newsIcon2.png')}/>
-          <Text>News {'&'} Resources</Text>
-        </Text>
-      </TouchableOpacity>
-        
       <TouchableOpacity style={[styles.menuItemCont]} onPress={Register}>
         <Text style={styles.menuText}>
           <Image resizeMode={'center'} style={[styles.icon]} source={require('../icons/pay.png')}/>
           <Text>Payment</Text>
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity style={styles.menuItemCont} onPress={navToCalCGPA}>
+        
+      <TouchableOpacity style={styles.menuItemCont} onPress={navToStartPrac}>
         <Text style={styles.menuText}>
-          <Image resizeMode={'center'} style={[styles.icon]} source={require('../icons/cgpaIcon.png')}/>
-          <Text>Point Calculator</Text>
+          <Image resizeMode={'center'} style={styles.icon} source={require('../icons/startPrac.png')}/>
+          <Text>Start Practice</Text>
         </Text>
       </TouchableOpacity>
 
@@ -101,6 +94,13 @@ export default function drawerComp({navigation}) {
         <Text style={styles.menuText}>
           <Image resizeMode={'center'} style={[styles.icon]} source={require('../icons/rateProgress.png')}/>
           <Text>Rate Progress</Text>
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.menuItemCont} onPress={navToCalCGPA}>
+        <Text style={styles.menuText}>
+          <Image resizeMode={'center'} style={[styles.icon]} source={require('../icons/cgpaIcon.png')}/>
+          <Text>Point Calculator</Text>
         </Text>
       </TouchableOpacity>
 

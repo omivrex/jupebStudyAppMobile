@@ -26,46 +26,13 @@ import { Asset } from 'expo-asset';
 
 let newsObtained = false
 
-const news = [
-    {
-        name: 'Relevant Materials',
-        data: []
-    }, 
-]
-
 let card_displayed = false
 export default function newsScreen({navigation}) {
     const [loading, setloading] = useState()
-    useEffect(() => {
-      getUpdates()
-    }, [])
-    
+    // useEffect(() => {
+    //   getUpdates()
+    // }, [])
 
-    const getUpdates = async () => {
-        try {
-            const networkStat = await network.getNetworkStateAsync()
-            if (networkStat.isInternetReachable && !newsObtained && !card_displayed) {
-                setloading(
-                    <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
-                        <LoadingComponent />
-                    </View>
-                )
-                
-                for (const section of news) {
-                    section.data = [] //empty data array
-                    getSectionData(section.name, section.data)
-                }
-                setloading()
-                newsObtained = true
-            }
-        } catch (error) { //errors usually show up because there's no network (can not get network state)
-            alert('we are having trouble reaching our server. Are you offline?')
-            console.error()
-        }
-    }
-            
-    
-    
     const is_BLOCKED_CARD_DISPLAYED = useRef(false)
     function DISPLAY_BLOCKED_FEATURE_CARD() {
         if (!is_BLOCKED_CARD_DISPLAYED.current) {
@@ -113,9 +80,12 @@ export default function newsScreen({navigation}) {
                     originWhitelist={['*']}
                     source={{
                         html: `
+                            <head>
+                                <meta name="viewport" maximum-scale=0.4">
+                            </head>
                             <body style="width: 100%;">
                                 <div style="
-                                    font-size: 1.6em;
+                                    font-size: 2.1em;
                                     font-family: Roboto, sans-serif, san Francisco;
                                     width: 90%;
                                     margin: auto;
@@ -171,9 +141,12 @@ export default function newsScreen({navigation}) {
                     originWhitelist={['*']}
                     source={{
                         html: `
+                            <head>
+                                <meta name="viewport" maximum-scale=0.4">
+                            </head>
                             <body style="width: 100%; overflow-y: auto;">
                                 <div style="
-                                    font-size: 1.6em;
+                                    font-size: 2.1em;
                                     font-family: Roboto, sans-serif, san Francisco;
                                     width: 90%;
                                     margin: auto;
@@ -359,29 +332,12 @@ export default function newsScreen({navigation}) {
         })
     }
 
-    const displayLectureNotesCard = () => {
-        setlectureNotesCard(
-            <View style={pageStyles.card}>
-                <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
-                <Text style={pageStyles.nullText}>
-                    Not Available Yet
-                </Text>
-            </View>
-        )
-        card_displayed = true
-    }
-
     async function display_resources_card() {
         getToken(DISPLAY_BLOCKED_FEATURE_CARD).then(token => {
           if (token === 'true') {
               setRESOURCES_CARD(
                   <View style={pageStyles.card}>
                       <ScrollView style={{height: hp('100%'), marginBottom: 50}}>
-                          {/* <Text style={[pageStyles.header]}>PERIODIC TABLE OF ELEMENTS</Text>
-                          <ScrollView style={{position: 'relative', top: hp('10%'), marginBottom: hp('15%') }} horizontal={true}>
-                              <Image style={{left: wp('5%')}} source={require('../icons/periodicTable.png')}/>
-                          </ScrollView> */}
-      
                           <Text style={[pageStyles.header, {marginTop: hp('6%')}]}>COMMON FUNCTIONAL GROUPS</Text>
                           <ScrollView style={{position: 'relative', top: hp('10%'), marginBottom: hp('15%') }} horizontal={true}>
                               <Image style={{left: wp('5%')}} source={require('../icons/commonFuncGroups.png')}/>
@@ -423,12 +379,6 @@ export default function newsScreen({navigation}) {
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableHighlight>
             </View>
-            <TouchableHighlight underlayColor='rgba(156, 39, 176, 1)' onPress = {() => {
-                newsObtained = false
-                getUpdates()
-            }} style={pageStyles.refreshButn}>
-                <Text style={pageStyles.refreshButnText}>Refresh</Text>
-            </TouchableHighlight>
             <ScrollView style={pageStyles.tableOfContents}>
                 <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayAboutCard}>
                     <View>
@@ -452,12 +402,6 @@ export default function newsScreen({navigation}) {
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/materials.png')}/>
                         <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
-                    </View>
-                </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayLectureNotesCard}>
-                    <View>
-                        <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/lectureNotes.png')}/>
-                        <Text style={pageStyles.contentText}>LECTURE NOTES</Text>
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={display_resources_card}>

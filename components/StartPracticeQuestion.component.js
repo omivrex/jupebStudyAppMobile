@@ -23,6 +23,9 @@ export default function StartPracticeQuestion({questionData, displayLoadingCompo
             <MathJax
                 html={
                     `
+                        <head>
+                            <meta name="viewport" maximum-scale=0.4">
+                        </head>
                         <body style="width: 100%;">
                             <style>
                                 * {
@@ -32,7 +35,7 @@ export default function StartPracticeQuestion({questionData, displayLoadingCompo
                                     user-select: none;
                                 }
                             </style>
-                            <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                            <div style="font-size: 2em; font-family: Roboto, sans-serif, san Francisco">
                                 ${questionData.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}
                             </div> 
                         </body>

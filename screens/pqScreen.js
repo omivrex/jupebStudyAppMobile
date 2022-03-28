@@ -239,6 +239,9 @@ export default function pqScreen({navigation}) {
                                     <MathJax
                                         html={
                                             `
+                                                <head>
+                                                    <meta name="viewport" maximum-scale=0.4">
+                                                </head>
                                                 <body style="width: 100%;">
                                                     <style>
                                                         * {
@@ -248,7 +251,7 @@ export default function pqScreen({navigation}) {
                                                             user-select: none;
                                                         }
                                                     </style>
-                                                    <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                    <div style="font-size: 2em; font-family: Roboto, sans-serif, san Francisco">
                                                         ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                     </div> 
                                                 </body>

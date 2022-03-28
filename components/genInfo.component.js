@@ -47,9 +47,9 @@ function GenInfoComponent({data}) {
                                     html={
                                         `
                                             <head>
-                                                <meta name="viewport" maximum-scale=0.4">
+                                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
                                             </head>
-                                            <body style="width: 100%;">
+                                            <body>
                                                 <style>
                                                     * {
                                                         -webkit-user-select: none;
@@ -58,7 +58,7 @@ function GenInfoComponent({data}) {
                                                         user-select: none;
                                                     }
                                                 </style>
-                                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
                                                     ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                 </div> 
                                             </body>

@@ -81,13 +81,12 @@ export default function newsScreen({navigation}) {
                     source={{
                         html: `
                             <head>
-                                <meta name="viewport" maximum-scale=0.4">
+                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
                             </head>
-                            <body style="width: 100%;">
+                            <body>
                                 <div style="
-                                    font-size: 2.1em;
+                                    font-size: 1em;
                                     font-family: Roboto, sans-serif, san Francisco;
-                                    width: 90%;
                                     margin: auto;
                                     min-height: 50rem;
                                 ">
@@ -142,11 +141,11 @@ export default function newsScreen({navigation}) {
                     source={{
                         html: `
                             <head>
-                                <meta name="viewport" maximum-scale=0.4">
+                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
                             </head>
-                            <body style="width: 100%; overflow-y: auto;">
+                            <body style="overflow-y: auto;">
                                 <div style="
-                                    font-size: 2.1em;
+                                    font-size: 1em;
                                     font-family: Roboto, sans-serif, san Francisco;
                                     width: 90%;
                                     margin: auto;

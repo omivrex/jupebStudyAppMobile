@@ -240,9 +240,9 @@ export default function pqScreen({navigation}) {
                                         html={
                                             `
                                                 <head>
-                                                    <meta name="viewport" maximum-scale=0.4">
+                                                    <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
                                                 </head>
-                                                <body style="width: 100%;">
+                                                <body>
                                                     <style>
                                                         * {
                                                             -webkit-user-select: none;
@@ -251,7 +251,7 @@ export default function pqScreen({navigation}) {
                                                             user-select: none;
                                                         }
                                                     </style>
-                                                    <div style="font-size: 2em; font-family: Roboto, sans-serif, san Francisco">
+                                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
                                                         ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                     </div> 
                                                 </body>

@@ -379,7 +379,7 @@ export default function newsScreen({navigation}) {
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableHighlight>
             </View>
-            <ScrollView style={pageStyles.tableOfContents}>
+            <View style={pageStyles.tableOfContents}>
                 <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={displayAboutCard}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/about.png')}/>
@@ -404,14 +404,14 @@ export default function newsScreen({navigation}) {
                         <Text style={pageStyles.contentText}>MATERIALS FOR STUDY</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={pageStyles.content} onPress={display_resources_card}>
+                <TouchableHighlight underlayColor='rgba(156, 39, 176,1)' style={[pageStyles.content, {width: '90%', left: '1%', top: '0%'}]} onPress={display_resources_card}>
                     <View>
                         <Image resizeMode={'center'} style={pageStyles.contentIcons} source={require('../icons/resources.png')}/>
-                        <Text style={pageStyles.contentText}>RESOURCES</Text>
+                        <Text style={pageStyles.contentText}>OTHER RESOURCES</Text>
                     </View>
                 </TouchableHighlight>
                 <View style={{height: '20%', marginTop: '20%'}}></View>
-            </ScrollView>
+            </View>
             {aboutCard}
             {guideCard}
             {syllabulsCard}

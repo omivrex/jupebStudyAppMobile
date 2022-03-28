@@ -21,7 +21,7 @@ import { usePreventScreenCapture } from 'expo-screen-capture'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import pageStyles from '../styles/pqScreenStyles.js';
-const pqData = require("../Scripts/pqData.json");
+const pqData = require("../scripts/pqData.json");
 import styles from '../styles/master.js';
 import { FlatList } from 'react-native-gesture-handler';
 import AnswerComponent from '../components/Answer.component';

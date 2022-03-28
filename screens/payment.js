@@ -138,7 +138,7 @@ export default function Register({navigation}) {
                         Account Name: Iwuoha Kelechi Emmanuel.
                     </Text>
                     <Text style={[pageStyles.formText]}>
-                        Amount: ₦1,500
+                        Amount: ₦2000
                     </Text>
     
                     <TouchableOpacity onPressIn={processData} style={pageStyles.nextButn}>
@@ -271,12 +271,12 @@ export default function Register({navigation}) {
             </View>
 
             <TouchableOpacity onPress={()=> paystackWebViewRef.current.StartTransaction()} style={pageStyles.cardArea}>
-                <Text style={pageStyles.cardText}>Pay With Card: ₦1,500</Text>
+                <Text style={pageStyles.cardText}>Pay With Card: ₦2000</Text>
             </TouchableOpacity>
 
             
             <TouchableOpacity onPressIn={dispaly_Bank_Form} style={pageStyles.cardArea}>
-                <Text style={pageStyles.cardText}>Bank Transfer: ₦1,500</Text>
+                <Text style={pageStyles.cardText}>Bank Transfer: ₦2000</Text>
             </TouchableOpacity>
 
             <View  style={pageStyles.cardArea}>
@@ -317,7 +317,7 @@ export default function Register({navigation}) {
                         showPayButton={false}
                         style={{color: '#eee'}}
                         paystackKey="pk_live_846661c27fb64e2d951b78d9acd4f5d35034db14"
-                        amount={1500}
+                        amount={2000}
                         billingEmail="learnextra2@gmail.com"
                         billingMobile="07084973294"
                         billingName="Emmanuel Iwuoha"

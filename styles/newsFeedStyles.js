@@ -39,39 +39,38 @@ export default StyleSheet.create({
     },
 
     tableOfContents: {
-        flex: 1,
-        width: wp('100%'),
-        height: hp('80%'),
+        width: '100%',
+        height: '80%',
         top: hp('20%'),
-        position: 'absolute',
-        zIndex: -1
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        flexWrap: 'wrap',
+        alignItems: 'center',
     },
 
     content: {
-        width: wp('90%'),
-        height: hp('30%'),
+        width: '40%',
+        height: '25%',
+        marginBottom: '10%',
+        borderRadius: 25,
+        top: '10%',
         backgroundColor: colors.appColor,
-        position: 'relative',
-        marginBottom: hp('4%'),
-        alignSelf: 'center',
-        top: hp('10%'),
-        zIndex: -1,
-        alignItems: 'center',
+        alignContent: 'center',
         justifyContent: 'center'
     },
 
     contentIcons: {
-        height: hp('35%'),
+        height: '45%',
         alignSelf: 'center',
-        marginVertical: 0
     },
 
     contentText: {
         color: colors.textColor,
-        fontSize: hp('2.6%'),
-        padding: '3%',
+        fontSize: hp('2%'),
         textAlign: 'center',
-        top: hp('-7%')
+        width: '100%',
+        top: '30%',
+        alignSelf: 'flex-end'
     },
 
     refreshButn: {

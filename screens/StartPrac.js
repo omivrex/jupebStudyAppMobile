@@ -2,7 +2,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { getToken } from "../utils/pastquestions.utils";
+import { getOfflineCollections, getToken } from "../utils/pastquestions.utils";
 import LoadingComponent from "../components/loading.component"
 import StartPracticeQuestion from '../components/StartPracticeQuestion.component';
 
@@ -21,7 +21,7 @@ import { usePreventScreenCapture } from 'expo-screen-capture'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import pageStyles from '../styles/pqScreenStyles.js';
-const pqData = require("../Scripts/pqData.json");
+const pqData = require("../scripts/pqData.json");
 import styles from '../styles/master.js';
 import { FlatList } from 'react-native-gesture-handler';
 import AnswerComponent from '../components/Answer.component';
@@ -76,15 +76,15 @@ export default function StartPrac({navigation}) {
     const is_token_obtained = useRef(false)
     
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
-            !tokenPresent?setBLOCKED_FEATURE_CARD(
-                <View style={styles.BLOCKED_FEATURE_CARD}>
-                    <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                        This Feature Is Only Available To Paid Users.
-                        Head To The Payment Section To Make Payment.
-                    </Text>
-                </View>
-            ):
-            setBLOCKED_FEATURE_CARD()
+        !tokenPresent?setBLOCKED_FEATURE_CARD(
+            <View style={styles.BLOCKED_FEATURE_CARD}>
+                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
+                    This Feature Is Only Available To Paid Users.
+                    Head To The Payment Section To Make Payment.
+                </Text>
+            </View>
+        ):
+        displayPracCard()
     }
 
 
@@ -103,20 +103,21 @@ export default function StartPrac({navigation}) {
         course: '',
         subject: 'All',
     })
+    
     useEffect(() => {
-        getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-        getCourses()
+        getCourseData()
     }, [])
 
-    const getCourses = () => {
-        const optionsArray = []
+    const getCourseData = () => {
+        optionsRef.current = []
         selectedSubject.current = 'Subject'
         pathObj.current.subject = ''
-        pqData.forEach(item => {
-            label.current = 'Course'
-            optionsArray.push(item['courseName'])
+        label.current = 'Course'
+        const tempArray = [... getOfflineCollections()]
+        tempArray.forEach(course => {
+            optionsRef.current = optionsRef.current.concat(course.courseName)
         });
-        optionsRef.current = [... optionsArray]
+        optionsRef.current = [... new Set(optionsRef.current)];
     }
 
     const getSubjects = (courseName) => {
@@ -139,7 +140,7 @@ export default function StartPrac({navigation}) {
     const selectedSubject = useRef('Subject: ')
     const displayOptions = labelName => {
         if(pathObj.current.course ==='' || labelName == 'Course') {
-            getCourses()
+            getCourseData()
         } else {
             getSubjects(pathObj.current.course)
         }
@@ -476,7 +477,10 @@ export default function StartPrac({navigation}) {
                                             <MathJax
                                                 html={
                                                     `
-                                                        <body style="width: 100%;">
+                                                        <head>
+                                                            <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                                                        </head>
+                                                        <body>
                                                             <style>
                                                                 * {
                                                                     -webkit-user-select: none;
@@ -485,7 +489,7 @@ export default function StartPrac({navigation}) {
                                                                     user-select: none;
                                                                 }
                                                             </style>
-                                                            <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                            <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
                                                                 ${Data.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}
                                                             </div> 
                                                         </body>
@@ -613,22 +617,22 @@ export default function StartPrac({navigation}) {
                     <Image source={require('../icons/menuIcon.png')}/>
                 </TouchableOpacity>
                 <TouchableOpacity style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
-                        Alert.alert('Quality Control Service',
-                        `Do You Find A Problem With This Question? \nContact our Admin on \nWhatsAapp To lay complains`,
+                    Alert.alert('Quality Control Service',
+                        `Did you find an error in this question/solution, \nkindly contact an Admin on WhatsApp.`,
                         [
-                                {
-                                    text: 'YES',
-                                    onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP`)
-                                }, 
+                            {
+                                text: 'YES',
+                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
+                            }, 
 
-                                {
-                                    text: 'NO',
-                                    onPress: ()=> 'Do nothing',
-                                    style: 'cancel'
-                                },
+                            {
+                                text: 'NO',
+                                onPress: ()=> console.log('Do nothing'),
+                                style: 'cancel'
+                            },
 
-                            ], {cancelable: true}
-                        )
+                        ], {cancelable: true}
+                    )
                 }}>
                     <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
                 </TouchableOpacity>
@@ -651,7 +655,7 @@ export default function StartPrac({navigation}) {
                     <TouchableOpacity onPress={displayTimeList} style={[pageStyles.timeBox, showTimerSettings]}>
                         <Text style={pageStyles.time}>{timerState}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={pageStyles.startButn} onPress={displayPracCard}>
+                    <TouchableOpacity style={pageStyles.startButn} onPress={()=>getToken(DISPLAY_BLOCKED_FEATURE_CARD)}>
                         <Text style={pageStyles.startText}>Start</Text>
                     </TouchableOpacity>
                 </View>

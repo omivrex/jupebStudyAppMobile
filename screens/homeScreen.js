@@ -64,8 +64,8 @@ export default function homeScreen({navigation}) {
     navigation.navigate('NewsScreen')
   }
    
-  const navToCalcPage = () => {
-    navigation.navigate('CalcScreen')
+  const navToStartPrac = () => {
+    navigation.navigate('StartPrac')
   }
 
   if (!firebase.apps.length) {
@@ -114,20 +114,23 @@ export default function homeScreen({navigation}) {
                       <Text style={previewInformationStyle}>{item.Topic}</Text>
                       <MathJax
                         html={
-                            `
-                                <body style="width: 100%;">
-                                    <style>
-                                        * {
-                                          -webkit-user-select: none;
-                                          -moz-user-select: none;
-                                          -ms-user-select: none;
-                                          user-select: none;
-                                        }
-                                    </style>
-                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
-                                      ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
-                                    </div> 
-                                </body>
+                            ` 
+                              <head>
+                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                              </head>
+                              <body>
+                                <style>
+                                    * {
+                                      -webkit-user-select: none;
+                                      -moz-user-select: none;
+                                      -ms-user-select: none;
+                                      user-select: none;
+                                    }
+                                </style>
+                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                  ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
+                                </div> 
+                              </body>
                             
                             `
                         }
@@ -206,6 +209,13 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
 
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToStartPrac}>
+              <>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/startPrac.png')}/>
+                <Text style={[styles.blockText]}>START PRACTICE</Text>
+              </>
+            </TouchableHighlight>
+
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToNewsPage}>
               <>
                 <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/newsIcon.png')}/>
@@ -213,12 +223,6 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
 
-            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToCalcPage}>
-              <>
-                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/cgpaIcon.png')}/>
-                <Text style={[styles.blockText]}>POINT CALCULATOR</Text>
-              </>
-            </TouchableHighlight>
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true})}>
               <>
                 <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/lectureNotes.png')}/>

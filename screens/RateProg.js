@@ -77,7 +77,7 @@ export default function RateProg({navigation}) {
 
     function DISPLAY_BLOCKED_FEATURE_CARD() {
         setBLOCKED_FEATURE_CARD(
-            <View style={[styles.BLOCKED_FEATURE_CARD, {top: '8%'}]}>
+            <View style={styles.BLOCKED_FEATURE_CARD}>
                 <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
                     This Feature Is Only Available To Paid Users.
                     Head To The Payment Section To Make Payment.

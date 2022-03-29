@@ -8,7 +8,7 @@ import { startPracStack } from './startPracStack';
 import { settings } from './settingsStack';
 import { help } from './helpStack';
 import { about } from './aboutStack';
-import drawerComp  from '../Scripts/drawerComp.js';
+import drawerComp  from '../components/drawer.component.js';
 
 
 const Menu = createDrawerNavigator({

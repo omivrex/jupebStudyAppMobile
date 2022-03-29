@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from '../styles/master.js';
 import pageStyles from '../styles/newsFeedStyles.js';
 import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -47,7 +46,10 @@ function GenInfoComponent({data}) {
                                 <MathJax
                                     html={
                                         `
-                                            <body style="width: 100%;">
+                                            <head>
+                                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                                            </head>
+                                            <body>
                                                 <style>
                                                     * {
                                                         -webkit-user-select: none;
@@ -56,7 +58,7 @@ function GenInfoComponent({data}) {
                                                         user-select: none;
                                                     }
                                                 </style>
-                                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
                                                     ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                 </div> 
                                             </body>

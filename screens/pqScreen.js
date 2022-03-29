@@ -1,8 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import MathJax from 'react-native-mathjax';
-import {sendGetCollectionReq} from "../utils/pastquestions.utils"
+import * as network from 'expo-network';
+import {getOfflineCollections, getOnlineCollections, getSectionsLocalQuestions, getToken} from "../utils/pastquestions.utils"
 import LoadingComponent from "../components/loading.component"
 
 import {
@@ -26,66 +26,103 @@ let renderCollection = true
 let IS_ANS_CARD_DISPLAYED = false
 let preventBackHandler = false
 let token = false
-
+const allowedTimeForUnpaidUsers = 10000 /** 1mins */
 export default function pqScreen({navigation}) {
     usePreventScreenCapture()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
 
     const path = useRef('pastquestions')
     const label = useRef('Course Name')
+    const offlinePath = useRef({
+        courseName: null,
+        year: null,
+        subject: null,
+        section: null
+    })
     const [collectionData, setcollectionData] = useState([])
 
     const IS_BLOCKED_FEATURE_CARD_DISPLAYED = useRef(false)
     
     const IS_GET_TOKEN_CALLED = useRef(false)
 
+    const isInternetReachable = useRef(false)
+
     useEffect(() => {
-        getCollection(path.current)
+        (async ()=> {
+            isInternetReachable.current = (await network.getNetworkStateAsync()).isInternetReachable
+            console.log('isInternetReachable', isInternetReachable.current)
+            isInternetReachable.current? getOnlineQuestions(path.current):
+            getOfflineQuestions()
+        })()
     }, [])
-    
-    const [loading, setloading] = useState()
-    const getCollection = (collectionName) => {
+
+    const pathToDisplayWhenOffline = useRef([])
+    const getOfflineQuestions = path => {
         setloading(
             <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
                 <LoadingComponent />
             </View>
         )
-        sendGetCollectionReq(collectionName).then(returnedArray => {
+        if (path) {
+            const returnedArray = [... getOfflineCollections(path)]
+            const newLabel = Object.keys(returnedArray[0]).filter(key => key !== 'index') 
+            label.current = newLabel[0]
+            if (label.current === 'questionNumber') {
+                let tempArray = []
+                preventBackHandler = true
+                returnedArray.forEach(question => {
+                    tempArray.push({data: getSectionsLocalQuestions(offlinePath.current, question)})
+                });
+                renderCollection = false
+                setcollectionData([... tempArray])
+                setTimeout(()=> getToken(DISPLAY_BLOCKED_FEATURE_CARD), allowedTimeForUnpaidUsers)
+            } else {
+                renderCollection = true
+                setcollectionData(returnedArray)
+            }
+        } else {
+            setcollectionData([... getOfflineCollections()])
+            label.current = 'courseName'
+        }
+        setloading()
+    }
+    
+    const [loading, setloading] = useState()
+    const getOnlineQuestions = (collectionName) => {
+        setloading(
+            <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
+                <LoadingComponent />
+            </View>
+        )
+        getOnlineCollections(collectionName).then(returnedArray => {
             if (returnedArray.length>0) {
                 label.current = Object.keys(returnedArray[0])[0]
                 if (label.current === 'questionNumber') {
                     const tempArray = []
                     returnedArray.forEach((element, index) => {
-                        sendGetCollectionReq(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
+                        getOnlineCollections(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
                             tempArray.push(questionData);
                             console.log('tempArray', tempArray.length===returnedArray.length)
                             if (tempArray.length===returnedArray.length) {
                                 preventBackHandler = true
                                 renderCollection = false
                                 setcollectionData([...tempArray])
-                                setloading()
+                                setTimeout(()=> getToken(DISPLAY_BLOCKED_FEATURE_CARD), allowedTimeForUnpaidUsers)
                             }
                         })
                     })
                 } else {
-                    label.current = (label.current === 'courseName')?'Course Name':label.current
                     setcollectionData([... returnedArray])
                     renderCollection = true
-                    setloading()
                 }
             } else {
-                Alert.alert('Section is Empty', '')
-                setloading()
+                Alert.alert('Section is Empty', 'Falling back to offline mode')
+                isInternetReachable.current = false
+                getOfflineQuestions()
             }
+            setloading()
         })
     }
-    
-    const pqPathObj = useRef({
-        course: '',
-        year: '',
-        subject: 'All',
-        section: 'All'
-    })
     
     console.log(IS_GET_TOKEN_CALLED.current, IS_BLOCKED_FEATURE_CARD_DISPLAYED.current);
 
@@ -93,32 +130,17 @@ export default function pqScreen({navigation}) {
         navigation.openDrawer();
     }
     
-    const getToken = async () => {
-        if (!IS_GET_TOKEN_CALLED.current) {
-            try {
-                token = await AsyncStorage.getItem('vpa')
-            } catch (err) {
-                console.log(err);
-            }
-            IS_GET_TOKEN_CALLED.current = true
-        }
-    }
-    
-    
-    function DISPLAY_BLOCKED_FEATURE_CARD() {
-        console.log('called', token);
-        console.log(`token is ${token}`);
-        if (token === 'false') {
-            setBLOCKED_FEATURE_CARD(
-                <View style={[styles.BLOCKED_FEATURE_CARD]}>
-                    <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                        This Feature Is Only Available To Paid Users.
-                        Head To The Payment Section To Make Payment.
-                    </Text>
-                </View>
-            )
-            closePqCard()
-        }
+    function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
+        preventBackHandler = false
+        !tokenPresent?setBLOCKED_FEATURE_CARD(
+            <View style={styles.BLOCKED_FEATURE_CARD}>
+                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
+                    This Feature Is Only Available To Paid Users.
+                    Head To The Payment Section To Make Payment.
+                </Text>
+            </View>
+        ):
+        setBLOCKED_FEATURE_CARD()
     }
     
     BackHandler.addEventListener('hardwareBackPress', function () {
@@ -129,8 +151,6 @@ export default function pqScreen({navigation}) {
                 closeAnsPage()
             } else   {
                 closePqCard()
-                setBLOCKED_FEATURE_CARD()
-                IS_BLOCKED_FEATURE_CARD_DISPLAYED.current = false
             }
             return true;
         }
@@ -139,14 +159,27 @@ export default function pqScreen({navigation}) {
 
     const closePqCard = () => {
         setqualityContButnDis({display: 'none'})
-        const newPath = path.current.split('/')
-        newPath.pop()
-        newPath.pop()
-        console.log('preventBackHandler', newPath.length<2)
-        preventBackHandler = !(newPath.length<2)
-        path.current = newPath.join('/')
+        if (isInternetReachable.current) {
+            const newPath = path.current.split('/')
+            newPath.pop()
+            newPath.pop()
+            preventBackHandler = !(newPath.length<2)
+            path.current = newPath.join('/')
+            getOnlineQuestions(path.current)
+        } else {
+            const keys = Object.keys(offlinePath.current)
+            for (let index = keys.length-1; index >= 0; index--) {
+                const key = keys[index];
+                if (offlinePath.current[key] !== null) {
+                    offlinePath.current[key] = null
+                    break;
+                }
+            }
+            pathToDisplayWhenOffline.current.pop()
+            preventBackHandler = (offlinePath.current.courseName !== null)
+            getOfflineQuestions(offlinePath.current)
+        }
         renderCollection = true
-        getCollection(path.current)
     }
 
     const [ansCard, setansCard] = useState()
@@ -170,11 +203,11 @@ export default function pqScreen({navigation}) {
                 <Text style={styles.baseText}>PAST QUESTIONS</Text>
                 <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)'style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
                     Alert.alert('Quality Control Service',
-                        `Do You Find A Problem With This Question? \\nContact our Admin on \\nWhatsAapp To lay complains`,
+                        `Did you find an error in this question/solution, \nkindly contact an Admin on WhatsApp.`,
                         [
                             {
                                 text: 'YES',
-                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP`)
+                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
                             }, 
 
                             {
@@ -183,8 +216,8 @@ export default function pqScreen({navigation}) {
                                 style: 'cancel'
                             },
 
-                        ], 
-                    {cancelable: true})
+                        ], {cancelable: true}
+                    )
                 }}>
                     <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
                 </TouchableHighlight>
@@ -194,7 +227,7 @@ export default function pqScreen({navigation}) {
             </View>
             {renderCollection? (
                 <View style={pageStyles.listOptionsCont}>
-                    {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {label.current}</Text>:<></>}
+                    {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {(label.current === 'courseName')?'Course Name':label.current}</Text>:<></>}
                     <FlatList
                         data={collectionData}
                         contentContainerStyle = {{paddingBottom: collectionData.length*100, width: '100%', top: '10%'}}
@@ -203,9 +236,15 @@ export default function pqScreen({navigation}) {
                             if (label.current !=='questionNumber') {
                                 return (
                                     <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
-                                        path.current += `/${data}/${data}`
                                         preventBackHandler = true
-                                        getCollection(path.current, false)
+                                        if (isInternetReachable.current) {
+                                            path.current += `/${data}/${data}`
+                                            getOnlineQuestions(path.current, false)
+                                        } else {
+                                            offlinePath.current[label.current] = item
+                                            pathToDisplayWhenOffline.current.push(Object.values(item)[0])
+                                            getOfflineQuestions(offlinePath.current)
+                                        }
                                     }}>
                                         <Text style={pageStyles.listOptionsText}>{(`${data}`).toUpperCase()}</Text>
                                     </TouchableHighlight>
@@ -218,7 +257,10 @@ export default function pqScreen({navigation}) {
             ): (
                 <View style={{width: wp('100%'), top: hp('17%')}}>
                     <View style={pageStyles.pqHeader}>
-                        <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()}</Text>
+                        <Text style={pageStyles.pqHeaderText}>
+                            {isInternetReachable.current?([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()
+                            : pathToDisplayWhenOffline.current.join(' > ').toUpperCase()}
+                        </Text>
                         <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {()=> !IS_ANS_CARD_DISPLAYED?closePqCard():closeAnsPage()} style={pageStyles.closePqCard}>
                             <Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>
                         </TouchableHighlight>
@@ -239,7 +281,10 @@ export default function pqScreen({navigation}) {
                                     <MathJax
                                         html={
                                             `
-                                                <body style="width: 100%;">
+                                                <head>
+                                                    <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                                                </head>
+                                                <body>
                                                     <style>
                                                         * {
                                                             -webkit-user-select: none;
@@ -248,7 +293,7 @@ export default function pqScreen({navigation}) {
                                                             user-select: none;
                                                         }
                                                     </style>
-                                                    <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
+                                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
                                                         ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):''}
                                                     </div> 
                                                 </body>
@@ -308,8 +353,8 @@ export default function pqScreen({navigation}) {
                 </View>
             )}
             {ansCard}
-            {BLOCKED_FEATURE_CARD}
             {loading}
+            {BLOCKED_FEATURE_CARD}
             <StatusBar style="light" />
         </SafeAreaView>
     )

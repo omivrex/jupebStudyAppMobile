@@ -19,8 +19,10 @@ export default function ({data}) {
                 } */}
                 <MathJax
                     html={
-                        `   
-                            <body style="width: 100%; overflow-y: auto; overflow-x: show;">
+                        `   <head>
+                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                            </head>
+                            <body>
                                 <style>
                                     * {
                                         -webkit-user-select: none;
@@ -29,7 +31,7 @@ export default function ({data}) {
                                         user-select: none;
                                     }
                                 </style>
-                                <div style="font-size: 1.3em;
+                                <div style="font-size: 1em;
                                     font-family: Roboto, sans-serif, san Francisco;
                                     width: 90%;
                                     overflow-x: show;

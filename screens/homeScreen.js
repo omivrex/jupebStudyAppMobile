@@ -209,6 +209,13 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
 
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToStartPrac}>
+              <>
+                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/startPrac.png')}/>
+                <Text style={[styles.blockText]}>START PRACTICE</Text>
+              </>
+            </TouchableHighlight>
+
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToNewsPage}>
               <>
                 <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/newsIcon.png')}/>
@@ -216,12 +223,6 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
 
-            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={navToStartPrac}>
-              <>
-                <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/startPrac.png')}/>
-                <Text style={[styles.blockText]}>START PRACTICE</Text>
-              </>
-            </TouchableHighlight>
             <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true})}>
               <>
                 <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/lectureNotes.png')}/>

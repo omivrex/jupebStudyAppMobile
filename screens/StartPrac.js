@@ -76,15 +76,15 @@ export default function StartPrac({navigation}) {
     const is_token_obtained = useRef(false)
     
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
-            !tokenPresent?setBLOCKED_FEATURE_CARD(
-                <View style={styles.BLOCKED_FEATURE_CARD}>
-                    <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                        This Feature Is Only Available To Paid Users.
-                        Head To The Payment Section To Make Payment.
-                    </Text>
-                </View>
-            ):
-            setBLOCKED_FEATURE_CARD()
+        !tokenPresent?setBLOCKED_FEATURE_CARD(
+            <View style={styles.BLOCKED_FEATURE_CARD}>
+                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
+                    This Feature Is Only Available To Paid Users.
+                    Head To The Payment Section To Make Payment.
+                </Text>
+            </View>
+        ):
+        displayPracCard()
     }
 
 
@@ -105,7 +105,6 @@ export default function StartPrac({navigation}) {
     })
     
     useEffect(() => {
-        getToken(DISPLAY_BLOCKED_FEATURE_CARD)
         getCourseData()
     }, [])
 
@@ -118,7 +117,6 @@ export default function StartPrac({navigation}) {
         tempArray.forEach(course => {
             optionsRef.current = optionsRef.current.concat(course.courseName)
         });
-        console.log('optionsRef.current', optionsRef.current)
         optionsRef.current = [... new Set(optionsRef.current)];
     }
 
@@ -657,7 +655,7 @@ export default function StartPrac({navigation}) {
                     <TouchableOpacity onPress={displayTimeList} style={[pageStyles.timeBox, showTimerSettings]}>
                         <Text style={pageStyles.time}>{timerState}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={pageStyles.startButn} onPress={displayPracCard}>
+                    <TouchableOpacity style={pageStyles.startButn} onPress={()=>getToken(DISPLAY_BLOCKED_FEATURE_CARD)}>
                         <Text style={pageStyles.startText}>Start</Text>
                     </TouchableOpacity>
                 </View>

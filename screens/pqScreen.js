@@ -50,10 +50,10 @@ export default function pqScreen({navigation}) {
 
     useEffect(() => {
         (async ()=> {
+            isInternetReachable.current = (await network.getNetworkStateAsync()).isInternetReachable
+            console.log('isInternetReachable', isInternetReachable.current)
+            isInternetReachable.current? getOnlineQuestions(path.current):
             getOfflineQuestions()
-            // isInternetReachable.current = (await network.getNetworkStateAsync()).isInternetReachable
-            // isInternetReachable.current? getOnlineQuestions(path.current):
-            // getOfflineQuestions()
         })()
     }, [])
 
@@ -115,7 +115,9 @@ export default function pqScreen({navigation}) {
                     renderCollection = true
                 }
             } else {
-                Alert.alert('Section is Empty', '')
+                Alert.alert('Section is Empty', 'Falling back to offline mode')
+                isInternetReachable.current = false
+                getOfflineQuestions()
             }
             setloading()
         })

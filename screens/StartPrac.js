@@ -110,6 +110,7 @@ export default function StartPrac({navigation}) {
     }, [])
 
     const getCourseData = () => {
+        optionsRef.current = []
         selectedSubject.current = 'Subject'
         pathObj.current.subject = ''
         label.current = 'Course'
@@ -117,6 +118,7 @@ export default function StartPrac({navigation}) {
         tempArray.forEach(course => {
             optionsRef.current = optionsRef.current.concat(course.courseName)
         });
+        console.log('optionsRef.current', optionsRef.current)
         optionsRef.current = [... new Set(optionsRef.current)];
     }
 

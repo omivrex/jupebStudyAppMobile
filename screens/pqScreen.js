@@ -2,7 +2,8 @@ import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MathJax from 'react-native-mathjax';
-import {sendGetCollectionReq} from "../utils/pastquestions.utils"
+import * as network from 'expo-network';
+import {getOfflineCollections, getOnlineCollections, getSectionsLocalQuestions} from "../utils/pastquestions.utils"
 import LoadingComponent from "../components/loading.component"
 
 import {
@@ -33,59 +34,92 @@ export default function pqScreen({navigation}) {
 
     const path = useRef('pastquestions')
     const label = useRef('Course Name')
+    const offlinePath = useRef({
+        courseName: null,
+        year: null,
+        subject: null,
+        section: null
+    })
     const [collectionData, setcollectionData] = useState([])
 
     const IS_BLOCKED_FEATURE_CARD_DISPLAYED = useRef(false)
     
     const IS_GET_TOKEN_CALLED = useRef(false)
 
+    const isInternetReachable = useRef(false)
+
     useEffect(() => {
-        getCollection(path.current)
+        (async ()=> {
+            getOfflineQuestions()
+            // isInternetReachable.current = (await network.getNetworkStateAsync()).isInternetReachable
+            // isInternetReachable.current? getOnlineQuestions(path.current):
+            // getOfflineQuestions()
+        })()
     }, [])
-    
-    const [loading, setloading] = useState()
-    const getCollection = (collectionName) => {
+
+    const pathToDisplayWhenOffline = useRef([])
+    const getOfflineQuestions = path => {
         setloading(
             <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
                 <LoadingComponent />
             </View>
         )
-        sendGetCollectionReq(collectionName).then(returnedArray => {
+        if (path) {
+            const returnedArray = [... getOfflineCollections(path)]
+            const newLabel = Object.keys(returnedArray[0]).filter(key => key !== 'index') 
+            label.current = newLabel[0]
+            if (label.current === 'questionNumber') {
+                let tempArray = []
+                preventBackHandler = true
+                returnedArray.forEach(question => {
+                    tempArray.push({data: getSectionsLocalQuestions(offlinePath.current, question)})
+                });
+                renderCollection = false
+                setcollectionData([... tempArray])
+            } else {
+                renderCollection = true
+                setcollectionData(returnedArray)
+            }
+        } else {
+            setcollectionData([... getOfflineCollections()])
+            label.current = 'courseName'
+        }
+        setloading()
+    }
+    
+    const [loading, setloading] = useState()
+    const getOnlineQuestions = (collectionName) => {
+        setloading(
+            <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
+                <LoadingComponent />
+            </View>
+        )
+        getOnlineCollections(collectionName).then(returnedArray => {
             if (returnedArray.length>0) {
                 label.current = Object.keys(returnedArray[0])[0]
                 if (label.current === 'questionNumber') {
                     const tempArray = []
                     returnedArray.forEach((element, index) => {
-                        sendGetCollectionReq(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
+                        getOnlineCollections(path.current+`/${element.questionNumber}/${element.questionNumber}`, true).then(([questionData])=>{
                             tempArray.push(questionData);
                             console.log('tempArray', tempArray.length===returnedArray.length)
                             if (tempArray.length===returnedArray.length) {
                                 preventBackHandler = true
                                 renderCollection = false
                                 setcollectionData([...tempArray])
-                                setloading()
                             }
                         })
                     })
                 } else {
-                    label.current = (label.current === 'courseName')?'Course Name':label.current
                     setcollectionData([... returnedArray])
                     renderCollection = true
-                    setloading()
                 }
             } else {
                 Alert.alert('Section is Empty', '')
-                setloading()
             }
+            setloading()
         })
     }
-    
-    const pqPathObj = useRef({
-        course: '',
-        year: '',
-        subject: 'All',
-        section: 'All'
-    })
     
     console.log(IS_GET_TOKEN_CALLED.current, IS_BLOCKED_FEATURE_CARD_DISPLAYED.current);
 
@@ -139,14 +173,27 @@ export default function pqScreen({navigation}) {
 
     const closePqCard = () => {
         setqualityContButnDis({display: 'none'})
-        const newPath = path.current.split('/')
-        newPath.pop()
-        newPath.pop()
-        console.log('preventBackHandler', newPath.length<2)
-        preventBackHandler = !(newPath.length<2)
-        path.current = newPath.join('/')
+        if (isInternetReachable.current) {
+            const newPath = path.current.split('/')
+            newPath.pop()
+            newPath.pop()
+            preventBackHandler = !(newPath.length<2)
+            path.current = newPath.join('/')
+            getOnlineQuestions(path.current)
+        } else {
+            const keys = Object.keys(offlinePath.current)
+            for (let index = keys.length-1; index >= 0; index--) {
+                const key = keys[index];
+                if (offlinePath.current[key] !== null) {
+                    offlinePath.current[key] = null
+                    break;
+                }
+            }
+            pathToDisplayWhenOffline.current.pop()
+            preventBackHandler = (offlinePath.current.courseName !== null)
+            getOfflineQuestions(offlinePath.current)
+        }
         renderCollection = true
-        getCollection(path.current)
     }
 
     const [ansCard, setansCard] = useState()
@@ -194,7 +241,7 @@ export default function pqScreen({navigation}) {
             </View>
             {renderCollection? (
                 <View style={pageStyles.listOptionsCont}>
-                    {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {label.current}</Text>:<></>}
+                    {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {(label.current === 'courseName')?'Course Name':label.current}</Text>:<></>}
                     <FlatList
                         data={collectionData}
                         contentContainerStyle = {{paddingBottom: collectionData.length*100, width: '100%', top: '10%'}}
@@ -203,9 +250,15 @@ export default function pqScreen({navigation}) {
                             if (label.current !=='questionNumber') {
                                 return (
                                     <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
-                                        path.current += `/${data}/${data}`
                                         preventBackHandler = true
-                                        getCollection(path.current, false)
+                                        if (isInternetReachable.current) {
+                                            path.current += `/${data}/${data}`
+                                            getOnlineQuestions(path.current, false)
+                                        } else {
+                                            offlinePath.current[label.current] = item
+                                            pathToDisplayWhenOffline.current.push(Object.values(item)[0])
+                                            getOfflineQuestions(offlinePath.current)
+                                        }
                                     }}>
                                         <Text style={pageStyles.listOptionsText}>{(`${data}`).toUpperCase()}</Text>
                                     </TouchableHighlight>
@@ -218,7 +271,10 @@ export default function pqScreen({navigation}) {
             ): (
                 <View style={{width: wp('100%'), top: hp('17%')}}>
                     <View style={pageStyles.pqHeader}>
-                        <Text style={pageStyles.pqHeaderText}>{([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()}</Text>
+                        <Text style={pageStyles.pqHeaderText}>
+                            {isInternetReachable.current?([...new Set(path.current.split('/'))]).join(' > ').replace('pastquestions > ', '').toUpperCase()
+                            : pathToDisplayWhenOffline.current.join(' > ').toUpperCase()}
+                        </Text>
                         <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {()=> !IS_ANS_CARD_DISPLAYED?closePqCard():closeAnsPage()} style={pageStyles.closePqCard}>
                             <Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>
                         </TouchableHighlight>

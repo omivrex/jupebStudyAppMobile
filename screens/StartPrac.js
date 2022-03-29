@@ -2,7 +2,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { getToken } from "../utils/pastquestions.utils";
+import { getOfflineCollections, getToken } from "../utils/pastquestions.utils";
 import LoadingComponent from "../components/loading.component"
 import StartPracticeQuestion from '../components/StartPracticeQuestion.component';
 
@@ -103,20 +103,21 @@ export default function StartPrac({navigation}) {
         course: '',
         subject: 'All',
     })
+    
     useEffect(() => {
         getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-        getCourses()
+        getCourseData()
     }, [])
 
-    const getCourses = () => {
-        const optionsArray = []
+    const getCourseData = () => {
         selectedSubject.current = 'Subject'
         pathObj.current.subject = ''
-        pqData.forEach(item => {
-            label.current = 'Course'
-            optionsArray.push(item['courseName'])
+        label.current = 'Course'
+        const tempArray = [... getOfflineCollections()]
+        tempArray.forEach(course => {
+            optionsRef.current = optionsRef.current.concat(course.courseName)
         });
-        optionsRef.current = [... optionsArray]
+        optionsRef.current = [... new Set(optionsRef.current)];
     }
 
     const getSubjects = (courseName) => {
@@ -139,7 +140,7 @@ export default function StartPrac({navigation}) {
     const selectedSubject = useRef('Subject: ')
     const displayOptions = labelName => {
         if(pathObj.current.course ==='' || labelName == 'Course') {
-            getCourses()
+            getCourseData()
         } else {
             getSubjects(pathObj.current.course)
         }

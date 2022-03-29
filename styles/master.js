@@ -248,7 +248,9 @@ export default StyleSheet.create({
       width: wp('100%'),
       height: hp('100%'),
       backgroundColor: colors.appColor,
-      top: hp('15%'),
+      top: hp('17%'),
+      position: 'absolute',
+      zIndex: 2,
     },
 
     BLOCKED_FEATURE_CARD_TEXT: {

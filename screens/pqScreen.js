@@ -1,9 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import MathJax from 'react-native-mathjax';
 import * as network from 'expo-network';
-import {getOfflineCollections, getOnlineCollections, getSectionsLocalQuestions} from "../utils/pastquestions.utils"
+import {getOfflineCollections, getOnlineCollections, getSectionsLocalQuestions, getToken} from "../utils/pastquestions.utils"
 import LoadingComponent from "../components/loading.component"
 
 import {
@@ -27,7 +26,7 @@ let renderCollection = true
 let IS_ANS_CARD_DISPLAYED = false
 let preventBackHandler = false
 let token = false
-
+const allowedTimeForUnpaidUsers = 10000 /** 1mins */
 export default function pqScreen({navigation}) {
     usePreventScreenCapture()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
@@ -76,6 +75,7 @@ export default function pqScreen({navigation}) {
                 });
                 renderCollection = false
                 setcollectionData([... tempArray])
+                setTimeout(()=> getToken(DISPLAY_BLOCKED_FEATURE_CARD), allowedTimeForUnpaidUsers)
             } else {
                 renderCollection = true
                 setcollectionData(returnedArray)
@@ -107,6 +107,7 @@ export default function pqScreen({navigation}) {
                                 preventBackHandler = true
                                 renderCollection = false
                                 setcollectionData([...tempArray])
+                                setTimeout(()=> getToken(DISPLAY_BLOCKED_FEATURE_CARD), allowedTimeForUnpaidUsers)
                             }
                         })
                     })
@@ -129,32 +130,17 @@ export default function pqScreen({navigation}) {
         navigation.openDrawer();
     }
     
-    const getToken = async () => {
-        if (!IS_GET_TOKEN_CALLED.current) {
-            try {
-                token = await AsyncStorage.getItem('vpa')
-            } catch (err) {
-                console.log(err);
-            }
-            IS_GET_TOKEN_CALLED.current = true
-        }
-    }
-    
-    
-    function DISPLAY_BLOCKED_FEATURE_CARD() {
-        console.log('called', token);
-        console.log(`token is ${token}`);
-        if (token === 'false') {
-            setBLOCKED_FEATURE_CARD(
-                <View style={[styles.BLOCKED_FEATURE_CARD]}>
-                    <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                        This Feature Is Only Available To Paid Users.
-                        Head To The Payment Section To Make Payment.
-                    </Text>
-                </View>
-            )
-            closePqCard()
-        }
+    function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
+        preventBackHandler = false
+        !tokenPresent?setBLOCKED_FEATURE_CARD(
+            <View style={styles.BLOCKED_FEATURE_CARD}>
+                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
+                    This Feature Is Only Available To Paid Users.
+                    Head To The Payment Section To Make Payment.
+                </Text>
+            </View>
+        ):
+        setBLOCKED_FEATURE_CARD()
     }
     
     BackHandler.addEventListener('hardwareBackPress', function () {
@@ -165,8 +151,6 @@ export default function pqScreen({navigation}) {
                 closeAnsPage()
             } else   {
                 closePqCard()
-                setBLOCKED_FEATURE_CARD()
-                IS_BLOCKED_FEATURE_CARD_DISPLAYED.current = false
             }
             return true;
         }
@@ -369,8 +353,8 @@ export default function pqScreen({navigation}) {
                 </View>
             )}
             {ansCard}
-            {BLOCKED_FEATURE_CARD}
             {loading}
+            {BLOCKED_FEATURE_CARD}
             <StatusBar style="light" />
         </SafeAreaView>
     )

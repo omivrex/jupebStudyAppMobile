@@ -36,19 +36,41 @@ const firebaseConfig = {
 
 let isGenInfoCompDisplayed = false;
 
-const genInfoPrevContStyle = {
-  backgroundColor: '#fff',
+let genInfoPrevContStyle = {
   width: '100%',
   height: '100%',
 }
 
-const previewInformationStyle = {
+let genInfoHeaderStyle = {
+  alignSelf: 'flex-start',
   color: colors.appColor,
-  paddingLeft: wp('2.5%'),
-  fontSize: hp('2.5%'),
-  marginBottom: hp('2%'),
+  width: '100%',
+  textAlign: 'center',
+  fontSize: hp('2.6%'),
+  fontWeight: '700',
+  paddingVertical: '3%',
+  zIndex: 5,
+}
+
+const previewInformationStyle = {
+  borderWidth: 2,
+  borderColor: colors.appColor,
+  backgroundColor: colors.appColor,
+  marginBottom: '2%',
+  borderRadius: 15,
+  top: '2%',
+  marginHorizontal: '5%',
+  width: '90%',
+  paddingVertical: '2%',
+  flexDirection: 'row',
+  justifyContent: 'center',
+}
+
+const previewInformationTextStyle = {
+  color: colors.textColor,
+  fontSize: hp('3%'),
   paddingLeft: '5%',
-  fontWeight: '500'
+  fontWeight: '500',
 }
 
 export default function homeScreen({navigation}) {
@@ -75,7 +97,9 @@ export default function homeScreen({navigation}) {
   const [genInfoComp, setgenInfoComp] = useState()
   const [genInfoPreview, setgenInfoPreview] = useState(
     <View style={[genInfoPrevContStyle]}>
-      <Text style={[previewInformationStyle, {width: '100%', textAlign: 'center'}]}>Loading...</Text>
+      <View style={previewInformationStyle}>
+        <Text style={[previewInformationTextStyle, {textAlign: 'center'}]}>Loading...</Text>
+      </View>
     </View>
   )
   
@@ -110,65 +134,22 @@ export default function homeScreen({navigation}) {
                   keyExtractor={item => item.id}
                   contentContainerStyle = {genInfoPrevContStyle}
                   renderItem={({item}) => (
-                    <>
-                      <Text style={previewInformationStyle}>{item.Topic}</Text>
-                      <MathJax
-                        html={
-                            ` 
-                              <head>
-                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
-                              </head>
-                              <body>
-                                <style>
-                                    * {
-                                      -webkit-user-select: none;
-                                      -moz-user-select: none;
-                                      -ms-user-select: none;
-                                      user-select: none;
-                                    }
-                                </style>
-                                <div style="font-size: 1.3em; font-family: Roboto, sans-serif, san Francisco">
-                                  ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;').substr(0, 100)+'...':''}
-                                </div> 
-                              </body>
-                            
-                            `
-                        }
-                        mathJaxOptions={{
-                            messageStyle: "none",
-                            extensions: ["tex2jax.js"],
-                            jax: ["input/TeX", "output/HTML-CSS"],
-                            tex2jax: {
-                                inlineMath: [
-                                    ["$", "$"],
-                                    ["\\(", "\\)"],
-                                ],
-                                displayMath: [
-                                    ["$$", "$$"],
-                                    ["\\[", "\\]"],
-                                ],
-                                processEscapes: true,
-                            },
-                            TeX: {
-                                extensions: [
-                                    "AMSmath.js",
-                                    "AMSsymbols.js",
-                                    "noErrors.js",
-                                    "noUndefined.js",
-                                ],
-                            },
-
-                        }}
-                        style={{width: '90.5%', left: '2.5%'}}
-                      />
-                    </>
+                    <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
+                      isGenInfoCompDisplayed = true
+                      setgenInfoComp(<GenInfoComponent data={data.current}/>)
+                    }}>
+                      <View style={previewInformationStyle}>
+                        <Text style={[previewInformationTextStyle, {alignSelf: 'flex-start', width: '90%'}]}>{item.Topic}</Text>
+                        <Image resizeMode={'center'} style={{width: '10%'}} source={require('../icons/next.png')}/>
+                      </View>
+                    </TouchableHighlight>
                   )}
                 />
               )
             } else {
               setgenInfoPreview(
                 <View style={[genInfoPrevContStyle]}>
-                  <Text style={[previewInformationStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
+                  <Text style={[previewInformationTextStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
                 </View>
               )
             }
@@ -176,7 +157,7 @@ export default function homeScreen({navigation}) {
         } else {
           setgenInfoPreview(
             <View style={[genInfoPrevContStyle]}>
-              <Text style={[previewInformationStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
+              <Text style={[previewInformationTextStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
             </View>
           )
         }
@@ -231,10 +212,7 @@ export default function homeScreen({navigation}) {
             </TouchableHighlight>
           </View>
         </View>
-        <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
-          isGenInfoCompDisplayed = true
-          setgenInfoComp(<GenInfoComponent data={data.current}/>)
-        }} style={[
+        <View style={[
           {
             height: '40%',
             width: '100%',
@@ -242,18 +220,7 @@ export default function homeScreen({navigation}) {
           }
         ]}>
           <>
-            <Text style={{
-              alignSelf: 'flex-start',
-              color: colors.appColor,
-              width: '100%',
-              textAlign: 'left',
-              paddingLeft: '5%',
-              fontSize: hp('2.6%'),
-              fontWeight: '700',
-              textAlignVertical: 'center',
-              height: '20%',
-              zIndex: 10,
-            }}>
+            <Text style={genInfoHeaderStyle}>
               General Information
             </Text>
             
@@ -267,7 +234,7 @@ export default function homeScreen({navigation}) {
               {genInfoPreview}
             </View>
           </>
-        </TouchableHighlight>
+        </View>
       </View>
       {genInfoComp}
       <StatusBar style="light" />

@@ -199,7 +199,7 @@ export default function pqScreen({navigation}) {
                 <Text style={styles.baseText}>PAST QUESTIONS</Text>
                 <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)'style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
                     Alert.alert('Quality Control Service',
-                        `Did you find an error in this question/solution, \nkindly contact an Admin on WhatsApp.`,
+                        `Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.`,
                         [
                             {
                                 text: 'YES',

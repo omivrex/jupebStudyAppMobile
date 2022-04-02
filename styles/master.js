@@ -254,12 +254,12 @@ export default StyleSheet.create({
     },
 
     BLOCKED_FEATURE_CARD_TEXT: {
-      color: colors.orange,
+      color: colors.textColor,
       fontSize: hp('3%'),
       textAlign: 'center',
       width: '90%',
       left: '5%',
-      top: '27%'
+      // top: '27%'
     },
 
     BLOCKED_FEATURE_CARD_REFRESH_BUTN: {

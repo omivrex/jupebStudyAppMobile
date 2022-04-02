@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {Text, View, TouchableOpacity, SafeAreaView, Image, FlatList, Button} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import BlockedFeature from "../components/BlockedFeature.component"
 import styles from '../styles/master.js';
 import pageStyles from '../styles/rateProgStyles.js';
 
@@ -58,6 +58,7 @@ export default function RateProg({navigation}) {
 
     console.log(is_token_obtained);
 
+    const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
     const getToken = async () => {
         if (!is_token_obtained.current) { //this is to prevent this process from running more than once and slowing the application down
             try {
@@ -77,19 +78,11 @@ export default function RateProg({navigation}) {
 
     function DISPLAY_BLOCKED_FEATURE_CARD() {
         setBLOCKED_FEATURE_CARD(
-            <View style={styles.BLOCKED_FEATURE_CARD}>
-                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                    This Feature Is Only Available To Paid Users.
-                    Head To The Payment Section To Make Payment.
-                </Text>
-            </View>
+            <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
         )
     }
     
-    const [courseAnalysisCard,
-        setcourseAnalysisCard] = useState()
-    const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
-
+    const [courseAnalysisCard, setcourseAnalysisCard] = useState()
     const getAllTestData = async () => {
         testRecords = []
         courses.forEach(course => { //resets course array

@@ -27,7 +27,7 @@ function GenInfoComponent({data}) {
         )
     } else {
         return (
-            <View style={pageStyles.card}>
+            <View style={[pageStyles.card, {zIndex: 10}]}>
                 <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
                 <View style={{flex: 1}}>
                     <FlatList

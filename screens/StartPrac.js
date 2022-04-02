@@ -4,6 +4,7 @@ import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { getOfflineCollections, getToken } from "../utils/pastquestions.utils";
 import LoadingComponent from "../components/loading.component"
+import BlockedFeature from "../components/BlockedFeature.component"
 import StartPracticeQuestion from '../components/StartPracticeQuestion.component';
 
 import {
@@ -77,12 +78,7 @@ export default function StartPrac({navigation}) {
     
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
         !tokenPresent?setBLOCKED_FEATURE_CARD(
-            <View style={styles.BLOCKED_FEATURE_CARD}>
-                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                    This Feature Is Only Available To Paid Users.
-                    Head To The Payment Section To Make Payment.
-                </Text>
-            </View>
+            <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
         ):
         displayPracCard()
     }

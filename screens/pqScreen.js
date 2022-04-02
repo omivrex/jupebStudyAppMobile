@@ -4,6 +4,7 @@ import MathJax from 'react-native-mathjax';
 import * as network from 'expo-network';
 import {getOfflineCollections, getOnlineCollections, getSectionsLocalQuestions, getToken} from "../utils/pastquestions.utils"
 import LoadingComponent from "../components/loading.component"
+import BlockedFeature from "../components/BlockedFeature.component"
 
 import {
     Text,
@@ -133,12 +134,7 @@ export default function pqScreen({navigation}) {
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
         preventBackHandler = false
         !tokenPresent?setBLOCKED_FEATURE_CARD(
-            <View style={styles.BLOCKED_FEATURE_CARD}>
-                <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
-                    This Feature Is Only Available To Paid Users.
-                    Head To The Payment Section To Make Payment.
-                </Text>
-            </View>
+            <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
         ):
         setBLOCKED_FEATURE_CARD()
     }

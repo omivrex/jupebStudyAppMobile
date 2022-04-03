@@ -149,7 +149,7 @@ export default function homeScreen({navigation}) {
             } else {
               setgenInfoPreview(
                 <View style={[genInfoPrevContStyle]}>
-                  <Text style={[previewInformationTextStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
+                  <Text style={[previewInformationTextStyle, {width: '100%', textAlign: 'center', color: '#777'}]}>No recent information</Text>
                 </View>
               )
             }
@@ -157,7 +157,7 @@ export default function homeScreen({navigation}) {
         } else {
           setgenInfoPreview(
             <View style={[genInfoPrevContStyle]}>
-              <Text style={[previewInformationTextStyle, {width: '100%', textAlign: 'center'}]}>No recent information</Text>
+              <Text style={[previewInformationTextStyle, {width: '100%', textAlign: 'center', color: '#777'}]}>No recent information</Text>
             </View>
           )
         }

@@ -27,7 +27,7 @@ let renderCollection = true
 let IS_ANS_CARD_DISPLAYED = false
 let preventBackHandler = false
 let token = false
-const allowedTimeForUnpaidUsers = 10000 /** 1mins */
+const allowedTimeForUnpaidUsers = 30000 /** 1mins */
 export default function pqScreen({navigation}) {
     usePreventScreenCapture()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
@@ -117,7 +117,7 @@ export default function pqScreen({navigation}) {
                     renderCollection = true
                 }
             } else {
-                Alert.alert('Section is Empty', 'Falling back to offline mode')
+                Alert.alert('Network Error', 'Check your network settings \nYou are now viewing offline questions', [{text: 'Ok', onPress: () => ''}], {cancelable: true})
                 isInternetReachable.current = false
                 getOfflineQuestions()
             }
@@ -344,7 +344,7 @@ export default function pqScreen({navigation}) {
                                 </View>
                             )
                         }}
-                        keyExtractor = {(item,index) => item?item.id:index.toString()}
+                        keyExtractor = {(item,index) => index.toString()}
                     />
                 </View>
             )}

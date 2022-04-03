@@ -1,16 +1,21 @@
 import {firestoreDB} from "../utils/firebase.config"
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const pqData = require("../scripts/pqData.json");
 
 export const getOnlineCollections = (collectionName, returnId) => {
     const collectionData = []
     return new Promise((resolve, reject) => {
+        let maxWaitTime = setTimeout(() => {
+            resolve(collectionData)
+        }, 5000);
         firestoreDB.collection(collectionName).get().then((snapShot)=> {
             snapShot.forEach(doc => {
                 returnId?collectionData.push({data:doc.data().Data, id:doc.id})
                 :collectionData.push(doc.data())
             });
-            resolve(collectionData)
+            if (collectionData.length>0) {
+                clearTimeout(maxWaitTime);
+                resolve(collectionData)
+            }
         }).catch (err => {
             console.log(err)
             reject(err)
@@ -33,6 +38,7 @@ export const getToken = async (callback) => {
 }
 
 export const getOfflineCollections = (pathObj) => {
+    const pqData = require("../scripts/pqData.json");
     const collectionData = []
     if (pathObj) {
         const path = Object.values(pathObj).filter(Boolean)
@@ -54,7 +60,7 @@ export const getOfflineCollections = (pathObj) => {
 }
 
 export const getSectionsLocalQuestions = (pathObj, questionNumber) => {
-    const questionData = pqData[pathObj.courseName.index]
+    const questionData = (require("../scripts/pqData.json"))[pathObj.courseName.index]
     .content[pathObj.year.index]
     .content[pathObj.subject.index]
     .content[pathObj.section.index]

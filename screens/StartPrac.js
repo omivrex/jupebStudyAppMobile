@@ -493,7 +493,8 @@ export default function StartPrac({navigation}) {
                                                     
                                                     `
                                                 }
-                                                mathJaxOptions={{
+                                                mathJaxOptions={{ 
+                                                    showMathMenu: false,
                                                     messageStyle: "none",
                                                     extensions: ["tex2jax.js"],
                                                     jax: ["input/TeX", "output/HTML-CSS"],

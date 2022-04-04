@@ -300,6 +300,7 @@ export default function pqScreen({navigation}) {
                                             messageStyle: "none",
                                             extensions: ["tex2jax.js"],
                                             jax: ["input/TeX", "output/HTML-CSS"],
+                                            showMathMenu: false,
                                             tex2jax: {
                                                 inlineMath: [
                                                     ["$", "$"],

@@ -86,7 +86,7 @@ export default function App({navigation}) {
     } catch (err) {
       console.log(err);
     }
-    // AsyncStorage.removeItem(('vpa'))
+    // AsyncStorage.setItem(('vpa', 'false'))
     try {
       let token = await AsyncStorage.getItem('vpa')
       if (token!=null) {

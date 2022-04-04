@@ -45,7 +45,8 @@ export default function ({data}) {
                         
                         `
                     }
-                    mathJaxOptions={{
+                    mathJaxOptions={{ 
+                        showMathMenu: false,
                         messageStyle: "none",
                         extensions: ["tex2jax.js"],
                         jax: ["input/TeX", "output/HTML-CSS"],

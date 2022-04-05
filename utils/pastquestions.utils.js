@@ -1,5 +1,6 @@
 import {firestoreDB} from "../utils/firebase.config"
 import AsyncStorage from "@react-native-async-storage/async-storage";
+const pqData = require("../scripts/pqData.json");
 
 export const getOnlineCollections = (collectionName, returnId) => {
     const collectionData = []
@@ -38,34 +39,41 @@ export const getToken = async (callback) => {
 }
 
 export const getOfflineCollections = (pathObj) => {
-    const pqData = require("../scripts/pqData.json");
     const collectionData = []
-    if (pathObj) {
-        const path = Object.values(pathObj).filter(Boolean)
-        let recordToSearch = pqData
-        path.forEach((item) => {
-            recordToSearch = recordToSearch[item.index].content
-        })
-        recordToSearch.forEach((item, index)=> {
-            const [key] = Object.keys(item)
-            const [value] = Object.values(item)
-            collectionData.push({[key]: value, index})
-        })
-    } else {
-        pqData.forEach(({courseName}, index) => {
-            collectionData.push({courseName, index})
-        });
+    try {
+        if (pathObj) {
+            const path = Object.values(pathObj).filter(Boolean) /** remove falsey values */
+            let recordToSearch = pqData
+            path.forEach((item) => {
+                recordToSearch = recordToSearch[item.index].content
+            })
+            recordToSearch.forEach((item, index)=> {
+                const [key] = Object.keys(item)
+                const [value] = Object.values(item)
+                collectionData.push({[key]: value, index})
+            })
+        } else {
+            pqData.forEach(({courseName}, index) => {
+                collectionData.push({courseName, index})
+            });
+        }
+        return collectionData
+    } catch (error) {
+        console.log('error from getOfflineCollections:', error)
     }
-    return collectionData
 }
 
 export const getSectionsLocalQuestions = (pathObj, questionNumber) => {
-    const questionData = (require("../scripts/pqData.json"))[pathObj.courseName.index]
-    .content[pathObj.year.index]
-    .content[pathObj.subject.index]
-    .content[pathObj.section.index]
-    .content[questionNumber.index]
-    .content.Data.Data
-    return questionData
+    try {
+        const questionData = pqData[pathObj.courseName.index]
+        .content[pathObj.year.index]
+        .content[pathObj.subject.index]
+        .content[pathObj.section.index]
+        .content[questionNumber.index]
+        .content.Data.Data
+        return questionData
+    } catch (error) {
+        console.log(error)
+    }
 
 }

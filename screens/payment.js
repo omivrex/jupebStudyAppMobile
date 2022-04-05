@@ -2,8 +2,8 @@ import React, {useState, useRef} from 'react';
 import PaystackWebView from "react-native-paystack-webview";
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as firebase from 'firebase';
 import * as network from 'expo-network';
+import {database} from "../utils/firebase.config"
 import {
     Text,
     TextInput,
@@ -31,28 +31,7 @@ let is_bank_form_displayed = false
 let is_deposit_acc_details_displayed = false
 let is_chartup_card_displayed = false
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDzkEuiLvUrNZYdU6blvHgVoHBf2tniZO0",
-    authDomain: "jupebstudyapp.firebaseapp.com",
-    projectId: "jupebstudyapp",
-    storageBucket: "jupebstudyapp.appspot.com",
-    messagingSenderId: "316815533405",
-    appId: "1:316815533405:web:b0e02fdcf37e5c5cf8b4b4",
-    databaseURL: 'https://jupebstudyapp-default-rtdb.firebaseio.com/',
-    measurementId: "G-XFLZXCNJ44"
-  };
-  
-require('firebase/database')
-require('firebase/auth')
-
-if (!firebase.apps.length) { //if firebase hasnt been initialized
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-}
-
 export default function Register({navigation}) {
-    const database = firebase.database()
-    const auth  = firebase.auth()
     const paymentRequests = database.ref('paymentRequests')
     const users = database.ref('users')
 
@@ -129,19 +108,25 @@ export default function Register({navigation}) {
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
                     <Text style={[pageStyles.formText]}>
-                        Bank: FCMB
-                    </Text>
-                    <Text style={[pageStyles.formText]}>
                         Account No. 6592915015
                     </Text>
                     <Text style={[pageStyles.formText]}>
                         Account Name: Iwuoha Kelechi Emmanuel.
                     </Text>
                     <Text style={[pageStyles.formText]}>
+                        Bank: FCMB
+                    </Text>
+                    <Text style={[pageStyles.formText]}>
                         Amount: ₦2000
                     </Text>
     
-                    <TouchableOpacity onPressIn={processData} style={pageStyles.nextButn}>
+                    <TouchableOpacity onPressIn={()=> {
+                        Alert.alert('Are you sure you have made a payment to the details shown..', 
+                        `Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦2000`, [
+                            {text: 'Yes', onPress: processData},
+                            {text: 'No', onPress: close_deposit_acc_details_card}
+                        ])
+                    }} style={pageStyles.nextButn}>
                         <Text style={pageStyles.nextButnText}>DONE</Text>
                     </TouchableOpacity>
                 </View>
@@ -158,13 +143,19 @@ export default function Register({navigation}) {
 
     const processData = async () => {
         userData.email = await AsyncStorage.getItem('userEmail')
-        const query = users.orderByChild('email').equalTo(userData.email).limitToFirst(1)
-        query.once('value', snapshot => {
-            let uid = Object.keys(snapshot.val())[0] //use auth uid as key in rtdb
-            paymentRequests.child(uid).set({...userData, paymentDate: new Date().getTime()})
-            .then(users.child(uid).update({loggedIn: false}))
-            .then(display_chartup_card)
-        }).catch(Alert.alert('',"Can't Reach Database Now!"))
+        try {
+            users.orderByChild('email').equalTo(userData.email).on('value', snapshot => {
+                console.log(snapshot)
+                if (snapshot !== null) {
+                    let [uid] = Object.keys(snapshot) //use auth uid as key in rtdb
+                    paymentRequests.child(uid).set({...userData, paymentDate: new Date().getTime()})
+                    .then(users.child(uid).update({loggedIn: false}))
+                    .then(display_chartup_card)
+                }
+            })
+        } catch (error) {
+            Alert.alert('',"Can't Reach Database Now!", [{text: 'OK', onPress: ()=> null}], {cancelable: true})
+        }
     }
 
     async function removeToken() {

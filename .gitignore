@@ -3,7 +3,7 @@ npm-debug.*
 *.jks
 *.p8
 *.p12
-PastQuestions
+scripts/pqData
 *.key
 *.pub
 *.mobileprovision

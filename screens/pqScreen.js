@@ -86,7 +86,7 @@ export default function pqScreen({navigation}) {
                         getToken(DISPLAY_BLOCKED_FEATURE_CARD)
                         preventBackHandler.current = false
                     }, allowedTimeForUnpaidUsers)
-                    AsyncStorage.setItem('lastPreviewDate', currentDate.toString())
+                    AsyncStorage.setItem('lastPreviewDate', currentDate)
                 }
             } else {
                 renderCollection = true
@@ -128,7 +128,7 @@ export default function pqScreen({navigation}) {
                                         getToken(DISPLAY_BLOCKED_FEATURE_CARD)
                                         preventBackHandler.current = false
                                     }, allowedTimeForUnpaidUsers)
-                                    AsyncStorage.setItem('lastPreviewDate', currentDate.toString())
+                                    AsyncStorage.setItem('lastPreviewDate', currentDate)
                                 }
                             }
                         })

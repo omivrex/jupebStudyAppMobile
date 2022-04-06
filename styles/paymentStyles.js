@@ -22,74 +22,69 @@ if (deviceHeight<=600) {
 
 export default StyleSheet.create({
     cardAreaHeader: {
-        width: wp('90%'),
-        height: hp('8%'),
-        top: hp('19%'),
-        position: 'absolute',
-        left: wp('5%'),
+        width: '90%',
+        height: '8%',
+        top: '19%',
+        left: '5%',
+        marginBottom: '10%',
+        justifyContent: 'center',
         borderColor: colors.textColor,
-        borderBottomWidth: 0.7,
-        backgroundColor: colors.appColor,
+        borderBottomWidth: 1,
     },
 
     cardHeaderText: {
-        color: colors.textColor,
-        fontSize: hp('2.3%'),
+        color: colors.appColor,
+        fontSize: hp('2.5%'),
         textAlign: 'center',
-        paddingTop: '3%',
     },
 
     cardArea: {
-        width: wp('90%'),
-        height: hp('6%'),
-        top: hp('33.1%'),
-        position: 'relative',
+        width: '90%',
+        height: '8%',
+        borderRadius: 25,
+        top: '20.1%',
         borderColor: colors.textColor,
         borderBottomWidth: 2,
-        left: wp('5%'),
-        marginBottom: hp('7.3%'),
+        left: '5%',
+        justifyContent: 'center',
+        marginBottom: '7.3%',
         backgroundColor: colors.appColor,
     },
 
     cardText: {
         color: colors.textColor,
         fontSize: hp('2.3%'),
-        textAlign: 'left',
-        paddingTop: '5%',
-        paddingLeft: hp('2%')
+        textAlign: 'center',
+        paddingLeft: hp('2%'),
     },
-
+    
     info: {
-        position: 'absolute',
         width: wp('100%'),
         color: colors.orange,
-        backgroundColor: colors.appColor,
         fontSize: hp('2.3%'),
-        top: hp('66.1%'),
+        top: '20.1%',
+        height: '20%',
+        fontWeight: 'bold',
         left: wp('0%'),
         padding: wp('5%'),
-        textAlign: 'center'
+        textAlign: 'center',
+        alignSelf: 'flex-end',
+        marginBottom: '30%',
     },
 
     galarey: {
-        position: 'absolute',
         width: wp('100%'),
-        height: hp('30%'),
-        top: hp('80%'),
+        alignSelf: 'flex-end',
+        marginTop: '10%',
+        height: '20%',
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignContent: 'center',
-        borderColor: colors.textColor,
-        borderTopWidth: 0.7,
+        flexWrap: 'nowrap',
+        backgroundColor: colors.appColor,
+        justifyContent: 'space-between',
     },
 
     paymentPlatforms: {
         position: 'relative',
-        // marginRight: wp('1%'),
-        marginTop: hp('2%'),
-        alignSelf: 'baseline',
-        width: paymentPlatformsWidth,
-        left: paymentPlatformsLeft,
     },
 
     bankPaymentForm: {

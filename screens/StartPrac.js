@@ -25,6 +25,7 @@ import pageStyles from '../styles/pqScreenStyles.js';
 import styles from '../styles/master.js';
 import { FlatList } from 'react-native-gesture-handler';
 import AnswerComponent from '../components/Answer.component';
+const pqData = require("../scripts/pqData.json");
 
 
 let renderStartPracCard = false
@@ -116,7 +117,6 @@ export default function StartPrac({navigation}) {
     }
 
     const getSubjects = (courseName) => {
-        const pqData = require("../scripts/pqData.json");
         optionsRef.current = []
         pqData.forEach(course => {
             if (course.courseName === courseName) {
@@ -248,7 +248,6 @@ export default function StartPrac({navigation}) {
         let selectedQuestions = []
         
         if (pathObj.current.course !== '') { //if the course has been selected
-            const pqData = require("../scripts/pqData.json");
             pqData.forEach(course => {
                 if (course.courseName === pathObj.current.course) {
                     course.content.forEach(year => {

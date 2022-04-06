@@ -3,7 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import HomeScreen from '../screens/homeScreen';
 import PqScreen from '../screens/pqScreen';
 import NewsScreen from '../screens/newsScreen';
-import CalcScreen from '../screens/calcScreen';
+import payment from '../screens/payment';
 
 const screens = {
   Home: {
@@ -27,10 +27,10 @@ const screens = {
     }
   },
 
-  CalcScreen: {
-    screen: CalcScreen,
+  PaymentScreen: {
+    screen: payment,
     navigationOptions: {
-      title: 'Calculate Grade Points',
+      title: 'PAYMENT',
     }
   },
 }

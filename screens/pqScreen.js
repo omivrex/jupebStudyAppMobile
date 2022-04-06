@@ -157,7 +157,7 @@ export default function pqScreen({navigation}) {
         !tokenPresent?setBLOCKED_FEATURE_CARD(
             <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
         ):
-            null
+        null
     }
     
     const preventBackHandler = useRef(false)
@@ -250,28 +250,30 @@ export default function pqScreen({navigation}) {
                         data={collectionData}
                         contentContainerStyle = {{paddingBottom: collectionData.length*100, width: '100%', top: '10%'}}
                         renderItem={({item}, index)=> {
-                            const data = Object.values(item)[0]
-                            path.current !== 'pastquestions' || Object.values(offlinePath.current).filter(Boolean).length?
-                            preventBackHandler.current = true:
-                            preventBackHandler.current = false
-                            if (label.current !=='questionNumber') {
-                                return (
-                                    <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
-                                        preventBackHandler.current = true
-                                        if (isInternetReachable.current) {
-                                            path.current += `/${data}/${data}`
-                                            getOnlineQuestions(path.current, false)
-                                        } else {
-                                            offlinePath.current[label.current] = item
-                                            pathToDisplayWhenOffline.current.push(Object.values(item)[0])
-                                            Object.values(offlinePath.current).filter(Boolean).length? /** checks if all properties in offlinePath.current is null*/
-                                            getOfflineQuestions(offlinePath.current):
-                                            getOfflineQuestions()
-                                        }
-                                    }}>
-                                        <Text style={pageStyles.listOptionsText}>{(`${data}`).toUpperCase()}</Text>
-                                    </TouchableHighlight>
-                                )
+                            if (item) {
+                                const data = Object.values(item)[0]
+                                path.current !== 'pastquestions' || Object.values(offlinePath.current).filter(Boolean).length?
+                                preventBackHandler.current = true:
+                                preventBackHandler.current = false
+                                if (label.current !=='questionNumber') {
+                                    return (
+                                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
+                                            preventBackHandler.current = true
+                                            if (isInternetReachable.current) {
+                                                path.current += `/${data}/${data}`
+                                                getOnlineQuestions(path.current, false)
+                                            } else {
+                                                offlinePath.current[label.current] = item
+                                                pathToDisplayWhenOffline.current.push(Object.values(item)[0])
+                                                Object.values(offlinePath.current).filter(Boolean).length? /** checks if all properties in offlinePath.current is null*/
+                                                getOfflineQuestions(offlinePath.current):
+                                                getOfflineQuestions()
+                                            }
+                                        }}>
+                                            <Text style={pageStyles.listOptionsText}>{(`${data}`).toUpperCase()}</Text>
+                                        </TouchableHighlight>
+                                    )
+                                }
                             }
                         }}
                         keyExtractor = {(item, index)=> index.toString()}

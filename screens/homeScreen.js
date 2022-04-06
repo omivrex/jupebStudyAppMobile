@@ -127,16 +127,15 @@ export default function homeScreen({navigation}) {
               });
           }).then(()=> {
             if (data.current.length>0) {
-              console.log(data.current);
               setgenInfoPreview(
                 <FlatList 
                   data={data.current}
                   keyExtractor={item => item.id}
                   contentContainerStyle = {genInfoPrevContStyle}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
                       isGenInfoCompDisplayed = true
-                      setgenInfoComp(<GenInfoComponent data={data.current}/>)
+                      setgenInfoComp(<GenInfoComponent data={[data.current[index]]}/>)
                     }}>
                       <View style={previewInformationStyle}>
                         <Text style={[previewInformationTextStyle, {alignSelf: 'flex-start', width: '90%'}]}>{item.Topic}</Text>

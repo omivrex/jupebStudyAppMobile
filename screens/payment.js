@@ -249,7 +249,7 @@ export default function Register({navigation}) {
     
 
     return (
-        <SafeAreaView style={[styles.container, {backgroundColor: colors.appColor}]}>
+        <SafeAreaView style={[styles.container]}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>PAYMENT</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
@@ -270,12 +270,12 @@ export default function Register({navigation}) {
                 <Text style={pageStyles.cardText}>Bank Transfer: ₦2000</Text>
             </TouchableOpacity>
 
-            <View  style={pageStyles.cardArea}>
+            <View  style={[pageStyles.cardArea, {borderRadius: 0, backgroundColor: '#fff'}]}>
                 <TextInput onChangeText={val => {
                     pinRef.current.pin = val.toUpperCase()
 
                     pinRef.current.pin.length === 15? VALIDATION_FUNCTION(pinRef.current.pin): 'Pin Incomplete!'
-                }} placeholder={'Input Purchased Pin If You Have One?'} placeholderTextColor={colors.textColor} style={pageStyles.cardText}/>
+                }} placeholder={'Input Purchased Pin If You Have One?'} placeholderTextColor={colors.appColor} style={[pageStyles.cardText, {color: colors.appColor}]}/>
             </View>
 
             <Text style={pageStyles.info}>

@@ -163,7 +163,7 @@ export default function pqScreen({navigation}) {
     const preventBackHandler = useRef(false)
     BackHandler.addEventListener('hardwareBackPress', function () {
         console.log('Back Handler Debug:', preventBackHandler.current, isAnsCardDisplayed.current, navigation.isFocused())
-        if (preventBackHandler.current || isAnsCardDisplayed.current) {
+        if ((preventBackHandler.current || isAnsCardDisplayed.current) && navigation.isFocused()) {
             if (isAnsCardDisplayed.current) {
                 closeAnsPage()
             } else {

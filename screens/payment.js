@@ -67,10 +67,10 @@ export default function Register({navigation}) {
         if (!is_bank_form_displayed) {
             setbank_Form_State(
                 <View style={pageStyles.bankPaymentForm}>
-                    <Text style={pageStyles.formHeader}>PERSONAL INFO.</Text>
                     <TouchableOpacity onPress = {close_bank_card} style={pageStyles.closeButn}>
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
+                    <Text style={pageStyles.formHeader}>PERSONAL INFO.</Text>
                     <TextInput style={pageStyles.formText} onChangeText={(val) => {userData.acc_name = val.toLowerCase()}} placeholder={'Account Name'} placeholderTextColor={colors.textColor}/>
                     <TextInput style={pageStyles.formText} onChangeText={(val) => {userData.phone = val.toLowerCase()}} keyboardType={'numeric'} placeholder={'Phone Number'} placeholderTextColor={colors.textColor}/>
                     <TextInput style={pageStyles.formText} onChangeText={(val) => {userData.school = val.toLowerCase()}} placeholder={'School Name'} placeholderTextColor={colors.textColor}/>
@@ -103,10 +103,10 @@ export default function Register({navigation}) {
             setmessage('Pay to The Account Above. Confirm details before making payment.')
             setdeposit_acc_details(
                 <View style={pageStyles.bankPaymentForm}>
-                    <Text style={pageStyles.formHeader}>Deposit Account Info</Text>
                     <TouchableOpacity onPress = {close_deposit_acc_details_card} style={pageStyles.closeButn}>
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
+                    <Text style={pageStyles.formHeader}>Deposit Account Info</Text>
                     <Text style={[pageStyles.formText]}>
                         Account No. 6592915015
                     </Text>
@@ -168,10 +168,10 @@ export default function Register({navigation}) {
         if (!is_chartup_card_displayed) {
             setchartup_card(
                 <View style={pageStyles.bankPaymentForm}>
-                    <Text style={pageStyles.formHeader}>Verification Request</Text>
                     <TouchableOpacity onPress = {close_chartup_card} style={pageStyles.closeButn}>
                         <Image resizeMode={'center'} source={require('../icons/back.png')}/>
                     </TouchableOpacity>
+                    <Text style={pageStyles.formHeader}>Verification Request</Text>
                     <TouchableOpacity style={pageStyles.chartUpButn} onPressIn={() => {Linking.openURL(`https://wa.me/+2348067124123?text=I%20have%20succesfully%20paid%20and%20require%20my%20pin%20for%20validation.\nAccount%20Name: ${userData.acc_name}`)}}>
                         <Text style={pageStyles.chartUpButnText}>
                             Notify Admin on WhatsApp - HOLGET

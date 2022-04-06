@@ -89,37 +89,33 @@ export default StyleSheet.create({
 
     bankPaymentForm: {
         backgroundColor: colors.appColor,
-        height: hp('60%'),
+        height: hp('70%'),
         width: wp('100%'),
-        top: hp('20%`'),
-        position: 'absolute'
+        top: hp('30%`'),
+        position: 'absolute',
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
     },
 
     closeButn: {
-        position: 'absolute',
-        left: 6,
-        top: closeButnTop,
-        width: wp('10%'),
-        height: hp('10%'),
+        top: 0,
     },
 
     formHeader: {
         color: colors.textColor,
         fontSize: hp('3%'),
-        width: wp('100%'),
         height: hp('10%'),
-        top: 0  ,
+        top: '3%',
+        position: 'absolute',
         alignSelf: 'center',
         textAlign: 'center',
-        position: 'absolute'
     },
 
     formText: {
         top: '12%',
         left: '5%',
-        height: '9%',
+        paddingVertical: '3%',
         width: '90%',
-        paddingTop: 0,
         fontSize:  hp('2.3%'),
         color: colors.textColor,
         borderBottomWidth: 2,
@@ -127,12 +123,13 @@ export default StyleSheet.create({
     },
     
     message: {
-        color: colors.orange,
+        color: colors.textColor,
         fontSize: hp('2.5%'),
         textAlign: 'center',
         position: 'absolute',
-        width: wp('100%'),
-        top: hp('67%')
+        width: wp('90%'),
+        left: wp('5%'),
+        top: hp('77%')
     },
 
     nextButn: {

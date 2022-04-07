@@ -19,6 +19,7 @@ import {
 import colors from '../styles/colors.js'
 import styles from '../styles/master.js';
 import pageStyles from '../styles/paymentStyles.js';
+import { sendPaymentRequest, validatePayment } from '../utils/payment.utils';
 
 const userData = {
     email: '',
@@ -38,7 +39,6 @@ export default function Register({navigation}) {
     const [bank_Form_State, setbank_Form_State] = useState()
     const [deposit_acc_details, setdeposit_acc_details] = useState()
     const [chartup_card, setchartup_card] = useState()
-    const [message, setmessage] = useState()
 
     const pinRef = useRef({pin: '',})
 
@@ -86,13 +86,15 @@ export default function Register({navigation}) {
 
     function close_bank_card() {
         setbank_Form_State()
-        setmessage()
         is_bank_form_displayed = false
     }
 
     async function handle_Bank_Payment() {
         if (!userData.acc_name.length || !userData.phone.length || !userData.school.length) {
-            setmessage('One or more fields are empty')
+            messageHandler({
+                title: '',
+                body: 'One or more fields are empty'
+            })
         } else {
             display_deposit_acc_details()
         }
@@ -100,7 +102,10 @@ export default function Register({navigation}) {
     
     function display_deposit_acc_details() {
         if (!is_deposit_acc_details_displayed) {
-            setmessage('Pay to The Account Above. Confirm details before making payment.')
+            messageHandler({
+                title: 'Pay to The Account Displayed.',
+                body: 'Confirm details before making payment.'
+            })
             setdeposit_acc_details(
                 <View style={pageStyles.bankPaymentForm}>
                     <TouchableOpacity onPress = {close_deposit_acc_details_card} style={pageStyles.closeButn}>
@@ -123,7 +128,7 @@ export default function Register({navigation}) {
                     <TouchableOpacity onPressIn={()=> {
                         Alert.alert('Are you sure you have made a payment to the details shown..', 
                         `Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦2000`, [
-                            {text: 'Yes', onPress: processData},
+                            {text: 'Yes', onPress: callSendPaymentReq},
                             {text: 'No', onPress: close_deposit_acc_details_card}
                         ])
                     }} style={pageStyles.nextButn}>
@@ -137,25 +142,21 @@ export default function Register({navigation}) {
 
     function close_deposit_acc_details_card() {
         setdeposit_acc_details()
-        setmessage()
         is_deposit_acc_details_displayed = false
     }
 
-    const processData = async () => {
+    const errorHandler = (message)=>{
+        message? Alert.alert('', message):
+        Alert.alert('Network Error!',"Check your Internet Connection And Try Again.", [{text: 'OK', onPress: ()=> null}], {cancelable: true})
+    }
+
+    const messageHandler = message => {
+        Alert.alert(message.title, message.body, [{text: 'OK', onPress: ()=> null}], {cancelable: true})
+    }
+
+    const callSendPaymentReq = async () => {
         userData.email = await AsyncStorage.getItem('userEmail')
-        try {
-            users.orderByChild('email').equalTo(userData.email).on('value', snapshot => {
-                console.log(snapshot)
-                if (snapshot !== null) {
-                    let [uid] = Object.keys(snapshot) //use auth uid as key in rtdb
-                    paymentRequests.child(uid).set({...userData, paymentDate: new Date().getTime()})
-                    .then(users.child(uid).update({loggedIn: false}))
-                    .then(display_chartup_card)
-                }
-            })
-        } catch (error) {
-            Alert.alert('',"Can't Reach Database Now!", [{text: 'OK', onPress: ()=> null}], {cancelable: true})
-        }
+        await sendPaymentRequest(display_chartup_card, errorHandler, userData)
     }
 
     async function removeToken() {
@@ -190,63 +191,19 @@ export default function Register({navigation}) {
 
     function close_chartup_card() {
         setchartup_card()
-        setmessage()
+        close_deposit_acc_details_card()
+        close_bank_card()
         is_chartup_card_displayed = false
     }
 
-    const VALIDATION_FUNCTION = async pin => {
+    const callValidationFunc = async pin => {
         Alert.alert(
             '',
             'Activating Account...',
             [] //removes default ok button
         )
-        const userEmail = await AsyncStorage.getItem('userEmail')
-        if (userEmail) {
-            const query = users.orderByChild('email').equalTo(userEmail).limitToFirst(1)
-            let uid
-            query.once('value', async snapshot => {
-                for (const key in snapshot.val()) {
-                    if (Object.hasOwnProperty.call(snapshot.val(), key)) {
-                        uid = key
-                    }
-                }
-                
-                const IS_PIN_CORRECT = await CHECK_PIN(pin, uid)
-
-                if (IS_PIN_CORRECT) {
-                    users.child(uid).update({vpa: true, dateValidated: new Date().getTime()}).then( async () => {
-                        await AsyncStorage.setItem('vpa', 'true')
-                        await paymentRequests.child(uid).remove()
-                        Alert.alert('Account Successfully Activated','You Can Now Enjoy The Full Features Of This App!')
-                    }).catch(Alert.alert('',"Can't Reach Database Now!"))
-                }
-                
-            }).catch(Alert.alert('',"Can't Reach Database Now!"))
-        }
+        await validatePayment(pin, errorHandler, () => Alert.alert('Account Successfully Activated','You Can Now Enjoy The Full Features Of This App!'))
     }
-
-    const CHECK_PIN = async  (pin, uid) => {
-        let is_payment_validated = false
-        if (pin) {
-            await paymentRequests.child(uid).once('value', snapshot => {
-                if (snapshot.val()) {
-                    if (pin === snapshot.val().currentPin) {
-                        console.log(pin === snapshot.val().currentPin);
-                        is_payment_validated = true
-                    } else {
-                        Alert.alert('','Incorrect Pin')
-                    }
-                } else {
-                    Alert.alert('', "You haven't sent any payment request")
-                }
-            }).catch(Alert.alert('',"Can't Reach Database Now!"))
-        } else { /* this is incase user uses card activation instead of pin */
-            is_payment_validated = true /** because the payment is validated by paystack we simply just set is_payment_validated to true */
-        }
-        console.log(is_payment_validated);
-        return is_payment_validated
-    }
-    
 
     return (
         <SafeAreaView style={[styles.container]}>
@@ -274,7 +231,7 @@ export default function Register({navigation}) {
                 <TextInput onChangeText={val => {
                     pinRef.current.pin = val.toUpperCase()
 
-                    pinRef.current.pin.length === 15? VALIDATION_FUNCTION(pinRef.current.pin): 'Pin Incomplete!'
+                    pinRef.current.pin.length === 15? callValidationFunc(pinRef.current.pin): 'Pin Incomplete!'
                 }} placeholder={'Input Purchased Pin If You Have One?'} placeholderTextColor={colors.appColor} style={[pageStyles.cardText, {color: colors.appColor}]}/>
             </View>
 
@@ -298,7 +255,6 @@ export default function Register({navigation}) {
 
             {bank_Form_State}
             {deposit_acc_details}
-            <Text style={pageStyles.message}>{message}</Text>
             {chartup_card}
             
             <View style={{zIndex: -1}}>
@@ -320,7 +276,7 @@ export default function Register({navigation}) {
                             // handle response here
                         }}
                         onSuccess={res => {
-                            VALIDATION_FUNCTION()
+                            callValidationFunc()
                         }}
                         ref={paystackWebViewRef}
                     />

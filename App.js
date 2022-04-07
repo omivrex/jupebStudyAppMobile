@@ -70,7 +70,6 @@ export default function App({navigation}) {
     }
   });
   
-  
   async function GET_TOKEN_AND_APP_VERSION () {
     try {
       const networkStat = await network.getNetworkStateAsync()

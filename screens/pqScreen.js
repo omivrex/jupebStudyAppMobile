@@ -50,7 +50,6 @@ export default function pqScreen({navigation}) {
     useEffect(() => {
         (async ()=> {
             isInternetReachable.current = (await network.getNetworkStateAsync()).isInternetReachable
-            console.log('isInternetReachable', isInternetReachable.current)
             isInternetReachable.current? getOnlineQuestions(path.current):
             getOfflineQuestions()
         })()
@@ -77,7 +76,7 @@ export default function pqScreen({navigation}) {
                 tempArray.length?setcollectionData([... tempArray]):null
                 const lastPreviewDate = await AsyncStorage.getItem('lastPreviewDate')
                 const currentDate = new Date().getDate().toString()
-                console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
+                // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                 if (lastPreviewDate === currentDate) {
                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
                     closePqCard()
@@ -119,7 +118,7 @@ export default function pqScreen({navigation}) {
                                 tempArray.length?setcollectionData([...tempArray]):null
                                 const lastPreviewDate = await AsyncStorage.getItem('lastPreviewDate')
                                 const currentDate = new Date().getDate().toString()
-                                console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
+                                // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                                 if (lastPreviewDate === currentDate) {
                                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
                                     closePqCard()
@@ -146,7 +145,7 @@ export default function pqScreen({navigation}) {
         })
     }
     
-    console.log(IS_GET_TOKEN_CALLED.current, IS_BLOCKED_FEATURE_CARD_DISPLAYED.current);
+    // console.log(IS_GET_TOKEN_CALLED.current, IS_BLOCKED_FEATURE_CARD_DISPLAYED.current);
     
     function openMenu () {
         navigation.openDrawer();
@@ -162,7 +161,7 @@ export default function pqScreen({navigation}) {
     
     const preventBackHandler = useRef(false)
     BackHandler.addEventListener('hardwareBackPress', function () {
-        console.log('Back Handler Debug:', preventBackHandler.current, isAnsCardDisplayed.current, navigation.isFocused())
+        // console.log('Back Handler Debug:', preventBackHandler.current, isAnsCardDisplayed.current, navigation.isFocused())
         if ((preventBackHandler.current || isAnsCardDisplayed.current) && navigation.isFocused()) {
             if (isAnsCardDisplayed.current) {
                 closeAnsPage()
@@ -230,7 +229,7 @@ export default function pqScreen({navigation}) {
 
                             {
                                 text: 'NO',
-                                onPress: ()=> console.log('Do nothing'),
+                                onPress: ()=> 'Do nothing',
                                 style: 'cancel'
                             },
 

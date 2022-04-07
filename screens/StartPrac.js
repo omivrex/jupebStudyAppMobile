@@ -351,7 +351,7 @@ export default function StartPrac({navigation}) {
             
                                 {
                                     text: 'NO',
-                                    onPress: ()=> console.log('user said no')
+                                    onPress: ()=> ('user said no')
                                 }
                             ]
                         )
@@ -585,7 +585,7 @@ export default function StartPrac({navigation}) {
         try {
             await AsyncStorage.setItem(testDate, JSON.stringify(testdata))
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -624,7 +624,7 @@ export default function StartPrac({navigation}) {
 
                             {
                                 text: 'NO',
-                                onPress: ()=> console.log('Do nothing'),
+                                onPress: ()=> ('Do nothing'),
                                 style: 'cancel'
                             },
 

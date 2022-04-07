@@ -319,7 +319,7 @@ export default function pqScreen({navigation}) {
                                                         }
                                                     </style>
                                                     <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
-                                                        ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):Alert.alert('Your Offline', 'Check your Internet connection', [{text: 'Ok', onPress: () => ''}], {cancelable: true})}
+                                                        ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):'<h2 style="color: red;">Network Error!</h2>'}
                                                     </div> 
                                                 </body>
                                             
@@ -367,7 +367,7 @@ export default function pqScreen({navigation}) {
                                                     onPress: () => ''
                                                 }
                                             ], {cancelable: true})
-                                        : showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:Alert.alert('Your Offline', 'Check your Internet connection', [{text: 'Ok', onPress: () => ''}], {cancelable: true}))
+                                        : showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:'')
                                     }}>
                                         <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                     </TouchableHighlight>

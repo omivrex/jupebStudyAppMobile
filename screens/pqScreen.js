@@ -79,7 +79,7 @@ export default function pqScreen({navigation}) {
                 // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                 if (lastPreviewDate === currentDate) {
                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-                    closePqCard()
+                    // closePqCard()
                 } else {
                     setTimeout(()=> {
                         getToken(DISPLAY_BLOCKED_FEATURE_CARD)
@@ -121,7 +121,7 @@ export default function pqScreen({navigation}) {
                                 // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                                 if (lastPreviewDate === currentDate) {
                                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-                                    closePqCard()
+                                    // closePqCard()
                                 } else {
                                     setTimeout(()=> {
                                         getToken(DISPLAY_BLOCKED_FEATURE_CARD)

@@ -10,7 +10,6 @@ export const sendPaymentRequest = async (callback, errorHandler, userData) => {
             if (snapshot !== null) {
                 let [uid] = Object.keys(snapshot.val()) //use auth uid as key in rtdb
                 paymentRequests.child(uid).set({...userData, paymentDate: new Date().getTime()})
-                .then(users.child(uid).update({loggedIn: false}))
                 .then(callback())
             }
         })

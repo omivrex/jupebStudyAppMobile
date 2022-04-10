@@ -25,8 +25,7 @@ import AnswerComponent from '../components/Answer.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let renderCollection = true
-let token = false
-const allowedTimeForUnpaidUsers = 30000 /** 1mins */
+const allowedTimeForUnpaidUsers = 30000
 export default function pqScreen({navigation}) {
     usePreventScreenCapture()
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
@@ -41,10 +40,6 @@ export default function pqScreen({navigation}) {
     })
     const [collectionData, setcollectionData] = useState([])
 
-    const IS_BLOCKED_FEATURE_CARD_DISPLAYED = useRef(false)
-    
-    const IS_GET_TOKEN_CALLED = useRef(false)
-    
     const isInternetReachable = useRef(false)
     
     useEffect(() => {
@@ -57,6 +52,7 @@ export default function pqScreen({navigation}) {
     
     const pathToDisplayWhenOffline = useRef([])
     const getOfflineQuestions = async path => {
+        preventBackHandler.current = true
         setloading(
             <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
                 <LoadingComponent />
@@ -68,7 +64,6 @@ export default function pqScreen({navigation}) {
             label.current = newLabel
             let tempArray = []
             if (label.current === 'questionNumber') {
-                preventBackHandler.current = true
                 returnedArray.forEach(question => {
                     tempArray.push({data: getSectionsLocalQuestions(offlinePath.current, question)})
                 });
@@ -79,11 +74,9 @@ export default function pqScreen({navigation}) {
                 // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                 if (lastPreviewDate === currentDate) {
                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-                    // closePqCard()
                 } else {
                     setTimeout(()=> {
                         getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-                        preventBackHandler.current = false
                     }, allowedTimeForUnpaidUsers)
                     AsyncStorage.setItem('lastPreviewDate', currentDate)
                 }
@@ -100,6 +93,7 @@ export default function pqScreen({navigation}) {
     
     const [loading, setloading] = useState()
     const getOnlineQuestions = (collectionName) => {
+        preventBackHandler.current = true
         setloading(
             <View style={{width: wp('100%'), height: hp('100%'), top: hp('17%'), position: 'absolute'}}>
                 <LoadingComponent />
@@ -121,11 +115,9 @@ export default function pqScreen({navigation}) {
                                 // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                                 if (lastPreviewDate === currentDate) {
                                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-                                    // closePqCard()
                                 } else {
                                     setTimeout(()=> {
                                         getToken(DISPLAY_BLOCKED_FEATURE_CARD)
-                                        preventBackHandler.current = false
                                     }, allowedTimeForUnpaidUsers)
                                     AsyncStorage.setItem('lastPreviewDate', currentDate)
                                 }
@@ -145,23 +137,22 @@ export default function pqScreen({navigation}) {
         })
     }
     
-    // console.log(IS_GET_TOKEN_CALLED.current, IS_BLOCKED_FEATURE_CARD_DISPLAYED.current);
-    
     function openMenu () {
         navigation.openDrawer();
     }
     
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
-        preventBackHandler.current = false
-        !tokenPresent?setBLOCKED_FEATURE_CARD(
-            <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
-        ):
-        null
+        if (!tokenPresent) {
+            preventBackHandler.current = false
+            setBLOCKED_FEATURE_CARD(
+                <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
+            )
+        }
     }
     
     const preventBackHandler = useRef(false)
     BackHandler.addEventListener('hardwareBackPress', function () {
-        // console.log('Back Handler Debug:', preventBackHandler.current, isAnsCardDisplayed.current, navigation.isFocused())
+        console.log('Back Handler Debug:', preventBackHandler.current, isAnsCardDisplayed.current, navigation.isFocused())
         if ((preventBackHandler.current || isAnsCardDisplayed.current) && navigation.isFocused()) {
             if (isAnsCardDisplayed.current) {
                 closeAnsPage()
@@ -175,25 +166,28 @@ export default function pqScreen({navigation}) {
     });
 
 
-    const closePqCard = () => {
+    const closePqCard = async () => {
+        console.log('called...')
         qualityContButnDis.current = ({display: 'none'})
+        isInternetReachable.current = (await network.getNetworkStateAsync()).isInternetReachable
         if (isInternetReachable.current) {
             const newPath = path.current.split('/')
             newPath.pop()
             newPath.pop()
-            preventBackHandler.current = (newPath.length>2)
             path.current = newPath.join('/')
             getOnlineQuestions(path.current)
         } else {
             const keys = Object.keys(offlinePath.current)
             let index = keys.length - 1
-            while (offlinePath.current[keys[index]] === null) { /** start with the last property if its null move to the next */
+            while (offlinePath.current[keys[index]] === null && index>0) { /** start with the last property if its null move to the next untill you reach the final property where the index is 0*/
                 index--
             }
             offlinePath.current[keys[index]] = null
             pathToDisplayWhenOffline.current.pop()
             getOfflineQuestions(offlinePath.current)
         }
+        preventBackHandler.current = (path.current !== 'pastquestions' || Object.values(offlinePath.current).filter(Boolean).length>0)
+        console.log('fk aoef', preventBackHandler.current, path.current, Object.values(offlinePath.current).filter(Boolean))
         setBLOCKED_FEATURE_CARD()
         renderCollection = true
     }
@@ -214,6 +208,7 @@ export default function pqScreen({navigation}) {
     }
     
     const qualityContButnDis = useRef({display: 'none'})
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
@@ -251,13 +246,9 @@ export default function pqScreen({navigation}) {
                         renderItem={({item}, index)=> {
                             if (item) {
                                 const data = Object.values(item)[0]
-                                path.current !== 'pastquestions' || Object.values(offlinePath.current).filter(Boolean).length?
-                                preventBackHandler.current = true:
-                                preventBackHandler.current = false
                                 if (label.current !=='questionNumber') {
                                     return (
                                         <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' key={index} style={pageStyles.listOptions} onPress={()=> {
-                                            preventBackHandler.current = true
                                             if (isInternetReachable.current) {
                                                 path.current += `/${data}/${data}`
                                                 getOnlineQuestions(path.current, false)
@@ -293,7 +284,6 @@ export default function pqScreen({navigation}) {
                         data={collectionData}
                         contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: collectionData.length*100}}
                         renderItem={({item}) => {
-                            preventBackHandler.current = true
                             return (
                                 <View style={{
                                         borderColor: '#9c27b0',

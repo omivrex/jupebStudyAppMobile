@@ -10,7 +10,7 @@ export const sendPaymentRequest = async (callback, errorHandler, userData) => {
             if (snapshot !== null) {
                 let [uid] = Object.keys(snapshot.val()) //use auth uid as key in rtdb
                 paymentRequests.child(uid).set({...userData, paymentDate: new Date().getTime()})
-                .then(callback())
+                .then(users.child(uid).update({loggedIn: false})).then(callback())
             }
         })
     } catch (error) {
@@ -47,7 +47,7 @@ const checkPin = async  (pin, uid, errorHandler) => {
     try {
         let is_payment_validated = false
         if (pin) {
-            await paymentRequests.child(uid).once('value', snapshot => {
+            paymentRequests.child(uid).once('value', snapshot => {
                 if (snapshot.val()) {
                     if (pin === snapshot.val().currentPin) {
                         console.log(pin === snapshot.val().currentPin);
@@ -58,7 +58,7 @@ const checkPin = async  (pin, uid, errorHandler) => {
                 } else {
                     errorHandler( "You haven't sent any payment request")
                 }
-            })
+            }).then(users.child(uid).update({loggedIn: true}))
         } else { /* this is incase user uses card activation instead of pin */
             is_payment_validated = true /** because the payment is validated by paystack we simply just set is_payment_validated to true */
         }

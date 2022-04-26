@@ -155,15 +155,19 @@ export default function Register({navigation}) {
     }
 
     const callSendPaymentReq = async () => {
-        userData.email = await AsyncStorage.getItem('userEmail')
-        await sendPaymentRequest(display_chartup_card, errorHandler, userData)
+        try {
+            userData.email = await AsyncStorage.getItem('userEmail')
+            await sendPaymentRequest(display_chartup_card, errorHandler, userData)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     async function removeToken() {
         await AsyncStorage.setItem('vpa', 'false')
     }
 
-    // removeToken()
+    removeToken()
 
     function display_chartup_card() {
         if (!is_chartup_card_displayed) {

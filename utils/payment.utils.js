@@ -5,9 +5,11 @@ const users = database.ref('users')
 
 export const sendPaymentRequest = async (callback, errorHandler, userData) => {
     userData.email = await AsyncStorage.getItem('userEmail')
+    console.log(userData.email)
     try {
-        users.orderByChild('email').equalTo(userData.email).on('value', snapshot => {
-            if (snapshot !== null) {
+        users.orderByChild('email').equalTo(userData.email).once('value', snapshot => {
+            console.log('snapshot', snapshot === null, snapshot)
+            if (typeof snapshot !== null) {
                 let [uid] = Object.keys(snapshot.val()) //use auth uid as key in rtdb
                 paymentRequests.child(uid).set({...userData, paymentDate: new Date().getTime()})
                 .then(users.child(uid).update({loggedIn: false})).then(callback())

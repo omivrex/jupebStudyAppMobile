@@ -1,8 +1,9 @@
-import * as firebase from 'firebase';
-require('firebase/storage')
-require('firebase/database')
-require('firebase/firestore')
-
+import { Platform } from "react-native";
+import { firebase } from '@firebase/app'
+import '@firebase/storage'
+import '@firebase/database'
+import '@firebase/firestore'
+import '@firebase/auth'
 const firebaseConfig = {
     apiKey: "AIzaSyDzkEuiLvUrNZYdU6blvHgVoHBf2tniZO0",
     authDomain: "jupebstudyapp.firebaseapp.com",
@@ -13,8 +14,12 @@ const firebaseConfig = {
     measurementId: "G-XFLZXCNJ44"
 };
 
-if (!firebase.apps.length) {
+if (Platform.OS === 'web') {
     firebase.initializeApp(firebaseConfig);
+} else {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
 }
 
 export const firestoreDB = firebase.firestore()

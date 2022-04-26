@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as firebase from 'firebase';
 import * as network from 'expo-network';
 import styles from './styles/master.js';
 import {firestoreDB, database, auth} from "./utils/firebase.config"
@@ -42,11 +41,6 @@ let isSplashCardDisplayed = false
 let isCard_displayed = false
 let is_app_screen_displayed = false
 let isUpdateFeatureCard = false
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
 
 export default function App({navigation}) {
   const [signUpCard, setsignUpCard] = useState()
@@ -86,6 +80,8 @@ export default function App({navigation}) {
       console.log(err);
     }
     // AsyncStorage.setItem('vpa', 'true')
+    // AsyncStorage.removeItem('vpa')
+
     try {
       let token = await AsyncStorage.getItem('vpa')
       if (token!=null) {

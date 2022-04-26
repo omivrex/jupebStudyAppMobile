@@ -4,7 +4,7 @@ import colors from './colors.js'
 const deviceHeight = Dimensions.get('window').height
 const deviceWidth = Dimensions.get('window').width
 console.log(deviceHeight);
-navigationContTop = hp('70%')
+let navigationContTop = hp('70%')
 let closePqCardTop = hp('0%')
 let questOptionsContainerTop = hp('65%')
 let qualityContButnTop = '40%'

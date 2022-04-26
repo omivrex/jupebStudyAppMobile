@@ -1,9 +1,8 @@
 import React, {useEffect, useState, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as network from 'expo-network';
-import * as firebase from 'firebase';
+import {firestoreDB} from "../utils/firebase.config"
 import colors from '../styles/colors.js'
-import MathJax from 'react-native-mathjax';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {
   Text,
@@ -18,21 +17,6 @@ import {
 
 import styles from '../styles/master.js';
 import GenInfoComponent from '../components/genInfo.component.js';
-
-
-require('firebase/firestore')
-require('firebase/storage')
-require('firebase/database')
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDzkEuiLvUrNZYdU6blvHgVoHBf2tniZO0",
-  authDomain: "jupebstudyapp.firebaseapp.com",
-  projectId: "jupebstudyapp",
-  storageBucket: "jupebstudyapp.appspot.com",
-  messagingSenderId: "316815533405",
-  appId: "1:316815533405:web:b0e02fdcf37e5c5cf8b4b4",
-  measurementId: "G-XFLZXCNJ44"
-};
 
 let isGenInfoCompDisplayed = false;
 
@@ -90,10 +74,6 @@ export default function homeScreen({navigation}) {
     navigation.navigate('StartPrac')
   }
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  const db = firebase.firestore()
   const [genInfoComp, setgenInfoComp] = useState()
   const [genInfoPreview, setgenInfoPreview] = useState(
     <View style={[genInfoPrevContStyle]}>
@@ -119,7 +99,7 @@ export default function homeScreen({navigation}) {
       try {
         const networkStat = await network.getNetworkStateAsync()
         if (networkStat.isInternetReachable) {
-          await db.collection('General Information').get().then((snapShot)=> {
+          await firestoreDB.collection('General Information').get().then((snapShot)=> {
               snapShot.forEach(doc => {
                 const info = doc.data()
                 info.id = doc.id

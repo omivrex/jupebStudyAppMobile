@@ -40,7 +40,9 @@ let is_view_quest_card_displayed = false
 let is_result_card_displayed = false
 
 export default function StartPrac({navigation}) {
-    usePreventScreenCapture()
+    Platform.OS !== 'web'?
+        usePreventScreenCapture():null
+    
     function openMenu () {
         navigation.openDrawer();
     }

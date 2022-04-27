@@ -366,7 +366,7 @@ export default function App({navigation}) {
       is_app_screen_displayed = true
     }
   }
-
+// AsyncStorage.setItem('vpa', 'true')
 //  AsyncStorage.removeItem('vpa')
 //  AsyncStorage.removeItem('userEmail')
   return (

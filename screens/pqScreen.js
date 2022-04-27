@@ -15,7 +15,9 @@ import {
     Alert,
     Linking,
     FlatList,
-    BackHandler} from 'react-native';
+    BackHandler
+} from 'react-native';
+
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import { usePreventScreenCapture } from 'expo-screen-capture'
@@ -23,11 +25,13 @@ import styles from '../styles/master.js';
 import pageStyles from '../styles/pqScreenStyles.js';
 import AnswerComponent from '../components/Answer.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from "react-native";
 
 let renderCollection = true
 const allowedTimeForUnpaidUsers = 30000
 export default function pqScreen({navigation}) {
-    usePreventScreenCapture()
+    Platform.OS !== 'web'?
+        usePreventScreenCapture():null
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
     
     const path = useRef('pastquestions')

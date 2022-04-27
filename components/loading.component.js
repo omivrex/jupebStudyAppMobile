@@ -3,6 +3,8 @@ import { StyleSheet, View, Text } from "react-native";
 import LottieView from "lottie-react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import colors from '../styles/colors.js'
+import Lottie from "lottie-react";
+import { Platform } from "react-native";
 
 const styles = StyleSheet.create({
     animation: {
@@ -32,18 +34,33 @@ const styles = StyleSheet.create({
 });
 
 const LoadingComponent = () => {
-    return (
-      <View style={styles.componentWrapper}>
-        <View style={styles.animationWrapper}>
-          <LottieView
-            source={require("../assets/ripple-loading.json")}
-            style={styles.animation}
-            autoPlay
-          />
-          <Text style={styles.loadingText}>Loading</Text>
+    if (Platform.OS === 'web') {
+      return (
+        <View style={styles.componentWrapper}>
+          <View style={styles.animationWrapper}>
+            <Lottie
+              source={require("../assets/ripple-loading.json")}
+              style={{width: '100%', height: '100%'}}
+              autoPlay
+            />
+            <Text style={styles.loadingText}>Loading</Text>
+          </View>
         </View>
-      </View>
-    );
+      );
+    } else {
+      return (
+        <View style={styles.componentWrapper}>
+          <View style={styles.animationWrapper}>
+            <LottieView
+              source={require("../assets/ripple-loading.json")}
+              style={styles.animation}
+              autoPlay
+            />
+            <Text style={styles.loadingText}>Loading</Text>
+          </View>
+        </View>
+      );
+    }
 }
 
 export default LoadingComponent

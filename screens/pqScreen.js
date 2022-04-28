@@ -26,6 +26,7 @@ import pageStyles from '../styles/pqScreenStyles.js';
 import AnswerComponent from '../components/Answer.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from "react-native";
+import WebMathJaxComponent from '../components/WebMathJax.component';
 
 let renderCollection = true
 const allowedTimeForUnpaidUsers = 30000
@@ -297,57 +298,62 @@ export default function pqScreen({navigation}) {
                                         left: '5%',
                                         justifyContent: 'center'
                                     }}>
-                                    <MathJax
-                                        html={
-                                            `
-                                                <head>
-                                                    <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
-                                                </head>
-                                                <body>
-                                                    <style>
-                                                        * {
-                                                            -webkit-user-select: none;
-                                                            -moz-user-select: none;
-                                                            -ms-user-select: none;
-                                                            user-select: none;
-                                                        }
-                                                    </style>
-                                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
-                                                        ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):'<h2 style="color: red;">Network Error!</h2>'}
-                                                    </div> 
-                                                </body>
-                                            
-                                            `
-                                        }
-                                        mathJaxOptions={{
-                                            messageStyle: "none",
-                                            extensions: ["tex2jax.js"],
-                                            jax: ["input/TeX", "output/HTML-CSS"],
-                                            showMathMenu: false,
-                                            tex2jax: {
-                                                inlineMath: [
-                                                    ["$", "$"],
-                                                    ["\\(", "\\)"],
-                                                ],
-                                                displayMath: [
-                                                    ["$$", "$$"],
-                                                    ["\\[", "\\]"],
-                                                ],
-                                                processEscapes: true,
-                                            },
-                                            TeX: {
-                                                extensions: [
-                                                    "AMSmath.js",
-                                                    "AMSsymbols.js",
-                                                    "noErrors.js",
-                                                    "noUndefined.js",
-                                                ],
-                                            },
+                                    {Platform.OS !== 'web'? 
+                                        <MathJax
+                                            html={
+                                                `
+                                                    <head>
+                                                        <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                                                    </head>
+                                                    <body>
+                                                        <style>
+                                                            * {
+                                                                -webkit-user-select: none;
+                                                                -moz-user-select: none;
+                                                                -ms-user-select: none;
+                                                                user-select: none;
+                                                            }
+                                                        </style>
+                                                        <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
+                                                            ${item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):'<h2 style="color: red;">Network Error!</h2>'}
+                                                        </div> 
+                                                    </body>
+                                                
+                                                `
+                                            }
+                                            mathJaxOptions={{
+                                                messageStyle: "none",
+                                                extensions: ["tex2jax.js"],
+                                                jax: ["input/TeX", "output/HTML-CSS"],
+                                                showMathMenu: false,
+                                                tex2jax: {
+                                                    inlineMath: [
+                                                        ["$", "$"],
+                                                        ["\\(", "\\)"],
+                                                    ],
+                                                    displayMath: [
+                                                        ["$$", "$$"],
+                                                        ["\\[", "\\]"],
+                                                    ],
+                                                    processEscapes: true,
+                                                },
+                                                TeX: {
+                                                    extensions: [
+                                                        "AMSmath.js",
+                                                        "AMSsymbols.js",
+                                                        "noErrors.js",
+                                                        "noUndefined.js",
+                                                    ],
+                                                },
 
-                                        }}
-                                        style={{width: '100%'}}
-                                    
-                                    />
+                                            }}
+                                            style={{width: '100%'}}
+                                        
+                                        />
+                                        :
+
+                                        <WebMathJaxComponent data={item&&item.data?item.data.question.replace('max-width: 180px;', 'max-width: 90vw;'):'<h2 style="color: red;">Network Error!</h2>'}/>
+                                    }
                                     <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> {
                                         item && item.data && item.data.correctOption !== ''?
                                             Alert.alert(`Correct Option: ${item && item.data? item.data.correctOption:''}`, '', [

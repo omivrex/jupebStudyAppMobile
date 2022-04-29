@@ -15,11 +15,9 @@ const genStyles = {
     'fontFamily': 'Roboto, sans-serif, san Francisco'
 }
 
-document.body.innerHTML += '<script> window.MathJax.typeset()</script>'
-
-const WebMathJaxComponent = ({data}) => {
+const WebMathJaxComponent = ({data, style}) => {
     return (
-        <div className="dataContainer" dangerouslySetInnerHTML={{__html: data+'<script>window.MathJax.typeset()</script>'}}/>
+        <div style={style} className="dataContainer" dangerouslySetInnerHTML={{__html: data+'<script>window.MathJax.typeset()</script>'}}/>
     )
 }
 

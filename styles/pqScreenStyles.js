@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Platform } from "react-native-web";
 import colors from './colors.js'
 const deviceHeight = Dimensions.get('window').height
 const deviceWidth = Dimensions.get('window').width
@@ -111,10 +112,13 @@ export default StyleSheet.create({
 
     answerCardWrapper: {
         position: 'absolute',
-        width: '100%',
-        height: '100%',
-        top: hp('24%'),
-        backgroundColor: 'rgba(255, 255, 255, 0.5)'
+        width: '90%',
+        height: Platform.OS!== 'web'?'100%':'80vh',
+        left: '5%',
+        overflow: 'scroll',
+        paddingBottom: Platform.OS!== 'web'? 0:'30vh',
+        top: Platform.OS!== 'web'? hp('24%'):'24.5vh',
+        backgroundColor: 'rgba(255, 255, 255,1)'
     },
 
     answerCard: {

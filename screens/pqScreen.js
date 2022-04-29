@@ -287,7 +287,7 @@ export default function pqScreen({navigation}) {
                     </View>
                     <FlatList
                         data={collectionData}
-                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: collectionData.length*100}}
+                        contentContainerStyle = {[{width: '100%', alignContent: 'space-around'}, Platform.OS !== 'web'?{paddingBottom: collectionData.length*100}:{height: '80vh', paddingBottom: '20vh', overflow: 'scroll'}]}
                         renderItem={({item}) => {
                             return (
                                 <View style={{

@@ -6,6 +6,7 @@ import {
     View,
     Platform
 } from 'react-native';
+import colors from '../styles/colors.js';
 
 export default function ({data}) {
     return (
@@ -71,7 +72,7 @@ export default function ({data}) {
                         style={{width: '98%', flex:2, marginTop: '5%', left: '1%'}}
                     />
                     :
-                    <WebMathJaxComponent data={data&&data.answer?data.answer.replace('max-width: 180px;', 'max-width: 90vw;'):'<h2 style="color: red;">Network Error!</h2>'}/>
+                    <WebMathJaxComponent style={{width: '100%', height: '100%'}} data={data&&data.answer?data.answer.replace('max-width: 180px;', 'max-width: 90vw;'):'<h2 style="color: red;">Network Error!</h2>'}/>
                 }
             </View>
         </View>

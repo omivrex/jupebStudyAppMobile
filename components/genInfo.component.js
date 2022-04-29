@@ -6,8 +6,10 @@ import {
     Text,
     View,
     Image,
-    FlatList
+    FlatList,
+    Platform
 } from 'react-native';
+import WebMathJaxComponent from './WebMathJax.component.js';
 
 const data = []
 
@@ -43,57 +45,62 @@ function GenInfoComponent({data}) {
                                 justifyContent: 'center'
                             }}>
                                 <Text style={pageStyles.topic}>{item.Topic}:</Text>
-                                <MathJax
-                                    html={
-                                        `
-                                            <head>
-                                                <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
-                                            </head>
-                                            <body>
-                                                <style>
-                                                    * {
-                                                        -webkit-user-select: none;
-                                                        -moz-user-select: none;
-                                                        -ms-user-select: none;
-                                                        user-select: none;
-                                                    }
-                                                </style>
-                                                <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
-                                                    ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;'):''}
-                                                </div> 
-                                            </body>
-                                        
-                                        `
-                                    }
-                                    mathJaxOptions={{ 
-                                        showMathMenu: false,
-                                        messageStyle: "none",
-                                        extensions: ["tex2jax.js"],
-                                        jax: ["input/TeX", "output/HTML-CSS"],
-                                        tex2jax: {
-                                            inlineMath: [
-                                                ["$", "$"],
-                                                ["\\(", "\\)"],
-                                            ],
-                                            displayMath: [
-                                                ["$$", "$$"],
-                                                ["\\[", "\\]"],
-                                            ],
-                                            processEscapes: true,
-                                        },
-                                        TeX: {
-                                            extensions: [
-                                                "AMSmath.js",
-                                                "AMSsymbols.js",
-                                                "noErrors.js",
-                                                "noUndefined.js",
-                                            ],
-                                        },
-
-                                    }}
-                                    style={{width: '100%'}}
+                                {Platform.OS !== 'web'? 
                                 
-                                />
+                                    <MathJax
+                                        html={
+                                            `
+                                                <head>
+                                                    <meta name="viewport"  content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+                                                </head>
+                                                <body>
+                                                    <style>
+                                                        * {
+                                                            -webkit-user-select: none;
+                                                            -moz-user-select: none;
+                                                            -ms-user-select: none;
+                                                            user-select: none;
+                                                        }
+                                                    </style>
+                                                    <div style="font-size: 1em; font-family: Roboto, sans-serif, san Francisco">
+                                                        ${item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;'):''}
+                                                    </div> 
+                                                </body>
+                                            
+                                            `
+                                        }
+                                        mathJaxOptions={{ 
+                                            showMathMenu: false,
+                                            messageStyle: "none",
+                                            extensions: ["tex2jax.js"],
+                                            jax: ["input/TeX", "output/HTML-CSS"],
+                                            tex2jax: {
+                                                inlineMath: [
+                                                    ["$", "$"],
+                                                    ["\\(", "\\)"],
+                                                ],
+                                                displayMath: [
+                                                    ["$$", "$$"],
+                                                    ["\\[", "\\]"],
+                                                ],
+                                                processEscapes: true,
+                                            },
+                                            TeX: {
+                                                extensions: [
+                                                    "AMSmath.js",
+                                                    "AMSsymbols.js",
+                                                    "noErrors.js",
+                                                    "noUndefined.js",
+                                                ],
+                                            },
+
+                                        }}
+                                        style={{width: '100%'}}
+                                    
+                                    />
+                                :
+                                    <WebMathJaxComponent data={item&&item.Body?item.Body.replace('max-width: 180px;', 'max-width: 90vw;'):''}/>
+                                }
                             </View>
                         )}
                         keyExtractor = {(item, index) => index.toString()}

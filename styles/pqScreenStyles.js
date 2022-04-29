@@ -112,9 +112,8 @@ export default StyleSheet.create({
 
     answerCardWrapper: {
         position: 'absolute',
-        width: '90%',
+        width: '100%',
         height: Platform.OS!== 'web'?'100%':'80vh',
-        left: '5%',
         overflow: 'scroll',
         paddingBottom: Platform.OS!== 'web'? 0:'30vh',
         top: Platform.OS!== 'web'? hp('24%'):'24.5vh',
@@ -125,7 +124,8 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: '100%',
-        width: '100%',
+        width: '90%',
+        left: '5%',
         backgroundColor: colors.bodyBackground,
     },
     

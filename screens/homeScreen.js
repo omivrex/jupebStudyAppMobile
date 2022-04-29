@@ -17,6 +17,7 @@ import {
 
 import styles from '../styles/master.js';
 import GenInfoComponent from '../components/genInfo.component.js';
+import { Platform } from 'react-native-web';
 
 let isGenInfoCompDisplayed = false;
 
@@ -116,6 +117,10 @@ export default function homeScreen({navigation}) {
                     <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
                       isGenInfoCompDisplayed = true
                       setgenInfoComp(<GenInfoComponent data={[data.current[index]]}/>)
+                      Platform.OS === 'web'?
+                        window.MathJax.typeset()
+                      :null
+                      console.log('running MathJax')
                     }}>
                       <View style={previewInformationStyle}>
                         <Text style={[previewInformationTextStyle, {alignSelf: 'flex-start', width: '90%'}]}>{item.Topic}</Text>
@@ -153,9 +158,9 @@ export default function homeScreen({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerCont}>
-        <Image style={styles.logoImage} resizeMode={'contain'} source={require('../icons/headerIcon.png')}/>
+        {Platform.OS !== 'web'?<Image style={styles.logoImage} resizeMode={'contain'} source={require('../icons/headerIcon.png')}/>:<img src={require('../icons/headerIcon.png')} width={90}/>}
         <TouchableHighlight underlayColor = {colors.appColor} style={styles.menuIcon} onPress={openMenu}>
-          <Image source={require('../icons/menuIcon.png')}/>
+          {Platform.OS !== 'web'?<Image source={require('../icons/menuIcon.png')}/>:<img src={require('../icons/menuIcon.png')} width={100}/>}
         </TouchableHighlight>
       </View>
 

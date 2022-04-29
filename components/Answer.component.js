@@ -13,8 +13,6 @@ export default function ({data}) {
         <View style={pageStyles.answerCardWrapper}>
             <View style={pageStyles.answerCard}>
                 {Platform.OS !== 'web'? 
-                
-            
                     <MathJax
                         html={
                             `   <head>

@@ -7,8 +7,8 @@ const MathJax = {
 const mathJaxLibrary = require('../utils/mathjaxweb.utils')
 
 const genStyles = {
-    'webkitUserSelect': 'none',
-    'mozUserSelect': 'none',
+    'WebkitUserSelect': 'none',
+    'MozUserSelect': 'none',
     'msUserSelect': 'none',
     'userSelect': 'none',
     'fontSize': '1em',
@@ -17,7 +17,15 @@ const genStyles = {
 
 const WebMathJaxComponent = ({data, style}) => {
     return (
-        <div style={style} className="dataContainer" dangerouslySetInnerHTML={{__html: data+'<script>window.MathJax.typeset()</script>'}}/>
+        <div style={{...style, ...genStyles }} className="dataContainer" dangerouslySetInnerHTML={{
+            __html: data+
+            `<script>
+                (()={
+                    window.MathJax.typeset()
+                    console.log('running MathJax')
+                })()
+            </script>`
+        }}/>
     )
 }
 

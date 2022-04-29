@@ -27,6 +27,8 @@ import AnswerComponent from '../components/Answer.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from "react-native";
 import WebMathJaxComponent from '../components/WebMathJax.component';
+import WebAlert from '../components/WebAlert.component';
+import colors from '../styles/colors';
 
 let renderCollection = true
 const allowedTimeForUnpaidUsers = 30000
@@ -134,7 +136,16 @@ export default function pqScreen({navigation}) {
                     renderCollection = true
                 }
             } else {
-                Alert.alert('Network Error', 'Check your network settings \nYou are now viewing offline questions', [{text: 'Ok', onPress: () => ''}], {cancelable: true})
+                Platform.OS!=='web'? Alert.alert('Network Error', 'Check your network settings \nYou are now viewing offline questions', [{text: 'Ok', onPress: () => ''}], {cancelable: true}):
+                setwebAlert(
+                    <WebAlert closeFunc={()=> setwebAlert()} title={'Network Error'} body={'Check your network settings \nYou are now viewing offline questions'}>
+                        <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                            setwebAlert()
+                        }}>
+                            <Text style={{color: '#eee', textAlign: 'center'}}>OK</Text>
+                        </TouchableHighlight>
+                    </WebAlert>
+                )
                 isInternetReachable.current = false
                 getOfflineQuestions()
             }
@@ -214,32 +225,51 @@ export default function pqScreen({navigation}) {
     
     const qualityContButnDis = useRef({display: 'none'})
 
+    const webBackButnImgStyle = {width: '80%', justifySelf: 'center', alignSelf: 'center', top: '2%', position: 'relative'}
+    const [webAlert, setwebAlert] = useState()
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>PAST QUESTIONS</Text>
                 <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)'style={[pageStyles.qualityContButn, qualityContButnDis.current]} onPress={() => {
-                    Alert.alert('Quality Control Service',
-                        `Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.`,
-                        [
-                            {
-                                text: 'YES',
-                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
-                            }, 
+                    Platform.OS !== 'web'?
+                        Alert.alert('Quality Control Service',
+                            `Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.`,
+                            [
+                                {
+                                    text: 'YES',
+                                    onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
+                                }, 
 
-                            {
-                                text: 'NO',
-                                onPress: ()=> 'Do nothing',
-                                style: 'cancel'
-                            },
+                                {
+                                    text: 'NO',
+                                    onPress: ()=> 'Do nothing',
+                                    style: 'cancel'
+                                },
 
-                        ], {cancelable: true}
-                    )
+                            ], {cancelable: true}
+                        )
+                    :   setwebAlert(
+                            <WebAlert closeFunc={()=> setwebAlert()} title={`Quality Control Service`} body={'Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.'}>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>YES</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    ''
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>NO</Text>
+                                </TouchableHighlight>
+                            </WebAlert>
+                        )
                 }}>
-                    <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
+                    {Platform.OS!== 'web'?<Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>: <img src={require('../icons/flag.png')}/>}
                 </TouchableHighlight>
                 <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableHighlight>
             </View>
             {renderCollection? (
@@ -282,7 +312,7 @@ export default function pqScreen({navigation}) {
                             : pathToDisplayWhenOffline.current.join(' > ').toUpperCase()}
                         </Text>
                         <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {()=> !isAnsCardDisplayed.current?closePqCard():closeAnsPage()} style={pageStyles.closePqCard}>
-                            <Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>:<img width={25} src={require('../icons/back.png')}/>}
                         </TouchableHighlight>
                     </View>
                     <FlatList
@@ -356,18 +386,36 @@ export default function pqScreen({navigation}) {
                                     }
                                     <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> {
                                         item && item.data && item.data.correctOption !== ''?
-                                            Alert.alert(`Correct Option: ${item && item.data? item.data.correctOption:''}`, '', [
-                                                {
-                                                    text: 'View Solution',
-                                                    onPress: ()=> showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:'')
-                                                },
-
-                                                {
-                                                    text: 'Cancel',
-                                                    onPress: () => ''
-                                                }
-                                            ], {cancelable: true})
+                                            Platform.OS !== 'web'?
+                                                Alert.alert(`Correct Option: ${item && item.data? item.data.correctOption:''}`, '', [
+                                                    {
+                                                        text: 'View Solution',
+                                                        onPress: ()=> showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:'')
+                                                    },
+    
+                                                    {
+                                                        text: 'Cancel',
+                                                        onPress: () => ''
+                                                    }
+                                                ], {cancelable: true})
+                                            : setwebAlert(
+                                                <WebAlert closeFunc={()=> setwebAlert()} title={`Correct Option: ${item && item.data? item.data.correctOption:''}`} body={''}>
+                                                    <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                                        showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:'')
+                                                        setwebAlert()
+                                                    }}>
+                                                        <Text style={{color: '#eee', textAlign: 'center'}}>View Solution</Text>
+                                                    </TouchableHighlight>
+                                                    <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                                        ''
+                                                        setwebAlert()
+                                                    }}>
+                                                        <Text style={{color: '#eee', textAlign: 'center'}}>Cancel</Text>
+                                                    </TouchableHighlight>
+                                                </WebAlert>
+                                              )
                                         : showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:'')
+                                        console.log('clicked')
                                     }}>
                                         <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                     </TouchableHighlight>
@@ -381,6 +429,7 @@ export default function pqScreen({navigation}) {
             {ansCard}
             {loading}
             {BLOCKED_FEATURE_CARD}
+            {webAlert}
             <StatusBar style="light" />
         </SafeAreaView>
     )

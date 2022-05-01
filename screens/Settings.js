@@ -11,11 +11,14 @@ import {
     Share,
     BackHandler,
     ScrollView,
+    TouchableHighlight,
 } from 'react-native';
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/settingsStyle.js';
 import { Platform } from 'react-native-web';
+import WebAlert from '../components/WebAlert.component.js';
+import colors from '../styles/colors.js';
 
 let isLoginCardDisplayed = false
 let isCard_displayed = false
@@ -44,6 +47,8 @@ export default function Settings({navigation}) {
         }
     });
 
+    const [webAlert, setwebAlert] = useState()
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
@@ -54,34 +59,53 @@ export default function Settings({navigation}) {
             </View>
             <ScrollView style={pageStyles.tableOfContents}>
                 <TouchableOpacity style={pageStyles.content}>
-                    <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/editProfile.png')}/>
-                    <Text style={pageStyles.contentText} onPress={()=> {Alert.alert(
-                        'To Edit Your Profile Contact Our Admin On WhatsApp',
-                        '',
-                        [
-                            {
-                                text: 'Contact',
-                                onPress: ()=> {Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP \n I%20want%20to%20change%20my%20details`)}
-                            },
+                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/editProfile.png')}/>: <img src={require('../icons/editProfile.png')}/>}
+                    <Text style={pageStyles.contentText} onPress={()=> {
+                        Platform.OS !== 'web'?
+                            Alert.alert(
+                                'To Edit Your Profile Contact Our Admin On WhatsApp',
+                                '',
+                                [
+                                    {
+                                        text: 'Contact',
+                                        onPress: ()=> {Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP \n I%20want%20to%20change%20my%20details`)}
+                                    },
 
-                            {
-                                text: 'Cancel',
-                            }
-                        ]
-                    )}}>EDIT PROFILE</Text>
+                                    {
+                                        text: 'Cancel',
+                                    }
+                                ]
+                            )
+                        : setwebAlert(
+                            <WebAlert closeFunc={()=> setwebAlert()} title={'To Edit Your Profile Contact Our Admin On WhatsApp'} body={''}>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    Linking.openURL(`https://wa.me/+2348067124123?text=Good%20Day%20Admin%20I%20contacted%20you%20from%20JUPEB%20STUDY%20APP \n I%20want%20to%20change%20my%20details`)
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>Contact</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>Cancel</Text>
+                                </TouchableHighlight>
+                            </WebAlert>
+                          )
+                    }}>EDIT PROFILE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {Linking.openURL('http://play.google.com/store/apps/details?id=com.learnxtra.jupebstudyapp')}} style={pageStyles.content}>
-                    <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/rateApp.png')}/>
+                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/rateApp.png')}/>: <img src={require('../icons/rateApp.png')}/>}
                     <Text style={pageStyles.contentText}>RATE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {Share.share({title: 'Download Url', message: 'Hey Check Out This Cool Jupeb App! \n http://play.google.com/store/apps/details?id=com.learnxtra.jupebstudyapp'})}} style={[pageStyles.content, {marginBottom: '40%'}]}>
-                    <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/share.png')}/>
+                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/share.png')}/>: <img src={require('../icons/share.png')}/>}
                     <Text style={pageStyles.contentText}>SHARE</Text>
                 </TouchableOpacity>
             </ScrollView>
             {logInCard}
             {message}
             {profileCard}
+            {webAlert}
             <StatusBar style="light"/>
         </SafeAreaView>
 

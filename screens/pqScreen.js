@@ -33,8 +33,15 @@ import colors from '../styles/colors';
 let renderCollection = true
 const allowedTimeForUnpaidUsers = 30000
 export default function pqScreen({navigation}) {
-    Platform.OS !== 'web'?
-        usePreventScreenCapture():null
+    if (Platform.OS !== 'web') {
+        usePreventScreenCapture()
+    } else {
+        navigation.addListener('state', (e) => {
+            console.log('called...')
+            e.preventDefault()
+            preventBackHandlerFunc()
+        })
+    }
     const [BLOCKED_FEATURE_CARD, setBLOCKED_FEATURE_CARD] = useState()
     
     const path = useRef('pastquestions')
@@ -167,7 +174,7 @@ export default function pqScreen({navigation}) {
     }
     
     const preventBackHandler = useRef(false)
-    BackHandler.addEventListener('hardwareBackPress', function () {
+    const preventBackHandlerFunc = () => {
         console.log('Back Handler Debug:', preventBackHandler.current, isAnsCardDisplayed.current, navigation.isFocused())
         if ((preventBackHandler.current || isAnsCardDisplayed.current) && navigation.isFocused()) {
             if (isAnsCardDisplayed.current) {
@@ -179,6 +186,10 @@ export default function pqScreen({navigation}) {
         } else {
             return false
         }
+    }
+    BackHandler.addEventListener('hardwareBackPress', function () {
+        console.log('called')
+        preventBackHandlerFunc()
     });
 
 

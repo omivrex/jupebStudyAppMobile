@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Platform } from "react-native-web";
 
 import colors from './colors.js'
 
@@ -72,8 +73,8 @@ export default StyleSheet.create({
     menuItemCont: {
       width: '100%',
       height: '7%',
-      top: hp('18%'),
-      // backgroundColor: 'blue',
+      top: Platform.OS !== 'web'? hp('18%'): 0,
+      margin: Platform.OS !== 'web'? 0:'auto',
       marginBottom: hp('2%'),
     },
     

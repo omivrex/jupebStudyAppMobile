@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Platform } from "react-native-web";
 import colors from './colors.js'
 
 const deviceHeight = Dimensions.get('window').height
@@ -50,7 +51,7 @@ export default StyleSheet.create({
 
     content: {
         width: '40%',
-        height: '25%',
+        height: Platform.OS !== 'web'? '25%':'22%',
         marginBottom: '10%',
         borderRadius: 25,
         top: '10%',

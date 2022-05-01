@@ -5,6 +5,7 @@ import {Text, View, ScrollView, Linking, TouchableOpacity, SafeAreaView, Image} 
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/newsFeedStyles.js';
+import { Platform } from 'react-native-web';
 
 export default function About({navigation}) {
     function openMenu () {
@@ -16,7 +17,7 @@ export default function About({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>ABOUT</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
             </View>
             <View style={[pageStyles.card, { left: -30, top: hp('17%')}]}>

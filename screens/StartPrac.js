@@ -613,7 +613,7 @@ export default function StartPrac({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>START PRACTICE</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
                 <TouchableOpacity style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
                     Alert.alert('Quality Control Service',

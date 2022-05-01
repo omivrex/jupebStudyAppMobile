@@ -15,6 +15,7 @@ import {
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/settingsStyle.js';
+import { Platform } from 'react-native-web';
 
 let isLoginCardDisplayed = false
 let isCard_displayed = false
@@ -48,7 +49,7 @@ export default function Settings({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>SETTINGS</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
             </View>
             <ScrollView style={pageStyles.tableOfContents}>

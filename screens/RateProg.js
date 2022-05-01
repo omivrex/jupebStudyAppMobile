@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import BlockedFeature from "../components/BlockedFeature.component"
 import styles from '../styles/master.js';
 import pageStyles from '../styles/rateProgStyles.js';
+import { Platform } from 'react-native-web';
 
 let render_course_analysis_card = true
 let testRecords = []
@@ -215,7 +216,7 @@ export default function RateProg({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>RATE PROGRESS</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu} opacity={1}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
             </View>
             <TouchableOpacity onPress = {getAllTestData} style={pageStyles.refreshButn}>

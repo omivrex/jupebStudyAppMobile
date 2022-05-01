@@ -5,6 +5,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/helpStyles.js';
+import { Platform } from 'react-native-web';
 
 export default function Help({navigation}) {
     function openMenu () {
@@ -16,7 +17,7 @@ export default function Help({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>HELP</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
             </View>
             <View style={pageStyles.card}>

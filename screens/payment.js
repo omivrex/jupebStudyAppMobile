@@ -20,6 +20,7 @@ import colors from '../styles/colors.js'
 import styles from '../styles/master.js';
 import pageStyles from '../styles/paymentStyles.js';
 import { sendPaymentRequest, validatePayment } from '../utils/payment.utils';
+import { Platform } from 'react-native-web';
 
 const userData = {
     email: '',
@@ -214,7 +215,7 @@ export default function Register({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>PAYMENT</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
             </View>
 

@@ -4,6 +4,7 @@ import {Text, View, TouchableOpacity, SafeAreaView, TextInput, Image} from 'reac
 
 import styles from '../styles/master.js';
 import pageStyles from '../styles/calcScreenStyle.js';
+import { Platform } from 'react-native-web';
 
 export default function calcScreen({navigation}) {
     function openMenu () {
@@ -173,7 +174,7 @@ export default function calcScreen({navigation}) {
             <View style={styles.headerCont}>
                 <Text style={styles.baseText}>POINT CALCULATOR</Text>
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
-                    <Image source={require('../icons/menuIcon.png')}/>
+                    {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
             </View>
             <View style={pageStyles.guideCont}>

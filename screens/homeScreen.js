@@ -18,6 +18,7 @@ import {
 import styles from '../styles/master.js';
 import GenInfoComponent from '../components/genInfo.component.js';
 import { Platform } from 'react-native-web';
+import WebAlert from '../components/WebAlert.component';
 
 let isGenInfoCompDisplayed = false;
 
@@ -155,6 +156,8 @@ export default function homeScreen({navigation}) {
 
   }, []);
 
+  const [webAlert, setwebAlert] = useState()
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerCont}>
@@ -188,7 +191,18 @@ export default function homeScreen({navigation}) {
               </>
             </TouchableHighlight>
 
-            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true})}>
+            <TouchableHighlight underlayColor={colors.underlayColor} style={styles.block} onPress={()=> 
+            Platform.OS !== 'web'? Alert.alert('', 'Comming Soon...', [{text: 'Ok', onPress: ()=>''}], {cancelable: true}):
+            setwebAlert(
+              <WebAlert closeFunc={()=> setwebAlert()} title={``} body={`Comming Soon...`}>
+                  <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={()=> {
+                      setwebAlert()
+                  }}>
+                      <Text style={{color: '#eee', textAlign: 'center'}}>OK</Text>
+                  </TouchableHighlight>
+              </WebAlert>
+            )
+          }>
               <>
                 <Image resizeMode={'center'} style={styles.blockIcon} source={require('../icons/lectureNotes.png')}/>
                 <Text style={[styles.blockText]}>LECTURE NOTES</Text>
@@ -221,6 +235,7 @@ export default function homeScreen({navigation}) {
         </View>
       </View>
       {genInfoComp}
+      {webAlert}
       <StatusBar style="light" />
     </SafeAreaView>
   );

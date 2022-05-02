@@ -1,9 +1,10 @@
 import React, {useRef} from "react";
 const WebAlert = ({title, body, closeFunc, isDismisable, children}) => {
-  const dismisableVal = useRef(isDismisable?isDismisable:true)
+  const dismisableVal = useRef(isDismisable !== undefined?isDismisable:true)
   const wrapper = useRef()
+  console.log(dismisableVal, isDismisable)
   return (
-    <div ref={wrapper} onClick={()=> dismisableVal?closeFunc():null} style={{
+    <div ref={wrapper} onClick={()=> dismisableVal.current?closeFunc():null} style={{
         position: 'absolute',
         background: 'rgba(65,65,65,0.5)',
         width: '100vw',

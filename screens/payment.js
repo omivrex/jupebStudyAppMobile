@@ -12,6 +12,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Image,
+    TouchableHighlight,
     Linking,
     Alert,
 } from 'react-native';
@@ -21,6 +22,7 @@ import styles from '../styles/master.js';
 import pageStyles from '../styles/paymentStyles.js';
 import { sendPaymentRequest, validatePayment } from '../utils/payment.utils';
 import { Platform } from 'react-native-web';
+import WebAlert from '../components/WebAlert.component';
 
 const userData = {
     email: '',
@@ -69,7 +71,7 @@ export default function Register({navigation}) {
             setbank_Form_State(
                 <View style={pageStyles.bankPaymentForm}>
                     <TouchableOpacity onPress = {close_bank_card} style={pageStyles.closeButn}>
-                        <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        {Platform.OS !== 'web'?<Image resizeMode={'center'} source={require('../icons/back.png')}/>: <img width={70} height={70} src={require('../icons/back.png')}/>}
                     </TouchableOpacity>
                     <Text style={pageStyles.formHeader}>PERSONAL INFO.</Text>
                     <TextInput style={pageStyles.formText} onChangeText={(val) => {userData.acc_name = val.toLowerCase()}} placeholder={'Account Name'} placeholderTextColor={colors.textColor}/>
@@ -101,6 +103,7 @@ export default function Register({navigation}) {
         }
     }
     
+    const [webAlert, setwebAlert] = useState()
     function display_deposit_acc_details() {
         if (!is_deposit_acc_details_displayed) {
             messageHandler({
@@ -110,7 +113,7 @@ export default function Register({navigation}) {
             setdeposit_acc_details(
                 <View style={pageStyles.bankPaymentForm}>
                     <TouchableOpacity onPress = {close_deposit_acc_details_card} style={pageStyles.closeButn}>
-                        <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        {Platform.OS !== 'web'?<Image resizeMode={'center'} source={require('../icons/back.png')}/>: <img width={70} height={70} src={require('../icons/back.png')}/>}
                     </TouchableOpacity>
                     <Text style={pageStyles.formHeader}>Deposit Account Info</Text>
                     <Text style={[pageStyles.formText]}>
@@ -127,11 +130,28 @@ export default function Register({navigation}) {
                     </Text>
     
                     <TouchableOpacity onPressIn={()=> {
-                        Alert.alert('Are you sure you have made a payment to the details shown..', 
-                        `Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦2000`, [
-                            {text: 'Yes', onPress: callSendPaymentReq},
-                            {text: 'No', onPress: close_deposit_acc_details_card}
-                        ])
+                        Platform.OS !== 'web'?
+                            Alert.alert('Are you sure you have made a payment to the details shown..', 
+                            `Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦2000`, [
+                                {text: 'Yes', onPress: callSendPaymentReq},
+                                {text: 'No', onPress: close_deposit_acc_details_card}
+                            ])
+                        : setwebAlert(
+                            <WebAlert isDismisable={false} closeFunc={()=> setwebAlert()} title={`Are you sure you have made a payment to the details shown..`} body={'Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦2000'}>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={()=> {
+                                    callSendPaymentReq()
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>Yes</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={()=> {
+                                    close_deposit_acc_details_card()
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>No</Text>
+                                </TouchableHighlight>
+                            </WebAlert>
+                          )
                     }} style={pageStyles.nextButn}>
                         <Text style={pageStyles.nextButnText}>DONE</Text>
                     </TouchableOpacity>
@@ -147,12 +167,34 @@ export default function Register({navigation}) {
     }
 
     const errorHandler = (message)=>{
-        message? Alert.alert('', message):
-        Alert.alert('Network Error!',"Check your Internet Connection And Try Again.", [{text: 'OK', onPress: ()=> null}], {cancelable: true})
+        if (Platform.OS !== 'web') {
+            message? Alert.alert('', message):
+            Alert.alert('Network Error!',"Check your Internet Connection And Try Again.", [{text: 'OK', onPress: ()=> null}], {cancelable: true})
+        } else {
+            message? setwebAlert(<WebAlert closeFunc={()=> setwebAlert()} title={``} body={message}/>)
+            : setwebAlert(
+                <WebAlert closeFunc={()=> setwebAlert()} title={`Network Error!`} body={'Check your Internet Connection And Try Again.'}>
+                    <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={()=> {
+                        setwebAlert()
+                    }}>
+                        <Text style={{color: '#eee', textAlign: 'center'}}>OK</Text>
+                    </TouchableHighlight>
+                </WebAlert>
+            )
+        }
     }
 
     const messageHandler = message => {
-        Alert.alert(message.title, message.body, [{text: 'OK', onPress: ()=> null}], {cancelable: true})
+        Platform.OS !== 'web'? Alert.alert(message.title, message.body, [{text: 'OK', onPress: ()=> null}], {cancelable: true}):
+        setwebAlert(
+            <WebAlert closeFunc={()=> setwebAlert()} title={message.title} body={message.body}>
+                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={()=> {
+                    setwebAlert()
+                }}>
+                    <Text style={{color: '#eee', textAlign: 'center'}}>OK</Text>
+                </TouchableHighlight>
+            </WebAlert>
+        )
     }
 
     const callSendPaymentReq = async () => {
@@ -170,12 +212,12 @@ export default function Register({navigation}) {
 
     removeToken()
 
-    function display_chartup_card() {
+    function display_chartup_card() {``
         if (!is_chartup_card_displayed) {
             setchartup_card(
                 <View style={pageStyles.bankPaymentForm}>
                     <TouchableOpacity onPress = {close_chartup_card} style={pageStyles.closeButn}>
-                        <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        {Platform.OS !== 'web'?<Image resizeMode={'center'} source={require('../icons/back.png')}/>: <img width={50} height={50} src={require('../icons/back.png')}/>}
                     </TouchableOpacity>
                     <Text style={pageStyles.formHeader}>Verification Request</Text>
                     <TouchableOpacity style={pageStyles.chartUpButn} onPressIn={() => {Linking.openURL(`https://wa.me/+2348067124123?text=I%20have%20succesfully%20paid%20and%20require%20my%20pin%20for%20validation.\nAccount%20Name: ${userData.acc_name}`)}}>
@@ -202,12 +244,13 @@ export default function Register({navigation}) {
     }
 
     const callValidationFunc = async pin => {
-        Alert.alert(
+        Platform.OS !== 'web'? Alert.alert(
             '',
             'Activating Account...',
             [] //removes default ok button
-        )
-        await validatePayment(pin, errorHandler, () => Alert.alert('Account Successfully Activated','You Can Now Enjoy The Full Features Of This App!'))
+        ): setwebAlert(<WebAlert closeFunc={()=> setwebAlert()} title={``} isDismisable={true} body={'Activating Account...'}/>)
+        await validatePayment(pin, errorHandler, () => Platform.OS !== 'web'? Alert.alert('Account Successfully Activated','You Can Now Enjoy The Full Features Of This App!'):
+        setwebAlert(<WebAlert closeFunc={()=> setwebAlert()} title={`Account Successfully Activated`} isDismisable={true} body={'You Can Now Enjoy The Full Features Of This App!'}/>))
     }
 
     return (
@@ -247,15 +290,25 @@ export default function Register({navigation}) {
                 use your card. So you can get verified quickly.
             </Text>
 
-            <View style={pageStyles.galarey}>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/masterCard.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/visa.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/verve.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/firstBank.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/gtBank.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/zeneth.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/uba.png')}/>
-                <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/access.png')}/>
+            <View style={Platform.OS !== 'web'? pageStyles.galarey: {
+                width: '100vw',
+                alignSelf: 'flex-end',
+                marginTop: '10%',
+                height: '20%',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                backgroundColor: colors.appColor,
+                alignContent: 'center'
+            }}>
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/masterCard.png')}/>:<img width={50} height={50} src={require('../icons/masterCard.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/visa.png')}/>:<img width={50} height={50} src={require('../icons/visa.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/verve.png')}/>:<img width={50} height={50} src={require('../icons/verve.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/firstBank.png')}/>:<img width={50} height={50} src={require('../icons/firstBank.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/gtBank.png')}/>:<img width={50} height={50} src={require('../icons/gtBank.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/zeneth.png')}/>:<img width={50} height={50} src={require('../icons/zeneth.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/uba.png')}/>:<img width={50} height={50} src={require('../icons/uba.png')} />}
+                {Platform.OS !== 'web'? <Image resizeMode={'center'} style={[pageStyles.paymentPlatforms]} source={require('../icons/access.png')}/>:<img width={50} height={50} src={require('../icons/access.png')} />}
             </View>
 
             {bank_Form_State}
@@ -287,6 +340,7 @@ export default function Register({navigation}) {
                     />
                 </View>
             </View>
+            {webAlert}
             <StatusBar style="light"/>
         </SafeAreaView>
     )

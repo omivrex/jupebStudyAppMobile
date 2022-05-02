@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Platform } from "react-native-web";
 
 import colors from './colors.js'
 
@@ -112,8 +113,10 @@ export default StyleSheet.create({
     },
 
     formText: {
-        top: '12%',
-        left: '5%',
+        top: Platform.OS !=='web'? '12%': '12vh',
+        marginHorizontal: Platform.OS !== 'web'? '0':'auto',
+        marginVertical: Platform.OS !== 'web'? '0':'3vh',
+        left: Platform.OS !== 'web'? '5%':0,
         paddingVertical: '3%',
         width: '90%',
         fontSize:  hp('2.3%'),

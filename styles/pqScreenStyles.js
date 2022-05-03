@@ -293,6 +293,7 @@ export default StyleSheet.create({
         height: '100%',
         paddingVertical: '3%',
         left: '30%',
+        marginHorizontal: Platform.OS !== 'web'? '0%': 'auto',
         fontSize: hp('3.3%'),
         textAlign: 'center',
         borderTopRightRadius: 45,

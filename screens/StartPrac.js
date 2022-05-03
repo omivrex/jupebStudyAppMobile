@@ -26,6 +26,9 @@ import pageStyles from '../styles/pqScreenStyles.js';
 import styles from '../styles/master.js';
 import { FlatList } from 'react-native-gesture-handler';
 import AnswerComponent from '../components/Answer.component';
+import WebAlert from '../components/WebAlert.component';
+import colors from '../styles/colors';
+import WebMathJaxComponent from '../components/WebMathJax.component';
 const pqData = require("../scripts/pqData.json");
 
 
@@ -342,23 +345,40 @@ export default function StartPrac({navigation}) {
             <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
                 <View style={pageStyles.pqHeader}>
                     <TouchableOpacity onPress = {()=> {
-                        Alert.alert(
-                            'Are you sure you want to cancel the test?', 
-                            '',
-                            [
-                                {
-                                    text: 'YES',
-                                    onPress: ()=> closePracCard()
-                                },
-            
-                                {
-                                    text: 'NO',
-                                    onPress: ()=> ('user said no')
-                                }
-                            ]
+                        Platform.OS !== 'web'?
+                            Alert.alert(
+                                'Are you sure you want to cancel the test?', 
+                                '',
+                                [
+                                    {
+                                        text: 'YES',
+                                        onPress: ()=> closePracCard()
+                                    },
+                
+                                    {
+                                        text: 'NO',
+                                        onPress: ()=> ('user said no')
+                                    }
+                                ]
+                            )
+                        : setwebAlert(
+                            <WebAlert closeFunc={()=> setwebAlert()} title={'Are you sure you want to cancel the test?'} body={''}>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    closePracCard()
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>YES</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    ''
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>NO</Text>
+                                </TouchableHighlight>
+                            </WebAlert>
                         )
                     }} style={pageStyles.closePqCard}>
-                        <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        {Platform.OS !== 'web'? <Image resizeMode={'center'} source={require('../icons/back.png')}/>: <img src={require('../icons/back.png')}/>}
                     </TouchableOpacity>
                     <View style={[{right: '5%', alignSelf: 'flex-end'}, showTimerSettings]}>
                         <Text style={pageStyles.timeDisplayed}>{`Time: ${hour<10?'0'+hour:hour}: ${minutes<10?'0'+minutes:minutes}: ${seconds<10?'0'+seconds:seconds}`}</Text>
@@ -367,7 +387,7 @@ export default function StartPrac({navigation}) {
                 <View style={pageStyles.pqCont}>
                     <FlatList
                         data={dataArr}
-                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
+                        contentContainerStyle = {{width: '100%', overflow: Platform.OS === 'web'? 'scroll':'visible', height: Platform.OS === 'web'? '100vh': '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
                         renderItem={({item}) => {
                             if (item && item.content) {
                                 const {Data} = item.content.Data
@@ -452,27 +472,28 @@ export default function StartPrac({navigation}) {
                         <Text style={[pageStyles.timeDisplayed]}>You Scored: {score}/{questionsToDisplay.current.length}</Text>
                     </View>
                     <TouchableOpacity onPress = {closeResultArea} style={pageStyles.closePqCard}>
-                        <Image resizeMode={'center'} source={require('../icons/back.png')}/>
+                        {Platform.OS !== 'web'? <Image resizeMode={'center'} source={require('../icons/back.png')}/>: <img src={require('../icons/back.png')}/>}
                     </TouchableOpacity>
                 </View>
                 <View style={pageStyles.pqCont}>
                     <FlatList
                         data={questionsToDisplay.current}
-                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
+                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', overflow: Platform.OS === 'web'? 'scroll':'visible', height: Platform.OS === 'web'? '100vh': '100%', paddingBottom: questionsToDisplay.current.length*100}}
                         renderItem={({item}) => {
                             if (item && item.content) {
                                 const {Data} = item.content.Data
                                 if (Data) {
                                     return (
                                         <View style={{
-                                                borderColor: '#9c27b0',
-                                                borderBottomWidth: 2,
-                                                width: '90%',
-                                                marginVertical: hp('3%'),
-                                                left: '5%',
-                                                justifyContent: 'center'
-                                            }}>
-                                            <MathJax
+                                            borderColor: '#9c27b0',
+                                            borderBottomWidth: 2,
+                                            width: '90%',
+                                            marginVertical: hp('3%'),
+                                            left: '5%',
+                                            justifyContent: 'center',
+                                        }}>
+                                            {Platform.OS !== 'web'?
+                                                <MathJax
                                                 html={
                                                     `
                                                         <head>
@@ -523,19 +544,38 @@ export default function StartPrac({navigation}) {
                                                 style={{width: '100%'}}
                                             
                                             />
-                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> 
-                                                Alert.alert(`Correct Option: ${Data.correctOption}`, '', [
-                                                    {
-                                                        text: 'View Solution',
-                                                        onPress: ()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})
-                                                    },
-
-                                                    {
-                                                        text: 'Cancel',
-                                                        onPress: () => ''
-                                                    }
-                                                ], {cancelable: true})
-                                            }>
+                                            : <WebMathJaxComponent data={Data.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}/>
+                                        }
+                                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={pageStyles.ansButn} onPress={()=> {
+                                                    Platform.OS !== 'web'?
+                                                    Alert.alert(`Correct Option: ${Data.correctOption}`, '', [
+                                                        {
+                                                            text: 'View Solution',
+                                                            onPress: ()=> showAns({answer: Data.answer, correctAnswer: Data.correctOption})
+                                                        },
+                                                        
+                                                        {
+                                                            text: 'Cancel',
+                                                            onPress: () => ''
+                                                        }
+                                                    ], {cancelable: true})
+                                                    : setwebAlert(
+                                                        <WebAlert closeFunc={()=> setwebAlert()} title={`Correct Option: ${Data.correctOption}`} body={''}>
+                                                            <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                                                showAns({answer: Data.answer, correctAnswer: Data.correctOption})
+                                                                setwebAlert()
+                                                            }}>
+                                                                <Text style={{color: '#eee', textAlign: 'center'}}>View Solution</Text>
+                                                            </TouchableHighlight>
+                                                            <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                                                ''
+                                                                setwebAlert()
+                                                            }}>
+                                                                <Text style={{color: '#eee', textAlign: 'center'}}>Cancel</Text>
+                                                            </TouchableHighlight>
+                                                        </WebAlert>
+                                                    )
+                                            }}>
                                                 <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                             </TouchableHighlight>
                                             <View style={[pageStyles.questOptionsContainer, {borderTopLeftRadius: 0, borderTopRightRadius: 0}]}>
@@ -608,6 +648,7 @@ export default function StartPrac({navigation}) {
     }
 
     const [qualityContButnDis, setqualityContButnDis] = useState({display: 'none'})
+    const [webAlert, setwebAlert] = useState()
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCont}>
@@ -615,26 +656,43 @@ export default function StartPrac({navigation}) {
                 <TouchableOpacity style={styles.menuIcon} onPress={openMenu}>
                     {Platform.OS!== 'web'?<Image source={require('../icons/menuIcon.png')}/>: <img width={100} src={require('../icons/menuIcon.png')}/>}
                 </TouchableOpacity>
-                <TouchableOpacity style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
-                    Alert.alert('Quality Control Service',
-                        `Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.`,
-                        [
-                            {
-                                text: 'YES',
-                                onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
-                            }, 
+                <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' style={[pageStyles.qualityContButn, qualityContButnDis]} onPress={() => {
+                    Platform.OS !== 'web'?
+                        Alert.alert('Quality Control Service',
+                            `Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.`,
+                            [
+                                {
+                                    text: 'YES',
+                                    onPress: ()=> Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
+                                }, 
 
-                            {
-                                text: 'NO',
-                                onPress: ()=> ('Do nothing'),
-                                style: 'cancel'
-                            },
+                                {
+                                    text: 'NO',
+                                    onPress: ()=> 'Do nothing',
+                                    style: 'cancel'
+                                },
 
-                        ], {cancelable: true}
-                    )
+                            ], {cancelable: true}
+                        )
+                    :   setwebAlert(
+                            <WebAlert closeFunc={()=> setwebAlert()} title={`Quality Control Service`} body={'Did you find an error in this question/solution, \nif yes, kindly contact an Admin on WhatsApp.'}>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    Linking.openURL(`https://wa.me/+2348067124123?text=I%20contacted%20you%20from%20JUPEB%20STUDY%20APP%20regarding%20Quality%20Control.`)
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>YES</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
+                                    ''
+                                    setwebAlert()
+                                }}>
+                                    <Text style={{color: '#eee', textAlign: 'center'}}>NO</Text>
+                                </TouchableHighlight>
+                            </WebAlert>
+                        )
                 }}>
-                    <Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>
-                </TouchableOpacity>
+                    {Platform.OS!== 'web'?<Image style={pageStyles.qualityContButnImg} resizeMode={'center'} source={require('../icons/flag.png')}/>: <img src={require('../icons/flag.png')}/>}
+                </TouchableHighlight>
             </View>
             <View style={pageStyles.listOptionsCont}>
                 <TouchableOpacity style={pageStyles.listOptions} onPress = {()=> {
@@ -667,6 +725,7 @@ export default function StartPrac({navigation}) {
             {questViewCard}
             {ansPage}
             {loading}
+            {webAlert}
             <StatusBar style="light" />
         </SafeAreaView>
     )

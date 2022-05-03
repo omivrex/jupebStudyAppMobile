@@ -6,7 +6,9 @@ import {
     Text,
     View,
     TouchableOpacity,
+    Platform,
 } from 'react-native';
+import WebMathJaxComponent from './WebMathJax.component.js';
 
 export default function StartPracticeQuestion({questionData, displayLoadingComponent}) {
     const [optionsState, setoptionsState] = useState('')
@@ -20,7 +22,8 @@ export default function StartPracticeQuestion({questionData, displayLoadingCompo
             left: '5%',
             justifyContent: 'center'
         }}>
-            <MathJax
+            {Platform.OS !== 'web'?
+                <MathJax
                 html={
                     `
                         <head>
@@ -70,6 +73,8 @@ export default function StartPracticeQuestion({questionData, displayLoadingCompo
                 style={{width: '100%'}}
             
             />
+            : <WebMathJaxComponent data={questionData.question.replace('max-width: 180px;', 'max-width: 90vw;').trim()}/>
+        }
             <View style={pageStyles.questOptionsContainer}>
                 <TouchableOpacity onPress={function () {
                     questionData.userOption = 'A'

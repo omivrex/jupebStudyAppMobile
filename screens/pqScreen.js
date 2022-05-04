@@ -426,7 +426,6 @@ export default function pqScreen({navigation}) {
                                                 </WebAlert>
                                               )
                                         : showAns(item && item.data? {answer: item.data.answer, correctAnswer: item.data.correctOption}:'')
-                                        console.log('clicked')
                                     }}>
                                         <Text style = {pageStyles.ansButnText}>ANSWER</Text>
                                     </TouchableHighlight>

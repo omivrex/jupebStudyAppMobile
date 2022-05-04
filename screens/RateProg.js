@@ -164,7 +164,7 @@ export default function RateProg({navigation}) {
             <SafeAreaView style={{flex: 1, top: hp('17%')}}>
                 <FlatList
                     data = {courses}
-                    contentContainerStyle = {{paddingBottom: 200}}
+                    contentContainerStyle = {{paddingBottom: 200, height: '73vh', overflow:'auto'}}
                     renderItem={({item}) => (
                         <View>
                             <Text style={pageStyles.courseName}>{item.name.toUpperCase()}:</Text>

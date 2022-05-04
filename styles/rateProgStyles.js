@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Platform } from "react-native-web";
 import colors from './colors.js'
 
 export default StyleSheet.create({
@@ -33,6 +34,7 @@ export default StyleSheet.create({
         fontSize: hp('3%'),
         color: colors.appColor,
         left: wp('5%'),
+        paddingHorizontal: Platform.OS !== 'web'? 0: wp('5%')
     },
 
     testDataTextStyle: {
@@ -48,7 +50,7 @@ export default StyleSheet.create({
         left: wp('55%'),
         borderWidth: 2,
         borderColor: colors.textColor,
-        height: hp('2.4%'),
+        height: Platform.OS !== 'web'? hp('2.4%'):'fit-content',
         position: 'absolute',
         top: hp('30%'),
         marginBottom: '10%',
@@ -59,6 +61,6 @@ export default StyleSheet.create({
         color: colors.textColor,
         fontSize: hp('2.5%'),
         textAlign: 'center',
-        paddingTop: 7
+        paddingVertical: 7
     }
 })

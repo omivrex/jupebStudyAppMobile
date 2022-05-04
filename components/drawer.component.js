@@ -15,7 +15,7 @@ export default function drawerComp({navigation}) {
   }
 
   const navToCalCGPA = () => {
-    navigation.navigate('CalcScreen')
+    navigation.navigate('calcScreen')
   }
 
   const RateProg = () => {

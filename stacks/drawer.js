@@ -5,6 +5,7 @@ import { createBrowserApp } from "@react-navigation/web";
 import { homeStack } from './homeStack';
 import { regStack } from './paymentStack';
 import { rateProg } from './rateProgStack';
+import { calcStack } from './calcStack'
 import { startPracStack } from './startPracStack';
 import { settings } from './settingsStack';
 import { help } from './helpStack';
@@ -26,6 +27,9 @@ const Menu = createDrawerNavigator({
     },
     'Rate Progress': {
         screen: rateProg
+    },
+    'Point Calculator': {
+        screen: calcStack
     },
     Settings: {
         screen: settings

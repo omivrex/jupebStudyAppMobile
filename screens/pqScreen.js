@@ -5,7 +5,6 @@ import * as network from 'expo-network';
 import {getOfflineCollections, getOnlineCollections, getSectionsLocalQuestions, getToken} from "../utils/pastquestions.utils"
 import LoadingComponent from "../components/loading.component"
 import BlockedFeature from "../components/BlockedFeature.component"
-
 import {
     Text,
     View,
@@ -36,7 +35,7 @@ export default function pqScreen({navigation}) {
     if (Platform.OS !== 'web') {
         usePreventScreenCapture()
     } else {
-        navigation.addListener('state', (e) => {
+        navigation.addListener('beforeRemove', (e) => {
             console.log('called...')
             e.preventDefault()
             preventBackHandlerFunc()

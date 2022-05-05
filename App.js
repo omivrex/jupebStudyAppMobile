@@ -79,7 +79,7 @@ export default function App({navigation}) {
     } catch (err) {
       console.log(err);
     }
-    // AsyncStorage.setItem('vpa', 'true')
+    AsyncStorage.setItem('vpa', 'false')
     // AsyncStorage.removeItem('vpa')
 
     try {
@@ -366,7 +366,7 @@ export default function App({navigation}) {
       is_app_screen_displayed = true
     }
   }
-AsyncStorage.setItem('vpa', 'true')
+// AsyncStorage.setItem('vpa', 'true')
 //  AsyncStorage.removeItem('vpa')
 //  AsyncStorage.removeItem('userEmail')
   return (

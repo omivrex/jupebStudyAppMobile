@@ -22,13 +22,13 @@ const Menu = createDrawerNavigator({
         screen: regStack
     },
 
-    'Start Practice': {
+    StartPractice: {
         screen: startPracStack
     },
-    'Rate Progress': {
+    RateProgress: {
         screen: rateProg
     },
-    'Point Calculator': {
+    calcScreen: {
         screen: calcStack
     },
     Settings: {

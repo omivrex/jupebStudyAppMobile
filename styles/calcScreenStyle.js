@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { Platform } from "react-native-web";
 import colors from './colors.js'
 
 export default StyleSheet.create({
@@ -75,7 +76,7 @@ export default StyleSheet.create({
     calcText: {
         color: colors.textColor,
         textAlign: 'center',
-        padding: '3.5%',
+        padding: Platform.OS !== 'web'? '3.5%':'0.7rem',
         fontSize: hp('2.2%'),
     },
 

@@ -59,7 +59,7 @@ export default function Settings({navigation}) {
             </View>
             <ScrollView style={pageStyles.tableOfContents}>
                 <TouchableOpacity style={pageStyles.content}>
-                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/editProfile.png')}/>: <img src={require('../icons/editProfile.png')}/>}
+                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/editProfile.png')}/>: <img style={{height: '60%'}} src={require('../icons/editProfile.png')}/>}
                     <Text style={pageStyles.contentText} onPress={()=> {
                         Platform.OS !== 'web'?
                             Alert.alert(
@@ -94,11 +94,11 @@ export default function Settings({navigation}) {
                     }}>EDIT PROFILE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {Linking.openURL('http://play.google.com/store/apps/details?id=com.learnxtra.jupebstudyapp')}} style={pageStyles.content}>
-                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/rateApp.png')}/>: <img src={require('../icons/rateApp.png')}/>}
+                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/rateApp.png')}/>: <img style={{height: '60%'}} src={require('../icons/rateApp.png')}/>}
                     <Text style={pageStyles.contentText}>RATE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {Share.share({title: 'Download Url', message: 'Hey Check Out This Cool Jupeb App! \n http://play.google.com/store/apps/details?id=com.learnxtra.jupebstudyapp'})}} style={[pageStyles.content, {marginBottom: '40%'}]}>
-                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/share.png')}/>: <img src={require('../icons/share.png')}/>}
+                    {Platform.OS !== 'web'? <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/share.png')}/>: <img style={{height: '60%'}} src={require('../icons/share.png')}/>}
                     <Text style={pageStyles.contentText}>SHARE</Text>
                 </TouchableOpacity>
             </ScrollView>

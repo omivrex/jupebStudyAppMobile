@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
+import { Platform } from "react-native-web";
 import colors from './colors.js'
 
 export default StyleSheet.create({
@@ -31,9 +31,12 @@ export default StyleSheet.create({
         width: '100%',
         color: colors.appColor,
         textAlign: 'left',
-        left: '5%',
+        left: Platform.OS !== 'web'? '5%': '0px',
+        margin: Platform.OS !== 'web'? 0:'auto',
+        position: 'relative',
         marginBottom: '5%',
         fontSize: hp('2.5%'),
         color: colors.grey,
+        left: wp('5%')
     },
 })

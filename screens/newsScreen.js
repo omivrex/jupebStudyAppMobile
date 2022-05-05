@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
 import PDFReader from 'rn-pdf-reader-js'
@@ -18,7 +18,7 @@ import styles from '../styles/master.js';
 import pageStyles from '../styles/newsFeedStyles.js';
 
 import LoadingComponent from "../components/loading.component"
-import { getSectionData, getToken } from "../utils/news.utils";
+import { getToken } from "../utils/news.utils";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import * as network from 'expo-network';
@@ -30,11 +30,8 @@ let newsObtained = false
 let card_displayed = false
 export default function newsScreen({navigation}) {
     const [loading, setloading] = useState()
-    // useEffect(() => {
-    //   getUpdates()
-    // }, [])
-
     const is_BLOCKED_CARD_DISPLAYED = useRef(false)
+
     function DISPLAY_BLOCKED_FEATURE_CARD() {
         if (!is_BLOCKED_CARD_DISPLAYED.current) {
             setBLOCKED_FEATURE_CARD(
@@ -142,37 +139,39 @@ export default function newsScreen({navigation}) {
                             {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
                         </TouchableHighlight>
                         <h1 style={{textAlign: 'center', overflowY: 'auto'}}>ABOUT JUPEB</h1>
-                        <p>
-                            The Joint Universities Preliminary Examinations Board
-                            (JUPEB) is a national examinations body approved by  
-                            the Federal Government of Nigeria in December 2013.  
-                            It was formally established in April 2014 by a       
-                            consortium of ten (10) partnering universities       
-                            led by the University of Lagos.   
-                        </p>
-                        <p>
-                            The board has the responsibility of                  
-                            conducting common and standard examinations          
-                            for the candidates, who have been exposed to a       
-                            minimum of one-year approved courses in the different
-                            Universities's Foundation and/or Diploma Programmes  
-                            and are seeking Direct Entry admissions into         
-                            University courses                                   
-                            at the 200 Level in Nigerian and partnering          
-                            foreign universities.   
-                        </p>
-                        <p>
-                            The first of such examinations was conducted in
-                            August 2014 and successful                     
-                            candidates were admitted into 200 Level by     
-                            JAMB based on                                  
-                            recommendations from the universities.         
-                            With effect from 2015, JUPEB Examinations will 
-                            hold in June annually.                         
-                            
-                            Source Jupeb Official Site.
-                            <a href="https://jupeb.edu.ng/about_us/about_jupeb">https://jupeb.edu.ng/about_us/about_jupeb</a>
-                        </p>
+                        <div style={{overflow: 'auto', height: '60vh', padding: '10px'}}>
+                            <p>
+                                The Joint Universities Preliminary Examinations Board
+                                (JUPEB) is a national examinations body approved by  
+                                the Federal Government of Nigeria in December 2013.  
+                                It was formally established in April 2014 by a       
+                                consortium of ten (10) partnering universities       
+                                led by the University of Lagos.   
+                            </p>
+                            <p>
+                                The board has the responsibility of                  
+                                conducting common and standard examinations          
+                                for the candidates, who have been exposed to a       
+                                minimum of one-year approved courses in the different
+                                Universities's Foundation and/or Diploma Programmes  
+                                and are seeking Direct Entry admissions into         
+                                University courses                                   
+                                at the 200 Level in Nigerian and partnering          
+                                foreign universities.   
+                            </p>
+                            <p>
+                                The first of such examinations was conducted in
+                                August 2014 and successful                     
+                                candidates were admitted into 200 Level by     
+                                JAMB based on                                  
+                                recommendations from the universities.         
+                                With effect from 2015, JUPEB Examinations will 
+                                hold in June annually.                         
+                                
+                                Source Jupeb Official Site.
+                                <a href="https://jupeb.edu.ng/about_us/about_jupeb">https://jupeb.edu.ng/about_us/about_jupeb</a>
+                            </p>
+                        </div>
                     </div>
                 }
             </View>
@@ -311,108 +310,109 @@ export default function newsScreen({navigation}) {
                         width: '90%',
                         margin: 'auto',
                         height: '100vh',
-                        overflow: 'auto',
                         marginBottom: '2rem',
                     }}>
                         <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
                             {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
                         </TouchableHighlight>
                         <h1 style={{textAlign: 'center'}}>ADMISSION REQUIRMENTS</h1>
-                        <p>
-                            To obtain JUPEB registration form,                                       
-                            candidates are expected to possess at least                              
-                            five credit passes in their O/level results.                             
-                            Applicants without credit pass in either English                         
-                            language and Mathematics can also apply.                                 
-                            However, they are expected to register for the                           
-                            either of the two.                                                       
-                            
-                            Applicants with AWAITING RESULTS can also apply                          
-                            but their O’level result must be available before                        
-                            University admission as it will be required by their                     
-                            preferred university.
-                        </p>
+                        <div style={{overflow: 'auto', height: '67vh'}}>
+                            <p>
+                                To obtain JUPEB registration form,                                       
+                                candidates are expected to possess at least                              
+                                five credit passes in their O/level results.                             
+                                Applicants without credit pass in either English                         
+                                language and Mathematics can also apply.                                 
+                                However, they are expected to register for the                           
+                                either of the two.                                                       
+                                
+                                Applicants with AWAITING RESULTS can also apply                          
+                                but their O’level result must be available before                        
+                                University admission as it will be required by their                     
+                                preferred university.
+                            </p>
 
-                        <h1 style={{textAlign: 'center'}}>AFFILIATE UNIVERSITIES</h1>
-                        <p>
-                            Abia State University, Abia State. 
-                            <br/>
-                            Alex Ekwueme University, Ndufu-Alike, Ikwo, Ebonyi State.                       
-                            <br/>
-                            Caritas Universtiy, Enugu State. 
-                            <br/>
-                            Chukwuemeka Odumegwu Ojukwu University, Uli, Anambra State. 
-                            Clifford University Owerrinta, Aba, Abia State. 
-                            <br/>
-                            Eastern Palm University, Ogboko, Imo State.                                 
-                            <br/>
-                            Ebonyi State University, Ebonyi State. 
-                            <br/>
-                            Enugu State University of Science and Technology, Enugu State.                          
-                            <br/>
-                            Evangel University, Akaeze, Ebonyi State. 
-                            <br/>
-                            Federal University of Technology, Owerri, Imo State.                                    
-                            <br/>
-                            Godfrey Okoye University, Enugu State. 
-                            <br/>
-                            Imo State University, Owerri, Imo State. 
-                            <br/>
-                            Nnamdi Azikiwe University, Awka, Anambra State. 
-                            <br/>
-                            Paul University, Awka, Anambra State. 
-                            <br/>
-                            Renaissance University, Ugbawka, Enugu State. 
-                            <br/>
-                            University of Nigeria, Nsukka, Enugu State.
-                            <br/>
-                            Babcock University, Ilishan, Ogun State.
-                            <br/>
-                            Federal University of Agriculture, Abeokuta, Ogun State.
-                            <br/>
-                            Federal University of Technology, Akure.
-                            <br/>
-                            Federal University, Oye-Ekiti, Ekiti State.
-                            <br/>
-                            Obafemi Awolowo University, Ile-Ife, Osun State.
-                            <br/>
-                            Redeemers University, Ede, Osun State.
-                            <br/>
-                            University of Lagos, Akoka, Lagos State.
-                            <br/>
-                            And a lot more.
-                        </p>
+                            <h1 style={{textAlign: 'center'}}>AFFILIATE UNIVERSITIES</h1>
+                            <p>
+                                Abia State University, Abia State. 
+                                <br/>
+                                Alex Ekwueme University, Ndufu-Alike, Ikwo, Ebonyi State.                       
+                                <br/>
+                                Caritas Universtiy, Enugu State. 
+                                <br/>
+                                Chukwuemeka Odumegwu Ojukwu University, Uli, Anambra State. 
+                                Clifford University Owerrinta, Aba, Abia State. 
+                                <br/>
+                                Eastern Palm University, Ogboko, Imo State.                                 
+                                <br/>
+                                Ebonyi State University, Ebonyi State. 
+                                <br/>
+                                Enugu State University of Science and Technology, Enugu State.                          
+                                <br/>
+                                Evangel University, Akaeze, Ebonyi State. 
+                                <br/>
+                                Federal University of Technology, Owerri, Imo State.                                    
+                                <br/>
+                                Godfrey Okoye University, Enugu State. 
+                                <br/>
+                                Imo State University, Owerri, Imo State. 
+                                <br/>
+                                Nnamdi Azikiwe University, Awka, Anambra State. 
+                                <br/>
+                                Paul University, Awka, Anambra State. 
+                                <br/>
+                                Renaissance University, Ugbawka, Enugu State. 
+                                <br/>
+                                University of Nigeria, Nsukka, Enugu State.
+                                <br/>
+                                Babcock University, Ilishan, Ogun State.
+                                <br/>
+                                Federal University of Agriculture, Abeokuta, Ogun State.
+                                <br/>
+                                Federal University of Technology, Akure.
+                                <br/>
+                                Federal University, Oye-Ekiti, Ekiti State.
+                                <br/>
+                                Obafemi Awolowo University, Ile-Ife, Osun State.
+                                <br/>
+                                Redeemers University, Ede, Osun State.
+                                <br/>
+                                University of Lagos, Akoka, Lagos State.
+                                <br/>
+                                And a lot more.
+                            </p>
 
-                        <h1 style={{textAlign: 'center'}}>JUPEB CUT OFF MARKS</h1>
-                        <p>
-                            1. JUPEB cut off marks points for any science,
-                            paramedical, administrative course is 6 points and above
-                            <br/>
-                            2. For Medicine, students must have at least 12 points and
-                            above to gain admission to study Medicine in Nigerian universities
-                            that offer the course with JUPEB ( examination will still be
-                            conducted for Medicine students after meeting the required point with JUPEB)               
-                            (OAU requires nothing less than 13 points)
-                            <br/>
-                            3. The JUPEB cut off marks for Engineering courses,
-                            A/level Mathematics, Physics {'&'} Chemistry
-                            for Industrial Chemistry is 8 points and above
-                            <br/>
-                            4. JUPEB cut off marks for Social Sciences/Administrative
-                            Courses is a minimum 7 points and above.
-                            <br/>
-                            5. Candidates must have at least 5 points for Religious
-                            Studies, Languages, and most of the Courses in Arts Faculty
-                            and Agriculture.
-                            <br/>
-                            6. The cut-off marks for Law in JUPEB is 13 points,
-                            candidates must have a minimum of 13 points to be able
-                            to gain admission with JUPEB into 200 level to study
-                            Law in those universities that offer the course and
-                            that accept JUPEB.
-                            <br/>
-                            Source: <a href='https://myschoolgist.net'>https://myschoolgist.net</a>
-                        </p>
+                            <h1 style={{textAlign: 'center'}}>JUPEB CUT OFF MARKS</h1>
+                            <p>
+                                1. JUPEB cut off marks points for any science,
+                                paramedical, administrative course is 6 points and above
+                                <br/>
+                                2. For Medicine, students must have at least 12 points and
+                                above to gain admission to study Medicine in Nigerian universities
+                                that offer the course with JUPEB ( examination will still be
+                                conducted for Medicine students after meeting the required point with JUPEB)               
+                                (OAU requires nothing less than 13 points)
+                                <br/>
+                                3. The JUPEB cut off marks for Engineering courses,
+                                A/level Mathematics, Physics {'&'} Chemistry
+                                for Industrial Chemistry is 8 points and above
+                                <br/>
+                                4. JUPEB cut off marks for Social Sciences/Administrative
+                                Courses is a minimum 7 points and above.
+                                <br/>
+                                5. Candidates must have at least 5 points for Religious
+                                Studies, Languages, and most of the Courses in Arts Faculty
+                                and Agriculture.
+                                <br/>
+                                6. The cut-off marks for Law in JUPEB is 13 points,
+                                candidates must have a minimum of 13 points to be able
+                                to gain admission with JUPEB into 200 level to study
+                                Law in those universities that offer the course and
+                                that accept JUPEB.
+                                <br/>
+                                Source: <a href='https://myschoolgist.net'>https://myschoolgist.net</a>
+                            </p>
+                        </div>
                     </div>
                 </>
             }

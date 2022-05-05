@@ -49,8 +49,7 @@ export default function newsScreen({navigation}) {
         }
     }
     
-
-    BackHandler.addEventListener('hardwareBackPress', function () {
+    function closeFunc() {
         if (!card_displayed || !navigation.isFocused()) { //if a card is not beeing displayed and the main screen isnt in focus
             return false
         } else {
@@ -62,7 +61,9 @@ export default function newsScreen({navigation}) {
             card_displayed = false
             return true;
         }
-    });
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', closeFunc);
     
     function openMenu () {
         navigation.openDrawer();
@@ -137,6 +138,9 @@ export default function newsScreen({navigation}) {
                         margin: 'auto',
                         minHeight: '50rem',
                     }}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
+                        </TouchableHighlight>
                         <h1 style={{textAlign: 'center', overflowY: 'auto'}}>ABOUT JUPEB</h1>
                         <p>
                             The Joint Universities Preliminary Examinations Board
@@ -310,6 +314,9 @@ export default function newsScreen({navigation}) {
                         overflow: 'auto',
                         marginBottom: '2rem',
                     }}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
+                        </TouchableHighlight>
                         <h1 style={{textAlign: 'center'}}>ADMISSION REQUIRMENTS</h1>
                         <p>
                             To obtain JUPEB registration form,                                       
@@ -427,6 +434,9 @@ export default function newsScreen({navigation}) {
                     )
                     setsyllabulsCard(
                         <View style={pageStyles.card}>
+                            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+                                {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
+                            </TouchableHighlight>
                             <Text style={pageStyles.header}>JUPEB SYLLABUS</Text>
                             <PDFReader webviewStyle={{backgroundColor: '#fff'}} withPinchZoom={true} customStyle={{
                                 readerContainerDocument: {backgroundColor: '#fff'},
@@ -470,6 +480,9 @@ export default function newsScreen({navigation}) {
             if (token === 'true') {
                 setmatCard(
                     <View style={pageStyles.card}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
+                        </TouchableHighlight>
                         <Text style={pageStyles.header}>LIVE PAST QUESTIONS</Text>
                         <View style={{flex: 1}}>
                             <FlatList
@@ -493,6 +506,9 @@ export default function newsScreen({navigation}) {
             if (token === 'true') {
               setRESOURCES_CARD(
                   <View style={pageStyles.card}>
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
+                        </TouchableHighlight>
                       <ScrollView style={{height: hp('100%'), marginBottom: 50}}>
                           <Text style={[pageStyles.header, {marginTop: hp('6%')}]}>COMMON FUNCTIONAL GROUPS</Text>
                           <ScrollView style={{position: 'relative', top: hp('10%'), marginBottom: hp('15%') }} horizontal={true}>

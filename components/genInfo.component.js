@@ -7,6 +7,7 @@ import {
     View,
     Image,
     FlatList,
+    TouchableHighlight,
     Platform
 } from 'react-native';
 import WebMathJaxComponent from './WebMathJax.component.js';
@@ -16,7 +17,7 @@ const data = []
 function GenInfoComponent({data}) {
     if (!data.length) { //if there are no new info in this section //if there are no new info in this section
         return (
-            <View style={pageStyles.card}>
+            <View>
                 <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
                 <Image style={pageStyles.contentIcons} resizeMode={'center'} source={require('../icons/empty.png')}/>
                 <Text style={pageStyles.nullText}>
@@ -29,7 +30,7 @@ function GenInfoComponent({data}) {
         )
     } else {
         return (
-            <View style={[pageStyles.card, {zIndex: 10}]}>
+            <View style={{zIndex: 10}}>
                 <Text style={pageStyles.header}>GENERAL INFORMATION</Text>
                 <View style={{flex: 1}}>
                     <FlatList

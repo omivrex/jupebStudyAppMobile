@@ -179,6 +179,15 @@ export default StyleSheet.create({
       position: 'relative',
       alignSelf: 'center',
     },
+
+    card: {
+      width: wp('100%'),
+      height: hp('90%'),
+      top: hp('15%'),
+      position: 'absolute',
+      flex: 1,
+      backgroundColor:colors.bodyBackground,
+    },
     
     splashButnText: {
       color: colors.textColor,
@@ -189,6 +198,14 @@ export default StyleSheet.create({
     
     signUpCardButnText: {
       fontSize: hp('2%'),
+    },
+
+    closeButn: {
+      position: 'absolute',
+      left: wp('1%'),
+      zIndex: 11,
+      width: wp('10%'),
+      top: 0,
     },
 
     cards: {

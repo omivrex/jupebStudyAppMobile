@@ -98,7 +98,6 @@ export default StyleSheet.create({
         color: colors.textColor,
         textAlign: 'center',
         alignSelf: 'center',
-        // left: wp('10%'),
         padding: hp('2%')
     },
 
@@ -310,6 +309,7 @@ export default StyleSheet.create({
     labelHeading: {
         width: '100%',
         fontSize: hp('2.9%'),
+        height: Platform.OS === 'web'? '4rem':undefined,
         textAlign: 'center',
         backgroundColor: colors.appColor,
         color: '#eee'

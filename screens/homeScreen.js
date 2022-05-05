@@ -84,11 +84,18 @@ export default function homeScreen({navigation}) {
       </View>
     </View>
   )
-  
-  BackHandler.addEventListener('hardwareBackPress', function () {
+
+  const closeGenInfoComp = () => {
     if(isGenInfoCompDisplayed){
       setgenInfoComp()
       isGenInfoCompDisplayed = false
+      return true
+    }
+  }
+
+  BackHandler.addEventListener('hardwareBackPress', function () {
+    if(isGenInfoCompDisplayed){
+      closeGenInfoComp()
       return true
     }
     false
@@ -117,7 +124,14 @@ export default function homeScreen({navigation}) {
                   renderItem={({item, index}) => (
                     <TouchableHighlight underlayColor={colors.textColor} onPress={()=> {
                       isGenInfoCompDisplayed = true
-                      setgenInfoComp(<GenInfoComponent data={[data.current[index]]}/>)
+                      setgenInfoComp(
+                        <View style={styles.card}>
+                          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeGenInfoComp} style={styles.closeButn}>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back-colored.png')}/>:<img width={25} src={require('../icons/back-colored.png')}/>}
+                          </TouchableHighlight>
+                          <GenInfoComponent data={[data.current[index]]}/>
+                        </View>
+                      )
                       Platform.OS === 'web'?
                         window.MathJax.typeset()
                       :null

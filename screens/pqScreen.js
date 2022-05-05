@@ -125,7 +125,6 @@ export default function pqScreen({navigation}) {
                                 tempArray.length?setcollectionData([...tempArray]):null
                                 const lastPreviewDate = await AsyncStorage.getItem('lastPreviewDate')
                                 const currentDate = new Date().getDate().toString()
-                                // console.log('lastPreviewDate', lastPreviewDate, 'currentDate', currentDate)
                                 if (lastPreviewDate === currentDate) {
                                     getToken(DISPLAY_BLOCKED_FEATURE_CARD)
                                 } else {
@@ -213,7 +212,6 @@ export default function pqScreen({navigation}) {
             getOfflineQuestions(offlinePath.current)
         }
         preventBackHandler.current = (path.current !== 'pastquestions' || Object.values(offlinePath.current).filter(Boolean).length>0)
-        console.log('fk aoef', preventBackHandler.current, path.current, Object.values(offlinePath.current).filter(Boolean))
         setBLOCKED_FEATURE_CARD()
         renderCollection = true
     }
@@ -268,7 +266,6 @@ export default function pqScreen({navigation}) {
                                     <Text style={{color: '#eee', textAlign: 'center'}}>YES</Text>
                                 </TouchableHighlight>
                                 <TouchableHighlight style={{backgroundColor: colors.appColor, width: '90%', padding: 8, borderRadius: 18, marginBottom: 8.6}} onPress={e=>{
-                                    ''
                                     setwebAlert()
                                 }}>
                                     <Text style={{color: '#eee', textAlign: 'center'}}>NO</Text>
@@ -284,6 +281,11 @@ export default function pqScreen({navigation}) {
             </View>
             {renderCollection? (
                 <View style={pageStyles.listOptionsCont}>
+                    {label.current !== 'courseName'? 
+                        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {preventBackHandlerFunc} style={styles.closeButn}>
+                            {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('../icons/back.png')}/>:<img width={25} src={require('../icons/back.png')}/>}
+                        </TouchableHighlight>:<></>
+                    }
                     {label.current !=='questionNumber'?<Text style={pageStyles.labelHeading}>Select {(label.current === 'courseName')?'Course Name':label.current}</Text>:<></>}
                     <FlatList
                         data={collectionData}

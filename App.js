@@ -79,7 +79,7 @@ export default function App({navigation}) {
     } catch (err) {
       console.log(err);
     }
-    AsyncStorage.setItem('vpa', 'false')
+    // AsyncStorage.setItem('vpa', 'true')
     // AsyncStorage.removeItem('vpa')
 
     try {

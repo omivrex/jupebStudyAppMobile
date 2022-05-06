@@ -625,9 +625,9 @@ export default function StartPrac({navigation}) {
 
     const saveTestData = async testdata => {
         try {
-            await AsyncStorage.setItem(testDate, JSON.stringify(testdata))
+            await AsyncStorage.setItem(`test-${testDate}`, JSON.stringify(testdata))
         } catch (error) {
-            // console.log(error);
+            console.log(error);
         }
     }
 

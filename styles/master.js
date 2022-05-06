@@ -154,6 +154,7 @@ export default StyleSheet.create({
       width: wp('100%'),
       height: hp('150%'),
       position: 'absolute',
+      overflow: 'hidden',
       backgroundColor: colors.appColor
     },
 
@@ -221,6 +222,7 @@ export default StyleSheet.create({
       fontSize: hp('4%'),
       left: wp('40%'),
       top: '3%',
+      textAlign: 'center',
       textDecorationLine: 'underline'
     },
 
@@ -233,6 +235,8 @@ export default StyleSheet.create({
       top: hp('10%'),
       borderColor: colors.appColor,
       borderWidth: 2,
+      marginHorizontal: Platform.OS !== 'web'? undefined:'auto',
+      marginVertical: Platform.OS !== 'web'? undefined:'8px',
       marginBottom: '5%'
     },
 
@@ -257,6 +261,7 @@ export default StyleSheet.create({
       textAlign: 'center',
       top: hp('67.7%'),
       position: 'absolute',
+      justifyContent: 'center',
       display: 'none',
       textAlign: 'center',
       width: wp('100%')

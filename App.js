@@ -15,11 +15,13 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  TouchableHighlight,
   Image,
   BackHandler,
   Alert,
   Linking,
 } from 'react-native';
+import { Platform } from 'react-native-web';
 
 const users = database.ref('users')
 const userData = {
@@ -51,6 +53,10 @@ export default function App({navigation}) {
   const [navScreen, setnavScreen] = useState()
   
   BackHandler.addEventListener('hardwareBackPress', function () {
+    closeFunc()
+  });
+
+  const closeFunc = () => {
     if (!isCard_displayed) { //if a card is not beeing displayed and the main screen isnt in focus
       return false
     } else {
@@ -62,7 +68,7 @@ export default function App({navigation}) {
       isSignUpCardDisplayed = false
       return true;
     }
-  });
+  }
   
   async function GET_TOKEN_AND_APP_VERSION () {
     try {
@@ -117,7 +123,7 @@ export default function App({navigation}) {
           if (!isSplashCardDisplayed) {
             setsplashCard(
               <View style={styles.splashCard}>
-                  <Image resizeMode={'center'} style={styles.splashImg} source={require('./icons/applogo.png')}/>
+                  {Platform.OS !== 'web'?<Image resizeMode={'center'} style={styles.splashImg} source={require('./icons/applogo.png')}/>:<img src={require('./icons/applogo.png')} style={{alignSelf: 'center',top: hp('20%')}}/>}
                   <TouchableOpacity onPressIn={display_login_card} style={[styles.splashButns]}>
                     <Text style={styles.splashButnText}>Login</Text>
                   </TouchableOpacity>
@@ -141,6 +147,9 @@ export default function App({navigation}) {
     if (!isLoginCardDisplayed) {
       setlogInCard(
         <View style={styles.cards}>
+          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+              {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('./icons/back-colored.png')}/>:<img width={25} src={require('./icons/back-colored.png')}/>}
+          </TouchableHighlight>
           <Text style={styles.cardHeader}>Login</Text>
           <TextInput autoCapitalize='none' onChangeText={(val) => {userData.email = val.toLowerCase()}} style={styles.textInput} keyboardType={'email-address'} placeholder="Email"/>
           <TextInput autoCapitalize='none' onChangeText={(val) => {userData.password = val.toLowerCase()}} style={styles.textInput} secureTextEntry={true} placeholder="Password"/>
@@ -173,8 +182,7 @@ export default function App({navigation}) {
               auth.onAuthStateChanged(user => {
                 if (user) {
                   users.child(user.uid).once('value', snapshot => {
-                    if (snapshot.val().loggedIn == false) {
-                      console.log(snapshot.val().loggedIn);
+                    if (snapshot.val().loggedIn == false || Platform.OS !== 'web') {
                       users.child(user.uid).update({loggedIn: true}).then(
                         () => {
                           if (snapshot.val().vpa) {
@@ -241,6 +249,9 @@ export default function App({navigation}) {
     if (!isSignUpCardDisplayed) {
       setsignUpCard(
         <View style={styles.cards}>
+          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress = {closeFunc} style={styles.closeButn}>
+              {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{width: '80%'}} source={require('./icons/back-colored.png')}/>:<img width={25} src={require('./icons/back-colored.png')}/>}
+          </TouchableHighlight>
           <Text style={styles.cardHeader}>SignUp</Text>
           <TextInput autoCapitalize="none" onChangeText={(val) => {userData.email = val.toLowerCase()}} style={styles.textInput} keyboardType={'email-address'} placeholder="Email"/>
           <TextInput autoCapitalize="none" onChangeText={(val) => {userData.password = val.toLowerCase()}} style={styles.textInput} secureTextEntry={true} placeholder="Password"/>
@@ -370,7 +381,7 @@ export default function App({navigation}) {
 //  AsyncStorage.removeItem('vpa')
 //  AsyncStorage.removeItem('userEmail')
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, overflow: 'hidden'}}>
       {navScreen}
       {displaySplashCard()}
       {updateFeatureCard}

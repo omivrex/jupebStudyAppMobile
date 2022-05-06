@@ -3,6 +3,7 @@ import {
     Text,
     View,
     Image,
+    Platform,
     TouchableHighlight
 } from 'react-native';
 import styles from '../styles/master.js';
@@ -13,7 +14,7 @@ export default function BlockedFeature({navFunc}) {
     return (
         <View style={styles.BLOCKED_FEATURE_CARD}>
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Image resizeMode={'center'} style={{marginHorizontal: '25%', width: '50%'}} source={require('../icons/blocked.png')}/>
+                {Platform.OS !== 'web'?<Image resizeMode={'center'} style={{marginHorizontal: '25%', width: '50%'}} source={require('../icons/blocked.png')}/>:<img style={{marginHorizontal: '25%', width: '50%'}} src={require('../icons/blocked.png')}/>}
             </View>
             <Text style={styles.BLOCKED_FEATURE_CARD_TEXT}>
                 <Text style={{fontSize: hp('5%'), fontWeight: 'bold'}}>Oops!</Text>

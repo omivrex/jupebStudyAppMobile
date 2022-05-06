@@ -282,6 +282,7 @@ export default StyleSheet.create({
       textAlign: 'center',
       width: '90%',
       left: '5%',
+      position: 'relative',
       // top: '27%'
     },
 

@@ -4,6 +4,7 @@ import { createAppContainer } from 'react-navigation';
 import { homeStack } from './homeStack';
 import { regStack } from './paymentStack';
 import { rateProg } from './rateProgStack';
+import { calcStack } from './calcStack'
 import { startPracStack } from './startPracStack';
 import { settings } from './settingsStack';
 import { help } from './helpStack';
@@ -19,11 +20,14 @@ const Menu = createDrawerNavigator({
         screen: regStack
     },
 
-    'Start Practice': {
+    StartPractice: {
         screen: startPracStack
     },
-    'Rate Progress': {
+    RateProgress: {
         screen: rateProg
+    },
+    calcScreen: {
+        screen: calcStack
     },
     Settings: {
         screen: settings

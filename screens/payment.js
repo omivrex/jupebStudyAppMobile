@@ -167,6 +167,7 @@ export default function Register({navigation}) {
     }
 
     const errorHandler = (message)=>{
+        console.log(message)
         if (Platform.OS !== 'web') {
             message? Alert.alert('', message):
             Alert.alert('Network Error!',"Check your Internet Connection And Try Again.", [{text: 'OK', onPress: ()=> null}], {cancelable: true})

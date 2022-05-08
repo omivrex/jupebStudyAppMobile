@@ -1,10 +1,4 @@
 import React from "react"
-const MathJax = {
-    tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']]
-    }
-}
-const mathJaxLibrary = require('../utils/mathjaxweb.utils')
 
 const genStyles = {
     'WebkitUserSelect': 'none',
@@ -16,16 +10,11 @@ const genStyles = {
 }
 
 const WebMathJaxComponent = ({data, style}) => {
+    // setTimeout(() => {
+    //     window.MathJax.typeset()
+    // }, 700);
     return (
-        <div style={{...style, ...genStyles }} className="dataContainer" dangerouslySetInnerHTML={{
-            __html: data+
-            `<script>
-                (()={
-                    window.MathJax.typeset()
-                    console.log('running MathJax')
-                })()
-            </script>`
-        }}/>
+        <div style={{...style, ...genStyles }} className="dataContainer" dangerouslySetInnerHTML={{__html: data}}/>
     )
 }
 

@@ -333,13 +333,13 @@ export default function StartPrac({navigation}) {
     }
 
     const timerStarted  = useRef(false);
-    const startPrac = (shouldDisplayLoadingComponent, customTime) => {
-        shouldDisplayLoadingComponent === false?'':displayLoadingComponent(customTime?customTime:2000)
-        let keyIndex = 0
+    const startPrac = (shouldDisplayLoadingComponent, customTime = 2000) => {
+        shouldDisplayLoadingComponent === false?'':displayLoadingComponent(customTime)
         const seconds = (currentTime.current%60)
         const minutes = ((currentTime.current/60)|0)%60
         const hour  = (currentTime.current/3600)|0
         const dataArr = [... questionsToDisplay.current]
+        console.log('dataArr', dataArr)
         /** there seems to be a performance issue when options are clicked, this might be due to the re rendering of the entire questions whenever a new options is selected */
         setPracCard(
             <View style={[pageStyles.pqCard, {position: 'absolute', top: hp('17%'), backgroundColor: '#fff', height: hp('83%')}]}>
@@ -389,6 +389,8 @@ export default function StartPrac({navigation}) {
                         data={dataArr}
                         contentContainerStyle = {{width: '100%', overflow: Platform.OS === 'web'? 'scroll':'visible', height: Platform.OS === 'web'? '100vh': '100%', alignContent: 'space-around', paddingBottom: questionsToDisplay.current.length*100}}
                         renderItem={({item}) => {
+                            console.log('item', item)
+                            console.log('dataArr', dataArr)
                             if (item && item.content) {
                                 const {Data} = item.content.Data
                                 if (Data) {

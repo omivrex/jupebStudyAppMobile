@@ -132,10 +132,6 @@ export default function homeScreen({navigation}) {
                           <GenInfoComponent data={[data.current[index]]}/>
                         </View>
                       )
-                      Platform.OS === 'web'?
-                        window.MathJax.typeset()
-                      :null
-                      console.log('running MathJax')
                     }}>
                       <View style={previewInformationStyle}>
                         <Text style={[previewInformationTextStyle, {alignSelf: 'flex-start', width: '90%'}]}>{item.Topic}</Text>

@@ -96,10 +96,8 @@ export default function RateProg({navigation}) {
         let response
         let testObj
         try {
-            let testKeys = await AsyncStorage.getAllKeys()
-            testKeys.pop()
-            testKeys.pop()
-            testKeys.pop() // remove non test keys like the users vpa or email address
+            let allKeys = await AsyncStorage.getAllKeys()
+            let testKeys = allKeys.filter(key => key.indexOf('test-') !== -1)
             response = await AsyncStorage.multiGet(testKeys)
             console.log(testKeys);
             response.forEach(test => {

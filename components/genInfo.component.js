@@ -35,7 +35,7 @@ function GenInfoComponent({data}) {
                 <View style={{flex: 1}}>
                     <FlatList
                         data={data}
-                        contentContainerStyle = {{width: '100%', alignContent: 'space-around', paddingBottom: data.length*100}}
+                            contentContainerStyle = {{width: '100%', alignContent: 'space-around', overflow: 'scroll', height: Platform.OS !== 'web'? '100%':'100vh', paddingBottom: data.length*100}}
                         renderItem={({item}) => (
                             <View style={{
                                 borderColor: '#9c27b0',

@@ -112,8 +112,7 @@ export default StyleSheet.create({
     answerCardWrapper: {
         position: 'absolute',
         width: '100%',
-        height: Platform.OS!== 'web'?'100%':'80vh',
-        overflow: 'scroll',
+        height: Platform.OS!== 'web'?'100%':'100vh',
         paddingBottom: Platform.OS!== 'web'? 0:'30vh',
         top: Platform.OS!== 'web'? hp('24%'):'24.5vh',
         backgroundColor: 'rgba(255, 255, 255,1)'

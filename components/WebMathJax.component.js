@@ -10,9 +10,9 @@ const genStyles = {
 }
 
 const WebMathJaxComponent = ({data, style}) => {
-    // setTimeout(() => {
-    //     window.MathJax.typeset()
-    // }, 700);
+    setTimeout(() => {
+        window.MathJax.typeset()
+    }, 700);
     return (
         <div style={{...style, ...genStyles }} className="dataContainer" dangerouslySetInnerHTML={{__html: data}}/>
     )

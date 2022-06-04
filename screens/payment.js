@@ -122,12 +122,12 @@ export default function Register({navigation}) {
                         Bank: FCMB
                     </Text>
                     <Text style={[pageStyles.formText]}>
-                        Amount: ₦2000
+                        Amount: ₦1,500
                     </Text>
     
                     <TouchableOpacity onPressIn={()=> {
                         Alert.alert('Are you sure you have made a payment to the details shown..', 
-                        `Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦2000`, [
+                        `Account No. 6592915015 \nAccount Name: Iwuoha Kelechi Emmanuel. \nBank: FCMB \nAmount: ₦1,500`, [
                             {text: 'Yes', onPress: callSendPaymentReq},
                             {text: 'No', onPress: close_deposit_acc_details_card}
                         ])
@@ -219,12 +219,12 @@ export default function Register({navigation}) {
             </View>
 
             <TouchableOpacity onPress={()=> paystackWebViewRef.current.StartTransaction()} style={pageStyles.cardArea}>
-                <Text style={pageStyles.cardText}>Pay With Card: ₦2000</Text>
+                <Text style={pageStyles.cardText}>Pay With Card: ₦1,500</Text>
             </TouchableOpacity>
 
             
             <TouchableOpacity onPressIn={dispaly_Bank_Form} style={pageStyles.cardArea}>
-                <Text style={pageStyles.cardText}>Bank Transfer: ₦2000</Text>
+                <Text style={pageStyles.cardText}>Bank Transfer: ₦1,500</Text>
             </TouchableOpacity>
 
             <View  style={[pageStyles.cardArea, {borderRadius: 0, backgroundColor: '#fff'}]}>
@@ -264,7 +264,7 @@ export default function Register({navigation}) {
                         showPayButton={false}
                         style={{color: '#eee'}}
                         paystackKey="pk_live_846661c27fb64e2d951b78d9acd4f5d35034db14"
-                        amount={2000}
+                        amount={1500}
                         billingEmail="learnextra2@gmail.com"
                         billingMobile="07084973294"
                         billingName="Emmanuel Iwuoha"

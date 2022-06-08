@@ -142,11 +142,20 @@ export default function pqScreen({navigation}) {
     }
     
     function DISPLAY_BLOCKED_FEATURE_CARD(tokenPresent) {
-        if (!tokenPresent) {
+        console.log('tokenPresent', tokenPresent)
+        if (!tokenPresent && !(Object.values(offlinePath.current).includes('2018') || path.current.includes('2018'))) {
             preventBackHandler.current = false
             setBLOCKED_FEATURE_CARD(
                 <BlockedFeature navFunc={() => navigation.navigate('Register')}/>
             )
+        } else {
+            Alert.alert('Hurray!!!', 'All 2018 Questions and Detailed solutions for all courses are now free to all users.', [
+                {
+                    text: 'OK',
+                    onPress: ()=> 'Do nothing',
+                    style: 'OK'
+                },
+            ], {cancelable: true})
         }
     }
     
